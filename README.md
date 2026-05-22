@@ -25,5 +25,9 @@ using whatever lands here as the spec.
 
 It does not need the app's source code (it can't run a Laravel app, and the source
 is backend-coupled). It needs surfaces + content + the target look — all here. Design
-from `SITEMAP.md` and `reference/`, honor `BRIEF.md`'s output format, push results to
-`/tokens`, `/components`, `/pages`, `/reference`, and document in `STYLEGUIDE.md`.
+from `SITEMAP.md` and `reference/`, honor `BRIEF.md` (positioning + output format).
+
+**Stage 1:** push 2–3 divergent directions to `/directions/<name>/` (each: tokens,
+landing hero, one data-dense app screen, a few components, a short rationale).
+**Stage 2 (after one is chosen):** build it out into `/tokens`, `/components`, `/pages`
+with `STYLEGUIDE.md`.

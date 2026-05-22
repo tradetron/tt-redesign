@@ -2,63 +2,76 @@
 
 ## What Tradetron is
 An algorithmic-trading platform. Users build, backtest, and deploy strategies that
-trade real money through their broker. Audience: retail and serious/semi-pro traders,
-India + global.
+trade real money through their broker.
+
+## Positioning (DECIDED — read this before anything else)
+Target user: the **aspiring retail trader** (pays ~₹300/month) who wants to *feel* like a
+serious, successful trader. Position = **institutional-grade power, made accessible** —
+"the power of a professional trading desk, for the price of a coffee." Aspirational, but
+inclusive.
+
+**WIN CONDITION:** a ₹300 retail user feels **capable and elevated — like a pro** — not
+intimidated or out of their depth. Aspiration, not exclusion.
+
+Guard against the three failure modes that kill this bridge:
+- **Intimidation.** "Institutional" can read as "not for me." The user must feel the tool
+  makes *them* powerful — never that it's built for someone above their level.
+- **Lost clarity.** Premium/editorial tempts toward sparse and implicit. Keep
+  retail-grade clarity: obvious primary CTAs, plain-language copy, an unmissable
+  "how do I start" path. Premium ≠ obscure.
+- **Stripped trust signals.** Keep the retail reassurances that convert this segment —
+  free paper trading, "no code", social proof / user numbers, accessibility — *under* the
+  premium skin. Elevate the wrapper; don't delete the substance.
 
 ## Your job
-Produce a complete, self-contained **design system** and build out the
-**public / marketing / auth surfaces** in it, in **both light and dark mode**. You are
-the source of truth for the visual language. You are **not** redesigning the logged-in
-trading app — for that, produce only a few clearly-labeled reference mockups.
+Explore **2–3 genuinely divergent directions** for the position above, then (after we
+pick one) build it out. You own the visual language and the public/marketing/auth
+surfaces. You are not rebuilding the logged-in app — but each direction must prove itself
+on one data-dense app screen (see Deliverable).
 
-## Aesthetic (locked — continue the landing page in `reference/`)
-Editorial / luxury-print. Serif display headlines with italic serif accents; warm cream
-(not pure white) ground; rust/terracotta accent; hairline rules; small-caps numbered
-section markers ("— 03 / THE PLUMBING"); black pill primary buttons, outlined pill
-secondary; generous whitespace. Confident, understated, premium — the opposite of a
-neon SaaS dashboard.
+## Aesthetic starting point (one reference, NOT the only answer)
+`reference/` holds a landing already designed in a warm editorial / luxury-print language
+(serif display + italic accents, cream ground, rust/terracotta, hairline rules, small-caps
+section markers, black pill CTAs). It's a strong candidate for "institutional, made
+accessible" — but it's ONE direction. At least one other direction must be a genuinely
+different expression of the *same position* (e.g. a precision / "modern terminal" take, or
+a confident-minimal take) — not three shades of the same thing. Avoid the generic
+"AI-editorial landing" sameness; earn distinctiveness through a trading-specific point of
+view.
 
 ## Dark mode (specific)
-Carry the **same editorial language** into dark — a warm, "dark-academia" dark: deep
-warm charcoal / espresso ground, off-white/cream text, terracotta accent preserved
-(optional muted gold secondary). Do **NOT** do black + neon trading-green — that fintech
-cliché is explicitly rejected. Theme toggle in the top nav, choice persisted. Both modes
-are the same tokens flipped.
+Each direction ships light AND dark from ONE set of CSS custom properties (toggle in the
+nav). Dark must NOT be black + neon trading-green — that cliché is out. (For the editorial
+direction, dark = warm "dark-academia": espresso/charcoal + cream + terracotta.)
 
 ## Output format (hard constraints — this gets integrated into an existing app)
-- Plain semantic **HTML + one CSS system**. ALL design decisions as **CSS custom
-  properties**, so dark mode = a single attribute/class on `<html>`.
-- **Vanilla JS only**, and only for the theme toggle (localStorage).
-- Do **NOT** build a React / Next / Vue / Tailwind SPA. Target is a **Laravel Blade**
-  app on **Bootstrap 4** with a **webpack/laravel-mix SCSS** pipeline. Everything must
-  be expressible as Blade partials + SCSS. Assume no JS framework.
-- Ship **one tokens file** (color, type scale, spacing, radius, shadow; both modes) as
-  the source of truth.
-- Name fonts explicitly; prefer Google-Fonts serifs (self-hostable). Flag anything
-  licensed.
+- Plain semantic HTML + one CSS system per direction. ALL design decisions as CSS custom
+  properties, so dark mode = a single attribute/class on `<html>`.
+- Vanilla JS only, and only for the theme toggle (localStorage).
+- NO React / Next / Vue / Tailwind SPA. Target is **Laravel Blade + Bootstrap 4 + a
+  webpack/laravel-mix SCSS pipeline**; everything must port to Blade partials + SCSS.
+- One tokens file per direction as its source of truth.
+- Name fonts explicitly; prefer self-hostable Google fonts. Flag anything licensed.
 
-## Two modes of the system (important)
-- **Expressive** (marketing/public): full editorial treatment above.
-- **Functional** (data-dense app screens): same palette/tokens, but higher contrast,
-  tighter density, clean sans for tabular/numeric data. Readability beats expressiveness
-  here. Include this variant even though you're not building the app.
+## Two modes within each direction
+- **Expressive** (marketing/public): full character.
+- **Functional** (data-dense app): same tokens, higher contrast, tighter density, clean
+  sans for tabular/numeric data. Readability beats flourish. **This is where "feels like a
+  pro, not intimidated" is won or lost.**
 
-## Build fully (light + dark) — see SITEMAP.md "Phase 1"
-Marketing/landing pages; pricing; features; about/company; contact; auth (login,
-register, forgot-password, OTP/verify). Component library: top nav (with toggle) +
-footer, buttons, cards, forms/inputs, tables, badges, modals, tabs, alerts, pagination,
-empty states.
+## Deliverable — TWO STAGES
+**Stage 1 (now): 2–3 distinct directions.** For EACH direction provide: a tokens sketch
+(light+dark), the landing hero, **one data-dense app screen** (functional variant — e.g.
+dashboard or strategy builder), and 2–3 core components (nav with toggle, button, card).
+Enough to judge the *system* on both expressive and functional ground — not a full build.
+Put each under `/directions/<name>/` with a one-paragraph rationale tying it to the
+positioning + win condition.
 
-## Reference only (do NOT productionize) — see SITEMAP.md "Reference"
-2–3 labeled mockups of the logged-in app in the functional variant — a dashboard, a
-reports/data-table page, the strategy-builder shell. Integration targets, not deliverables.
+**Stage 2 (after we pick one):** build the chosen direction fully across the public/auth
+surfaces in `SITEMAP.md`, into `/tokens`, `/components`, `/pages`, with `STYLEGUIDE.md`.
 
 ## Don'ts
-- Don't invent product claims, stats, or broker lists — use clearly-marked placeholders
-  (real numbers need legal review).
+- Don't fabricate product claims, stats, broker lists, or testimonials — clearly-marked
+  placeholders only (real numbers need legal review).
 - Don't build backend / auth / API logic.
 - Don't assume any framework beyond the SCSS/Bootstrap target.
-
-## Deliverable shape
-`/tokens`, `/components`, `/pages`, `/reference` (app mockups), and `STYLEGUIDE.md`
-documenting tokens, type scale, spacing, and component usage in both modes.
