@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>(function(){try{var t=localStorage.getItem("tradetron.theme");if(t==="dark")document.documentElement.classList.add("dark");}catch(e){}})();</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>All Deployed · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css?v=3" />
+<style>
+  /* ---- all-deployed local layout ----
+     Built from system.css/pages.css tokens only. Reuses dashboard's d-*
+     panel/head/select chrome and deployed-strategies' d-kpis + d-pager.
+     The template grid + per-template "buckets" view + modal are page-local. */
+
+  .ad-wrap { padding-block: clamp(24px, 4vw, 40px); }
+
+  /* page head */
+  .ad-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .ad-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .ad-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .ad-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* sub-tabs row (by status bucket) */
+  .ad-subtabs {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    border-bottom: var(--hairline); margin-bottom: 22px;
+  }
+  .ad-subtab {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 14px; border-bottom: 2px solid transparent;
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.03em;
+    color: var(--slate); white-space: nowrap;
+    transition: color 160ms, border-color 160ms;
+  }
+  .ad-subtab:hover { color: var(--ink); }
+  .ad-subtab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+  .ad-subtab .ct {
+    font-size: 0.66rem; color: var(--slate); background: var(--paper-2);
+    border: var(--hairline); border-radius: var(--radius-pill); padding: 1px 7px;
+    font-feature-settings: "tnum" 1;
+  }
+  .ad-subtab.is-active .ct {
+    color: var(--signal);
+    border-color: color-mix(in oklab, var(--signal) 40%, transparent);
+    background: var(--signal-tint);
+  }
+  .ad-subtab__dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; }
+  .ad-subtab__dot--la { background: var(--positive); }
+  .ad-subtab__dot--lo { background: var(--signal); }
+  .ad-subtab__dot--pt { background: #f59e0b; }
+  .ad-subtab__dot--ee { background: var(--negative); }
+  .ad-subtabs__right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* KPI bar — uses same d-kpis structural rules but with local prefix
+     to stay portable. */
+  .ad-kpis {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 22px;
+  }
+  .ad-kpi { padding: 16px 20px; border-right: var(--hairline);
+    display: flex; flex-direction: column; gap: 5px; }
+  .ad-kpi:last-child { border-right: 0; }
+  .ad-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .ad-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .ad-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-kpi__delta--neg { color: var(--negative); }
+
+  /* controls row (filter chips + sort) */
+  .ad-controls {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .ad-count {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-count b { color: var(--ink); font-weight: 500; }
+  .ad-controls__right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .ad-controls__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .ad-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ad-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px; border: var(--hairline); border-radius: var(--radius-sm);
+    background: var(--signal-tint); color: var(--signal);
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  }
+  .ad-chip__x {
+    cursor: pointer; opacity: 0.7; font-size: 0.78rem; line-height: 1;
+    border: 0; background: transparent; color: inherit; padding: 0 0 0 2px;
+  }
+  .ad-chip__x:hover { opacity: 1; }
+  .ad-chips__clear {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: 0.04em; text-decoration: underline;
+  }
+  .ad-chips__clear:hover { color: var(--ink); }
+
+  /* bulk-actions bar (sticky) */
+  .ad-bulk {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 11px 16px; margin-bottom: 16px;
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--paper-2);
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-bulk__sub b { color: var(--ink); font-weight: 500; }
+  .ad-bulk__right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* template grid */
+  .ad-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 980px) { .ad-grid { grid-template-columns: 1fr; } }
+
+  .ad-tpl {
+    background: var(--surface); border: var(--hairline); border-radius: var(--radius-md);
+    padding: 16px 18px; display: flex; flex-direction: column; gap: 14px;
+    transition: border-color 160ms, box-shadow 160ms;
+  }
+  .ad-tpl:hover { border-color: color-mix(in oklab, var(--signal) 35%, var(--rule-strong, var(--slate))); }
+  .ad-tpl.is-selected {
+    border-color: var(--signal);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--signal) 18%, transparent);
+  }
+
+  .ad-tpl__head { display: flex; align-items: flex-start; gap: 10px; }
+  .ad-tpl__check {
+    margin-top: 3px; cursor: pointer; accent-color: var(--signal);
+    width: 14px; height: 14px;
+  }
+  .ad-tpl__title {
+    display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;
+  }
+  .ad-tpl__name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.02rem;
+    letter-spacing: -0.015em; line-height: 1.18; color: var(--ink);
+    margin: 0; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ad-tpl__sid {
+    font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em;
+    color: var(--slate); border: var(--hairline); border-radius: var(--radius-sm);
+    padding: 1px 6px; background: var(--paper-2); flex-shrink: 0;
+  }
+  .ad-tpl__more {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    width: 26px; height: 26px; border-radius: var(--radius-sm);
+    color: var(--slate); display: inline-grid; place-items: center;
+    font-size: 1.1rem; line-height: 1;
+  }
+  .ad-tpl__more:hover { background: var(--paper-2); color: var(--ink); }
+
+  .ad-tpl__meta {
+    font-family: var(--font-mono); font-size: 0.70rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-tpl__meta .at { color: var(--ink-soft); }
+
+  /* bucket grid: 4 status cells (Live Auto / Live Offline / Paper Trade / Error Exec) */
+  .ad-buckets {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .ad-bucket {
+    appearance: none; background: var(--paper-2); border: var(--hairline);
+    border-radius: var(--radius-sm); cursor: pointer; text-align: left;
+    padding: 11px 12px 12px; display: flex; flex-direction: column; gap: 4px;
+    color: var(--ink); transition: border-color 160ms, background 160ms;
+  }
+  .ad-bucket:hover { border-color: var(--signal); background: var(--surface); }
+  .ad-bucket.is-zero { opacity: 0.55; cursor: default; }
+  .ad-bucket.is-zero:hover { border-color: var(--rule, var(--slate)); background: var(--paper-2); }
+  .ad-bucket__lbl {
+    font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .ad-bucket__lbl .dot { width: 6px; height: 6px; border-radius: 999px; }
+  .ad-bucket--la .dot { background: var(--positive); }
+  .ad-bucket--lo .dot { background: var(--signal); }
+  .ad-bucket--pt .dot { background: #f59e0b; }
+  .ad-bucket--ee .dot { background: var(--negative); }
+  .ad-bucket__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.4rem; line-height: 1; color: var(--ink); letter-spacing: -0.01em;
+  }
+  .ad-bucket--ee.has-issues .ad-bucket__val { color: var(--negative); }
+  .ad-bucket__cta {
+    font-family: var(--font-mono); font-size: 0.62rem; color: var(--signal);
+    letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .ad-bucket.is-zero .ad-bucket__cta { color: var(--positive); }
+
+  .ad-tpl__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: var(--hairline); padding-top: 10px; gap: 12px;
+  }
+  .ad-tpl__total {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-tpl__total b { color: var(--ink); font-weight: 500; }
+  .ad-tpl__open {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--signal);
+    letter-spacing: 0.04em; text-decoration: none; white-space: nowrap;
+    border: var(--hairline); border-radius: var(--radius-sm); padding: 5px 10px;
+    transition: border-color 160ms;
+  }
+  .ad-tpl__open:hover { border-color: var(--signal); }
+  .ad-tpl__open::after { content: " \25B8"; }
+
+  /* ---- modal (per-template, per-bucket deep dive) ---- */
+  .ad-modalbg {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: color-mix(in oklab, var(--ink) 55%, transparent);
+    align-items: flex-start; justify-content: center;
+    padding: 5vh 24px;
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  }
+  .ad-modalbg.is-open { display: flex; }
+  .ad-modal {
+    width: min(960px, 100%); max-height: 90vh; display: flex; flex-direction: column;
+    background: var(--surface); border: var(--hairline); border-radius: var(--radius-lg);
+    overflow: hidden; box-shadow: 0 30px 80px -20px color-mix(in oklab, var(--ink) 60%, transparent);
+  }
+  .ad-modal__head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; padding: 18px 22px;
+    border-bottom: var(--hairline); background: var(--paper-2);
+  }
+  .ad-modal__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.08rem;
+    letter-spacing: -0.015em; margin: 0; line-height: 1.3;
+  }
+  .ad-modal__title .tplname { color: var(--signal); }
+  .ad-modal__meta {
+    margin-top: 6px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); display: flex; align-items: center; gap: 10px;
+  }
+  .ad-modal__meta .dot {
+    width: 6px; height: 6px; border-radius: 999px; display: inline-block;
+  }
+  .ad-modal__close {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    color: var(--slate); display: inline-grid; place-items: center;
+    font-size: 1.2rem; line-height: 1;
+  }
+  .ad-modal__close:hover { background: var(--surface); color: var(--ink); }
+
+  .ad-modal__toolbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 11px 22px; border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+  }
+  .ad-modal__search {
+    flex: 1; min-width: 220px; max-width: 380px;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 10px; border: var(--hairline); border-radius: var(--radius-sm);
+    background: var(--field);
+  }
+  .ad-modal__search input {
+    flex: 1; appearance: none; background: transparent; border: 0; outline: none;
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.76rem;
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-modal__count b { color: var(--ink); font-weight: 500; }
+  .ad-modal__right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .ad-modal__body {
+    flex: 1; overflow-y: auto; padding: 16px 22px 22px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ad-modal__empty {
+    padding: 60px 24px; text-align: center;
+    font-family: var(--font-mono); font-size: 0.86rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-modal__empty strong { display: block; color: var(--ink); margin-bottom: 6px;
+    font-size: 1.0rem; letter-spacing: -0.01em; font-family: var(--font-display); font-weight: 500; }
+
+  /* a deployment row inside the modal */
+  .ad-dep {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1.4fr) repeat(4, minmax(0, 1fr)) auto;
+    gap: 12px 18px; align-items: center;
+    padding: 12px 14px;
+    background: var(--paper-2); border: var(--hairline); border-radius: var(--radius-sm);
+  }
+  .ad-dep.is-error { border-color: color-mix(in oklab, var(--negative) 40%, transparent); background: color-mix(in oklab, var(--negative) 5%, var(--paper-2)); }
+  .ad-dep__check { accent-color: var(--signal); cursor: pointer; }
+  .ad-dep__id { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .ad-dep__user {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.94rem;
+    color: var(--ink); letter-spacing: -0.01em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ad-dep__sid {
+    font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em;
+    color: var(--slate);
+  }
+  .ad-dep__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ad-dep__meta-lbl {
+    font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .ad-dep__meta-val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 0.82rem; color: var(--ink); letter-spacing: var(--tracking-mono);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ad-dep__meta-val.pos { color: var(--positive); }
+  .ad-dep__meta-val.neg { color: var(--negative); }
+  .ad-dep__act {
+    display: inline-flex; align-items: center; gap: 4px; justify-self: end;
+  }
+  .ad-dep__reason {
+    grid-column: 2 / -1; padding: 8px 10px; margin-top: 4px;
+    background: color-mix(in oklab, var(--negative) 8%, transparent);
+    border: 1px solid color-mix(in oklab, var(--negative) 30%, transparent);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--negative);
+    letter-spacing: var(--tracking-mono);
+  }
+  .ad-dep__reason .lbl {
+    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: color-mix(in oklab, var(--negative) 75%, var(--ink));
+    margin-right: 7px; opacity: 0.85;
+  }
+
+  /* status pill (right of meta in each dep row) */
+  .ad-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+    border: 1px solid transparent; background: var(--paper-2); color: var(--slate);
+  }
+  .ad-pill .dot { width: 6px; height: 6px; border-radius: 999px; }
+  .ad-pill--la { color: var(--positive); border-color: color-mix(in oklab, var(--positive) 35%, transparent); background: color-mix(in oklab, var(--positive) 8%, transparent); }
+  .ad-pill--la .dot { background: var(--positive); }
+  .ad-pill--lo { color: var(--signal); border-color: color-mix(in oklab, var(--signal) 35%, transparent); background: var(--signal-tint); }
+  .ad-pill--lo .dot { background: var(--signal); }
+  .ad-pill--pt { color: #b87a00; border-color: color-mix(in oklab, #f59e0b 35%, transparent); background: color-mix(in oklab, #f59e0b 10%, transparent); }
+  .ad-pill--pt .dot { background: #f59e0b; }
+  .ad-pill--ee { color: var(--negative); border-color: color-mix(in oklab, var(--negative) 35%, transparent); background: color-mix(in oklab, var(--negative) 8%, transparent); }
+  .ad-pill--ee .dot { background: var(--negative); animation: adPulse 1.6s ease-in-out infinite; }
+  @keyframes adPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* toast — single line, slides from bottom */
+  .ad-toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--paper); padding: 10px 16px;
+    border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono);
+    opacity: 0; pointer-events: none; transition: opacity 200ms, transform 200ms;
+    z-index: 300; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .ad-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .ad-toast__undo {
+    appearance: none; background: transparent; border: 1px solid color-mix(in oklab, var(--paper) 30%, transparent);
+    color: var(--signal); cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    padding: 3px 9px; border-radius: var(--radius-sm);
+  }
+  .ad-toast__undo:hover { border-color: var(--signal); }
+
+  @media (max-width: 960px) {
+    .ad-buckets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ad-kpis { grid-template-columns: 1fr; }
+    .ad-kpi { border-right: 0; border-bottom: var(--hairline); }
+    .ad-dep { grid-template-columns: 22px minmax(0, 1fr) auto; }
+    .ad-dep__meta:nth-child(n+4) { display: none; }
+  }
+</style>
+</head>
+<body data-screen-label="All Deployed — every deployment of every template you created">
+
+<div data-include="_header.html"></div>
+
+<main class="h-container ad-wrap">
+
+  <!-- Page head -->
+  <div class="ad-head">
+    <div>
+      <span class="h-eyebrow">Account · All Deployed</span>
+      <h1 class="ad-head__title">All Deployed</h1>
+      <span class="ad-head__sub">Every deployment of every template you created · live across users</span>
+    </div>
+    <div class="ad-head__actions">
+      <select class="d-select" aria-label="Expiry filter">
+        <option>All time</option>
+        <option selected>This month</option>
+        <option>This quarter</option>
+      </select>
+      <button class="h-btn h-btn--ghost h-btn--sm" id="adExport">Export CSV</button>
+    </div>
+  </div>
+
+  <!-- KPI bar -->
+  <div class="ad-kpis">
+    <div class="ad-kpi">
+      <span class="ad-kpi__lbl">Templates</span>
+      <span class="ad-kpi__val" id="kpiTpls">6</span>
+      <span class="ad-kpi__delta">Across your account</span>
+    </div>
+    <div class="ad-kpi">
+      <span class="ad-kpi__lbl">Deployments</span>
+      <span class="ad-kpi__val" id="kpiDeps">158</span>
+      <span class="ad-kpi__delta">All statuses combined</span>
+    </div>
+    <div class="ad-kpi">
+      <span class="ad-kpi__lbl">In Error (EE)</span>
+      <span class="ad-kpi__val" id="kpiEe">4</span>
+      <span class="ad-kpi__delta ad-kpi__delta--neg" id="kpiEePct">2.5% of total · needs triage</span>
+    </div>
+  </div>
+
+  <!-- Sub-tabs (filter by bucket) -->
+  <div class="ad-subtabs" role="tablist" aria-label="Filter by bucket">
+    <button class="ad-subtab is-active" data-bucket="all" role="tab" aria-selected="true">
+      All <span class="ct" id="ctAll">158</span>
+    </button>
+    <button class="ad-subtab" data-bucket="la" role="tab" aria-selected="false">
+      <span class="ad-subtab__dot ad-subtab__dot--la"></span>
+      Live Auto <span class="ct" id="ctLa">98</span>
+    </button>
+    <button class="ad-subtab" data-bucket="lo" role="tab" aria-selected="false">
+      <span class="ad-subtab__dot ad-subtab__dot--lo"></span>
+      Live Offline <span class="ct" id="ctLo">36</span>
+    </button>
+    <button class="ad-subtab" data-bucket="pt" role="tab" aria-selected="false">
+      <span class="ad-subtab__dot ad-subtab__dot--pt"></span>
+      Paper Trade <span class="ct" id="ctPt">20</span>
+    </button>
+    <button class="ad-subtab" data-bucket="ee" role="tab" aria-selected="false">
+      <span class="ad-subtab__dot ad-subtab__dot--ee"></span>
+      Error Exec <span class="ct" id="ctEe">4</span>
+    </button>
+    <div class="ad-subtabs__right">
+      <span class="ad-controls__lbl">Sort</span>
+      <select class="d-select d-select--mini" id="adSort" aria-label="Sort templates">
+        <option value="ee-desc" selected>Error count (high → low)</option>
+        <option value="total-desc">Total deployments</option>
+        <option value="recent">Recently deployed</option>
+        <option value="name">Name (A → Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Active filter chips (status / broker / capital) -->
+  <div class="ad-controls">
+    <div class="ad-count">Showing <b id="adResultCount">6</b> templates</div>
+    <div class="ad-controls__right">
+      <div class="ad-chips" id="adChips" hidden>
+        <!-- active chips injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk action bar (always visible) -->
+  <div class="ad-bulk">
+    <span class="ad-bulk__sub" id="adBulkSub">Apply action across <b>all templates</b></span>
+    <div class="ad-bulk__right">
+      <select class="d-select d-select--mini" id="adBulkScope" aria-label="Scope">
+        <option value="all">All templates</option>
+        <option value="selected">Selected only</option>
+      </select>
+      <select class="d-select d-select--mini" id="adBulkAction" aria-label="Action">
+        <option value="">Choose action…</option>
+        <option value="exit">Exit positions</option>
+        <option value="pause">Pause</option>
+        <option value="clear-retry">Clear error &amp; retry</option>
+      </select>
+      <button class="h-btn h-btn--primary h-btn--sm" id="adApply" disabled>Apply</button>
+      <button class="h-btn h-btn--ghost h-btn--sm" id="adClearSel" hidden>Clear selection</button>
+    </div>
+  </div>
+
+  <!-- Template grid -->
+  <div class="ad-grid" id="adGrid">
+    <!-- Cards rendered by JS -->
+  </div>
+
+  <!-- Pagination -->
+  <nav class="d-pager" aria-label="Pagination">
+    <span class="ghost">«</span>
+    <span class="ghost">‹</span>
+    <a href="#" class="is-active">1</a>
+    <a href="#">2</a>
+    <a href="#">›</a>
+    <a href="#">»</a>
+  </nav>
+
+</main>
+
+<!-- Modal: per-template-per-bucket deep dive -->
+<div class="ad-modalbg" id="adModal" role="dialog" aria-modal="true" aria-labelledby="adModalTitle">
+  <div class="ad-modal">
+    <div class="ad-modal__head">
+      <div>
+        <h2 class="ad-modal__title" id="adModalTitle">
+          <span id="adModalBucket">Error Execution</span> · <span class="tplname" id="adModalTpl">—</span>
+        </h2>
+        <div class="ad-modal__meta">
+          <span class="ad-pill" id="adModalPill"><span class="dot"></span><span id="adModalChipCount">0</span> in bucket</span>
+          <span id="adModalSid">—</span>
+        </div>
+      </div>
+      <button class="ad-modal__close" id="adModalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="ad-modal__toolbar">
+      <div class="ad-modal__search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="adModalSearch" type="text" placeholder="Search by user or SID…" />
+      </div>
+      <span class="ad-modal__count"><b id="adModalShown">0</b> shown</span>
+      <div class="ad-modal__right">
+        <button class="h-btn h-btn--ghost h-btn--sm" id="adModalSelectAll">Select all</button>
+        <button class="h-btn h-btn--primary h-btn--sm" id="adModalAct" disabled>Apply action</button>
+      </div>
+    </div>
+    <div class="ad-modal__body" id="adModalBody">
+      <!-- deployment rows injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="ad-toast" id="adToast" role="status">
+  <span id="adToastMsg">Done</span>
+  <button class="ad-toast__undo" id="adToastUndo" hidden>Undo</button>
+</div>
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js?v=3"></script>
+<script src="assets/include.js?v=5" defer></script>
+
+<script>
+  /* ---- All Deployed — interaction layer ----
+     Mock data shape:
+       TEMPLATES: [{ id, sid, name, createdAt, buckets: { la, lo, pt, ee }, deps: [...] }]
+       Each dep: { id, user, sid, capital, broker, status, counter, reason? }
+     All filtering, sorting, modal opens, bulk actions run client-side. */
+
+  const TEMPLATES = [
+    { id: 2041, sid: 'NIC',  name: 'Nifty Iron Condor',           createdAt: '12 Mar 2026',
+      buckets: { la: 18, lo: 12, pt: 6, ee: 2 } },
+    { id: 2078, sid: 'BNSS', name: 'BankNifty Short Straddle',    createdAt: '03 Apr 2026',
+      buckets: { la: 22, lo: 8,  pt: 4, ee: 1 } },
+    { id: 2099, sid: 'GMM',  name: 'Gap & Mean-Reversion (Mid)',  createdAt: '21 Apr 2026',
+      buckets: { la: 14, lo: 5,  pt: 3, ee: 0 } },
+    { id: 2122, sid: 'TRND', name: 'Nifty Trend Rider 9/21',      createdAt: '02 May 2026',
+      buckets: { la: 19, lo: 6,  pt: 4, ee: 1 } },
+    { id: 2140, sid: 'FNORB', name: 'FinNifty Opening Range',     createdAt: '11 May 2026',
+      buckets: { la: 16, lo: 3,  pt: 2, ee: 0 } },
+    { id: 2155, sid: 'EQMOM', name: 'Equity Momentum (Top 5)',    createdAt: '18 May 2026',
+      buckets: { la: 9,  lo: 2,  pt: 1, ee: 0 } },
+  ];
+
+  const BROKERS = ['Zerodha','Upstox','ICICI Direct','Angel One','Fyers','Dhan'];
+  const FIRSTS = ['Aarav','Rohan','Priya','Mehul','Sneha','Karan','Anika','Vikram','Riya','Suresh','Naveen','Tanvi','Manish','Pooja','Yash','Disha','Aman','Kavya','Vivek','Sahil'];
+  const LASTS  = ['Sharma','Patel','Reddy','Iyer','Khan','Mehta','Singh','Joshi','Verma','Nair','Bose','Rao','Chopra','Gupta','Kapoor','Pillai','Desai','Das','Banerjee','Shetty'];
+  const ERR_REASONS = [
+    'Broker session expired — re-authenticate required',
+    'Order rejected: insufficient margin for hedge leg',
+    'Bid-ask spread exceeded slippage budget at entry',
+    'Instrument symbol not in subscribed exchange segment',
+  ];
+
+  function rng(seed) { return () => (seed = (seed * 9301 + 49297) % 233280) / 233280; }
+  const r = rng(7);
+  function pick(arr) { return arr[Math.floor(r() * arr.length)]; }
+  function randCap() {
+    const banks = [50000, 100000, 150000, 250000, 400000, 750000];
+    return banks[Math.floor(r() * banks.length)];
+  }
+  function fmtCap(n) { return '₹' + (n >= 100000 ? (n/100000).toFixed(1).replace(/\.0$/,'') + 'L' : (n/1000).toFixed(0) + 'K'); }
+
+  // Inflate deployments for each template using deterministic mock data
+  let depCounter = 9000;
+  TEMPLATES.forEach(t => {
+    t.deps = [];
+    ['la','lo','pt','ee'].forEach(status => {
+      for (let i = 0; i < t.buckets[status]; i++) {
+        const id = ++depCounter;
+        const user = pick(FIRSTS) + ' ' + pick(LASTS).charAt(0) + '.';
+        const sid = 'U' + (1000 + Math.floor(r()*8999));
+        const capital = randCap();
+        const broker = pick(BROKERS);
+        const counter = Math.floor(r() * 8000) - 2000;
+        const dep = { id, user, sid, capital, broker, status, counter };
+        if (status === 'ee') dep.reason = pick(ERR_REASONS);
+        t.deps.push(dep);
+      }
+    });
+  });
+
+  const STATE = {
+    bucket: 'all',
+    sort: 'ee-desc',
+    selectedTpls: new Set(),
+    modal: { tpl: null, bucket: null, search: '', selected: new Set() },
+  };
+
+  // ---- KPI compute (always reflects all data, not active filter) ----
+  (function updateKpis(){
+    const tplCount = TEMPLATES.length;
+    let depCount = 0, eeCount = 0;
+    let la = 0, lo = 0, pt = 0;
+    TEMPLATES.forEach(t => {
+      la += t.buckets.la; lo += t.buckets.lo; pt += t.buckets.pt; eeCount += t.buckets.ee;
+    });
+    depCount = la + lo + pt + eeCount;
+    document.getElementById('kpiTpls').textContent = tplCount;
+    document.getElementById('kpiDeps').textContent = depCount;
+    document.getElementById('kpiEe').textContent = eeCount;
+    document.getElementById('kpiEePct').textContent = (eeCount / depCount * 100).toFixed(1) + '% of total · needs triage';
+    document.getElementById('ctAll').textContent = depCount;
+    document.getElementById('ctLa').textContent = la;
+    document.getElementById('ctLo').textContent = lo;
+    document.getElementById('ctPt').textContent = pt;
+    document.getElementById('ctEe').textContent = eeCount;
+  })();
+
+  // ---- Render template grid ----
+  function renderGrid() {
+    const grid = document.getElementById('adGrid');
+    const sort = STATE.sort;
+    let tpls = TEMPLATES.slice();
+    tpls.sort((a, b) => {
+      switch (sort) {
+        case 'ee-desc':    return b.buckets.ee - a.buckets.ee;
+        case 'total-desc': return total(b) - total(a);
+        case 'name':       return a.name.localeCompare(b.name);
+        case 'recent':     return TEMPLATES.indexOf(b) - TEMPLATES.indexOf(a);
+        default: return 0;
+      }
+    });
+    grid.innerHTML = tpls.map(t => renderCard(t)).join('');
+    document.getElementById('adResultCount').textContent = tpls.length;
+    // wire bucket clicks + checkboxes
+    grid.querySelectorAll('.ad-tpl').forEach(card => {
+      const id = +card.dataset.tpl;
+      const tpl = TEMPLATES.find(x => x.id === id);
+      card.querySelector('.ad-tpl__check').addEventListener('change', e => {
+        if (e.target.checked) { STATE.selectedTpls.add(id); card.classList.add('is-selected'); }
+        else                  { STATE.selectedTpls.delete(id); card.classList.remove('is-selected'); }
+        syncBulk();
+      });
+      card.querySelectorAll('.ad-bucket').forEach(b => {
+        b.addEventListener('click', () => {
+          const bucket = b.dataset.bucket;
+          if (tpl.buckets[bucket] === 0) return;
+          openModal(tpl, bucket);
+        });
+      });
+    });
+  }
+
+  function total(t) { return t.buckets.la + t.buckets.lo + t.buckets.pt + t.buckets.ee; }
+
+  function renderCard(t) {
+    const tot = total(t);
+    const sel = STATE.selectedTpls.has(t.id) ? ' is-selected' : '';
+    const buckets = ['la','lo','pt','ee'].map(k => renderBucket(k, t.buckets[k])).join('');
+    return `
+      <article class="ad-tpl${sel}" data-tpl="${t.id}">
+        <div class="ad-tpl__head">
+          <input class="ad-tpl__check" type="checkbox" aria-label="Select template" ${sel ? 'checked' : ''}>
+          <div class="ad-tpl__title">
+            <h3 class="ad-tpl__name" title="${esc(t.name)}">${esc(t.name)}</h3>
+            <span class="ad-tpl__sid">${esc(t.sid)}</span>
+          </div>
+          <button class="ad-tpl__more" aria-label="Template menu">⋯</button>
+        </div>
+        <div class="ad-tpl__meta">Deployed on: <span class="at">${esc(t.createdAt)}</span> · ID ${t.id}</div>
+        <div class="ad-buckets">${buckets}</div>
+        <div class="ad-tpl__foot">
+          <span class="ad-tpl__total">Total deployments · <b>${tot}</b></span>
+          <a class="ad-tpl__open" href="#" onclick="return false;">Open template</a>
+        </div>
+      </article>
+    `;
+  }
+  function renderBucket(k, v) {
+    const labels = { la: 'Live Auto', lo: 'Live Offline', pt: 'Paper Trade', ee: 'Error Exec' };
+    const cta = v === 0
+      ? '<span class="ad-bucket__cta">All good ✓</span>'
+      : `<span class="ad-bucket__cta">View ${v} →</span>`;
+    const zeroCls = v === 0 ? ' is-zero' : '';
+    const eeClass = k === 'ee' && v > 0 ? ' has-issues' : '';
+    return `
+      <button class="ad-bucket ad-bucket--${k}${zeroCls}${eeClass}" data-bucket="${k}"${v === 0 ? ' tabindex="-1"' : ''}>
+        <span class="ad-bucket__lbl"><span class="dot"></span>${labels[k]}</span>
+        <span class="ad-bucket__val">${v}</span>
+        ${cta}
+      </button>
+    `;
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // ---- Sub-tabs ----
+  document.querySelectorAll('.ad-subtab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ad-subtab').forEach(t => {
+        t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true');
+      STATE.bucket = tab.dataset.bucket;
+      // The sub-tab is informational on the grid for now; clicking it
+      // surfaces the relevant bucket and refocuses sort to error/total accordingly.
+      if (STATE.bucket === 'ee') {
+        document.getElementById('adSort').value = 'ee-desc';
+        STATE.sort = 'ee-desc';
+      } else if (STATE.bucket !== 'all') {
+        document.getElementById('adSort').value = 'total-desc';
+        STATE.sort = 'total-desc';
+      }
+      renderGrid();
+    });
+  });
+
+  // ---- Sort ----
+  document.getElementById('adSort').addEventListener('change', e => {
+    STATE.sort = e.target.value; renderGrid();
+  });
+
+  // ---- Bulk action bar ----
+  function syncBulk() {
+    const action = document.getElementById('adBulkAction').value;
+    const scope = document.getElementById('adBulkScope').value;
+    const sel = STATE.selectedTpls.size;
+    const apply = document.getElementById('adApply');
+    const clear = document.getElementById('adClearSel');
+    const sub = document.getElementById('adBulkSub');
+    apply.disabled = !(action && (scope === 'all' || sel > 0));
+    clear.hidden = sel === 0;
+    sub.innerHTML = sel
+      ? `Apply action across <b>${sel} selected template${sel===1?'':'s'}</b>`
+      : 'Apply action across <b>all templates</b>';
+  }
+  document.getElementById('adBulkAction').addEventListener('change', syncBulk);
+  document.getElementById('adBulkScope').addEventListener('change', syncBulk);
+  document.getElementById('adClearSel').addEventListener('click', () => {
+    STATE.selectedTpls.clear(); renderGrid(); syncBulk();
+  });
+  document.getElementById('adApply').addEventListener('click', () => {
+    const action = document.getElementById('adBulkAction').value;
+    const scope = document.getElementById('adBulkScope').value;
+    const labels = { exit: 'Exit positions', pause: 'Paused', 'clear-retry': 'Cleared & retried' };
+    const n = scope === 'selected' ? STATE.selectedTpls.size : TEMPLATES.length;
+    toast(`${labels[action] || 'Action'} on ${n} template${n===1?'':'s'}`);
+    document.getElementById('adBulkAction').value = '';
+    syncBulk();
+  });
+
+  // ---- Modal ----
+  function openModal(tpl, bucket) {
+    STATE.modal = { tpl, bucket, search: '', selected: new Set() };
+    const labels = { la: 'Live Auto', lo: 'Live Offline', pt: 'Paper Trade', ee: 'Error Execution' };
+    document.getElementById('adModalBucket').textContent = labels[bucket];
+    document.getElementById('adModalTpl').textContent = tpl.name;
+    const count = tpl.buckets[bucket];
+    document.getElementById('adModalChipCount').textContent = count;
+    const pill = document.getElementById('adModalPill');
+    pill.className = 'ad-pill ad-pill--' + bucket;
+    document.getElementById('adModalSid').textContent = `TPL-${tpl.id} · SID ${tpl.sid}`;
+    document.getElementById('adModalSearch').value = '';
+    renderModalBody();
+    document.getElementById('adModal').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('adModal').classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('adModalClose').addEventListener('click', closeModal);
+  document.getElementById('adModal').addEventListener('click', e => {
+    if (e.target.id === 'adModal') closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  function renderModalBody() {
+    const { tpl, bucket, search } = STATE.modal;
+    if (!tpl) return;
+    const all = tpl.deps.filter(d => d.status === bucket);
+    const q = (search || '').trim().toLowerCase();
+    const filtered = q
+      ? all.filter(d => d.user.toLowerCase().includes(q) || d.sid.toLowerCase().includes(q))
+      : all;
+    document.getElementById('adModalShown').textContent = filtered.length;
+    const body = document.getElementById('adModalBody');
+    if (filtered.length === 0) {
+      body.innerHTML = `
+        <div class="ad-modal__empty">
+          <strong>${q ? 'No matches' : 'All cleared!'}</strong>
+          ${q ? `Nothing matched "${esc(q)}". Try a different name or SID.`
+              : 'No deployments remain in this bucket.'}
+        </div>`;
+      return;
+    }
+    body.innerHTML = filtered.map(d => renderDep(d, bucket)).join('');
+    body.querySelectorAll('.ad-dep__check').forEach(cb => {
+      cb.addEventListener('change', e => {
+        const id = +e.target.dataset.dep;
+        if (e.target.checked) STATE.modal.selected.add(id);
+        else STATE.modal.selected.delete(id);
+        document.getElementById('adModalAct').disabled = STATE.modal.selected.size === 0;
+      });
+    });
+  }
+  function renderDep(d, bucket) {
+    const labels = { la: 'Live Auto', lo: 'Live Offline', pt: 'Paper Trade', ee: 'Error Exec' };
+    const counterCls = d.counter >= 0 ? 'pos' : 'neg';
+    const counterTxt = (d.counter >= 0 ? '+' : '−') + '₹' + Math.abs(d.counter).toLocaleString('en-IN');
+    const isErr = bucket === 'ee';
+    return `
+      <div class="ad-dep${isErr ? ' is-error' : ''}">
+        <input class="ad-dep__check" type="checkbox" data-dep="${d.id}" aria-label="Select deployment">
+        <div class="ad-dep__id">
+          <span class="ad-dep__user">${esc(d.user)}</span>
+          <span class="ad-dep__sid">${esc(d.sid)} · DEP-${d.id}</span>
+        </div>
+        <div class="ad-dep__meta">
+          <span class="ad-dep__meta-lbl">Capital</span>
+          <span class="ad-dep__meta-val">${fmtCap(d.capital)}</span>
+        </div>
+        <div class="ad-dep__meta">
+          <span class="ad-dep__meta-lbl">Broker</span>
+          <span class="ad-dep__meta-val">${esc(d.broker)}</span>
+        </div>
+        <div class="ad-dep__meta">
+          <span class="ad-dep__meta-lbl">Status</span>
+          <span class="ad-dep__meta-val"><span class="ad-pill ad-pill--${bucket}"><span class="dot"></span>${labels[bucket]}</span></span>
+        </div>
+        <div class="ad-dep__meta">
+          <span class="ad-dep__meta-lbl">Counter</span>
+          <span class="ad-dep__meta-val ${counterCls}">${counterTxt}</span>
+        </div>
+        <span class="ad-dep__act">
+          ${bucket === 'ee'
+            ? '<button class="h-btn h-btn--primary h-btn--sm">Retry</button> <button class="h-btn h-btn--ghost h-btn--sm">Cancel</button>'
+            : (bucket === 'pt'
+                ? '<button class="h-btn h-btn--ghost h-btn--sm">Promote</button>'
+                : '<button class="h-btn h-btn--ghost h-btn--sm">Pause</button>')}
+        </span>
+        ${isErr ? `<div class="ad-dep__reason"><span class="lbl">Reason</span>${esc(d.reason)}</div>` : ''}
+      </div>
+    `;
+  }
+
+  // search inside modal
+  let searchT;
+  document.getElementById('adModalSearch').addEventListener('input', e => {
+    clearTimeout(searchT);
+    searchT = setTimeout(() => {
+      STATE.modal.search = e.target.value;
+      renderModalBody();
+    }, 140);
+  });
+
+  // select-all toggle
+  document.getElementById('adModalSelectAll').addEventListener('click', () => {
+    const cbs = document.querySelectorAll('#adModalBody .ad-dep__check');
+    const allSelected = STATE.modal.selected.size === cbs.length && cbs.length > 0;
+    if (allSelected) {
+      STATE.modal.selected.clear();
+      cbs.forEach(cb => cb.checked = false);
+    } else {
+      cbs.forEach(cb => { cb.checked = true; STATE.modal.selected.add(+cb.dataset.dep); });
+    }
+    document.getElementById('adModalAct').disabled = STATE.modal.selected.size === 0;
+  });
+
+  document.getElementById('adModalAct').addEventListener('click', () => {
+    const n = STATE.modal.selected.size;
+    toast(`Action queued on ${n} deployment${n===1?'':'s'}`, true);
+    STATE.modal.selected.clear();
+    document.getElementById('adModalAct').disabled = true;
+    renderModalBody();
+  });
+
+  // ---- Export CSV (visible templates → bucket counts) ----
+  document.getElementById('adExport').addEventListener('click', () => {
+    const rows = [['Template','SID','Live Auto','Live Offline','Paper Trade','Error Exec','Total']];
+    TEMPLATES.forEach(t => rows.push([t.name, t.sid, t.buckets.la, t.buckets.lo, t.buckets.pt, t.buckets.ee, total(t)]));
+    const csv = rows.map(r => r.map(v => /,|"/.test(String(v)) ? `"${String(v).replace(/"/g,'""')}"` : v).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'all-deployed-summary.csv';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 200);
+    toast('Exported ' + TEMPLATES.length + ' rows to CSV');
+  });
+
+  // ---- toast ----
+  let toastT;
+  function toast(msg, withUndo) {
+    const t = document.getElementById('adToast');
+    document.getElementById('adToastMsg').textContent = msg;
+    document.getElementById('adToastUndo').hidden = !withUndo;
+    t.classList.add('is-on');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.classList.remove('is-on'), 3200);
+  }
+  document.getElementById('adToastUndo').addEventListener('click', () => {
+    toast('Undone'); // mock undo
+  });
+
+  // initial render
+  renderGrid();
+  syncBulk();
+</script>
+
+</body>
+</html>
