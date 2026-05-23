@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- dashboard-local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. No external app.css. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* a compact select, themed like h-input but shorter */
+  .d-select {
+    height: 32px; padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); -webkit-appearance: none; appearance: none;
+    cursor: pointer; transition: border-color 160ms;
+  }
+  .d-select:focus { outline: 0; border-color: var(--signal); }
+
+  /* ---- KPI bar ---- */
+  .d-kpis {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 26px;
+  }
+  .d-kpi { padding: 18px 20px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+  .d-kpi:last-child { border-right: 0; }
+  .d-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .d-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .d-kpi__val--up   { color: var(--positive); }
+  .d-kpi__val--down { color: var(--negative); }
+  .d-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+
+  /* ---- generic panel (matches card chrome) ---- */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .d-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .d-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-top: var(--hairline);
+  }
+
+  /* ---- tables ---- */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 13px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+  .d-table tbody tr:hover { background: color-mix(in oklab, var(--signal) 5%, transparent); }
+  .d-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; }
+  .d-table .num.pos { color: var(--positive); }
+  .d-table .num.neg { color: var(--negative); }
+
+  .d-name { display: flex; flex-direction: column; gap: 3px; }
+  .d-name strong { font-family: var(--font-display); font-weight: 500; font-size: 0.98rem; letter-spacing: -0.01em; }
+  .d-name span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .d-cell-mono { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.86rem; }
+  .d-cell-sub { display: block; font-family: var(--font-mono); font-size: 0.7rem; color: var(--slate); margin-top: 2px; }
+
+  /* ---- tabs (visual) ---- */
+  .d-tabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 8px;
+  }
+  .d-tab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 14px 14px; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .d-tab:hover { color: var(--ink); }
+  .d-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- watchlist split ---- */
+  .d-watch { display: grid; grid-template-columns: 240px 1fr; }
+  .d-watch__list { border-right: var(--hairline); padding: 8px; display: flex; flex-direction: column; gap: 2px; max-height: 360px; overflow-y: auto; }
+  .d-watch__item {
+    display: block; padding: 8px 10px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft);
+    letter-spacing: var(--tracking-mono); cursor: pointer; text-decoration: none;
+    transition: background 140ms, color 140ms;
+  }
+  .d-watch__item:hover { background: var(--paper-2); color: var(--ink); }
+  .d-watch__item.is-active {
+    background: var(--signal-tint); color: var(--signal);
+    border-left: 2px solid var(--signal); padding-left: 8px;
+  }
+
+  /* ---- pagination ---- */
+  .d-pager { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; }
+  .d-pager a, .d-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .d-pager a:hover { border-color: var(--signal); color: var(--signal); }
+  .d-pager .is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* execution / status cell helpers */
+  .d-exec { display: flex; flex-direction: column; gap: 3px; }
+  .d-exec__line { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: var(--tracking-mono); color: var(--ink-soft); }
+  .d-exec__line .at { color: var(--slate); }
+
+  @media (max-width: 880px) {
+    .d-kpis { grid-template-columns: 1fr; }
+    .d-kpi { border-right: 0; border-bottom: var(--hairline); }
+    .d-kpi:last-child { border-bottom: 0; }
+    .d-watch { grid-template-columns: 1fr; }
+    .d-watch__list { border-right: 0; border-bottom: var(--hairline); flex-direction: row; flex-wrap: wrap; max-height: none; }
+  }
+  @media (max-width: 1100px) {
+    .d-tablewrap { overflow-x: auto; }
+    .d-table { min-width: 760px; }
+  }
+</style>
+</head>
+<body data-screen-label="Dashboard">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Dashboard · logged in as Algolive</span>
+      <h1 class="d-head__title">Your desk, <span class="sig">live</span>.</h1>
+      <span class="d-head__sub">10 open positions across 2 deployed strategies · IIFL (Symphony)</span>
+    </div>
+    <div class="d-head__actions">
+      <label class="h-tag" style="display:inline-flex; align-items:center; gap:8px">
+        Expiry
+        <select class="d-select" aria-label="Expiry filter">
+          <option selected>Today</option>
+          <option>This week</option>
+          <option>Next week</option>
+          <option>All</option>
+        </select>
+      </label>
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Exit All</a>
+    </div>
+  </div>
+
+  <!-- KPI BAR -->
+  <div class="d-kpis">
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">P&amp;L</span>
+      <span class="d-kpi__val d-kpi__val--down">▼ ₹ −9,624</span>
+      <span class="d-kpi__delta">Today · realised + open</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Capital</span>
+      <span class="d-kpi__val">₹ 75.00 L</span>
+      <span class="d-kpi__delta">Deployed capital</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Value (Pos)</span>
+      <span class="d-kpi__val">₹ 76.70 L</span>
+      <span class="d-kpi__delta">10 positions</span>
+    </div>
+  </div>
+
+  <!-- DEPLOYED STRATEGIES -->
+  <section class="d-panel">
+    <div class="d-panel__head">
+      <span><span class="d-panel__title">Deployed Strategies</span><span class="d-panel__sub">2 total · 2 live</span></span>
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Filter</a>
+    </div>
+    <div class="d-tablewrap">
+      <table class="d-table">
+        <thead>
+          <tr>
+            <th>Strategy (Counter)</th>
+            <th>Execution</th>
+            <th class="num">Open | Total Positions</th>
+            <th class="num">Multiplier</th>
+            <th>Status</th>
+            <th class="num">Total P&amp;L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="d-name">
+                <strong>Stocks (1)</strong>
+                <span>By: Algolive</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-exec">
+                <span class="d-exec__line"><span class="h-chip h-chip--live h-chip--dot" style="height:18px">LIVE</span> OFFLINE</span>
+                <span class="d-exec__line at">at IIFL (Symphony)</span>
+              </div>
+            </td>
+            <td class="num"><span class="d-cell-mono">9 | 10</span></td>
+            <td class="num"><span class="d-cell-mono">1x</span></td>
+            <td><span class="h-chip h-chip--pos">Live-Entered</span></td>
+            <td class="num pos">▲ ₹ 11.72 L</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="d-name">
+                <strong>TT UDS Long Op (16)</strong>
+                <span>By: Vikram Bajaj</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-exec">
+                <span class="d-exec__line"><span class="h-chip h-chip--live h-chip--dot" style="height:18px">LIVE</span> OFFLINE</span>
+                <span class="d-exec__line at">at IIFL (Symphony)</span>
+              </div>
+            </td>
+            <td class="num"><span class="d-cell-mono">1 | 24</span></td>
+            <td class="num"><span class="d-cell-mono">1x</span></td>
+            <td><span class="h-chip h-chip--pos">Live-Entered</span></td>
+            <td class="num pos">▲ ₹ 1.40 L</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-panel__foot">
+      <span class="h-micro">Showing 2 of 2 strategies</span>
+      <div class="d-pager">
+        <span style="border:0; color:var(--slate)">‹ Prev</span>
+        <span class="is-active">1</span>
+        <a href="#">Next ›</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABBED PANEL -->
+  <section class="d-panel">
+    <div class="d-tabs" role="tablist">
+      <button class="d-tab is-active" role="tab" aria-selected="true">Market Watch</button>
+      <button class="d-tab" role="tab" aria-selected="false">Open Positions</button>
+      <button class="d-tab" role="tab" aria-selected="false">Greeks</button>
+      <button class="d-tab" role="tab" aria-selected="false">Order book</button>
+      <button class="d-tab" role="tab" aria-selected="false">Notifications</button>
+      <button class="d-tab" role="tab" aria-selected="false">Tally Orders</button>
+    </div>
+
+    <!-- MARKET WATCH panel -->
+    <div class="d-watch" role="tabpanel" aria-label="Market Watch">
+      <!-- watchlist selector -->
+      <nav class="d-watch__list" aria-label="Watchlists">
+        <a class="d-watch__item is-active" href="#">umesh</a>
+        <a class="d-watch__item" href="#">Nifty N</a>
+        <a class="d-watch__item" href="#">Naran Nifty</a>
+        <a class="d-watch__item" href="#">US Stocks</a>
+        <a class="d-watch__item" href="#">NIFTY 50</a>
+        <a class="d-watch__item" href="#">Banknifty</a>
+        <a class="d-watch__item" href="#">Private Banks</a>
+        <a class="d-watch__item" href="#">Public Banks</a>
+        <a class="d-watch__item" href="#">Auto</a>
+        <a class="d-watch__item" href="#">Finance</a>
+        <a class="d-watch__item" href="#">FMCG</a>
+        <a class="d-watch__item" href="#">IT</a>
+        <a class="d-watch__item" href="#">Metal</a>
+        <a class="d-watch__item" href="#">All Futures NFO</a>
+        <a class="d-watch__item" href="#">MCX_list</a>
+        <a class="d-watch__item" href="#">index_fut</a>
+        <a class="d-watch__item" href="#">cash_stocks_fo</a>
+        <a class="d-watch__item" href="#">NIFTY 50 FUTSTK</a>
+        <a class="d-watch__item" href="#">CRYPTO_BITBNS</a>
+        <a class="d-watch__item" href="#">16_stocks</a>
+        <a class="d-watch__item" href="#">13_stocks_fno</a>
+      </nav>
+
+      <!-- scrip table -->
+      <div class="d-tablewrap">
+        <table class="d-table">
+          <thead>
+            <tr>
+              <th>Scrip</th>
+              <th class="num">LTP</th>
+              <th class="num">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="d-cell-mono">1.</span> NIFTY 50</td>
+              <td class="num">₹ 23,719.30</td>
+              <td class="num">+0.00 <span class="d-cell-sub">(0.00%)</span></td>
+            </tr>
+            <tr>
+              <td><span class="d-cell-mono">2.</span> NIFTY BANK</td>
+              <td class="num">₹ 54,055.35</td>
+              <td class="num">+0.00 <span class="d-cell-sub">(0.00%)</span></td>
+            </tr>
+            <tr>
+              <td><span class="d-cell-mono">3.</span> NIFTY IT</td>
+              <td class="num">₹ 28,912.50</td>
+              <td class="num">+0.00 <span class="d-cell-sub">(0.00%)</span></td>
+            </tr>
+            <tr>
+              <td><span class="d-cell-mono">4.</span> INDIA VIX</td>
+              <td class="num">₹ 17.91</td>
+              <td class="num">+0.00 <span class="d-cell-sub">(0.00%)</span></td>
+            </tr>
+            <tr>
+              <td><span class="d-cell-mono">5.</span> SENSEX</td>
+              <td class="num">₹ 75,415.35</td>
+              <td class="num">+0.00 <span class="d-cell-sub">(0.00%)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

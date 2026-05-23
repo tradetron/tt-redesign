@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Videos — short tutorials, tightly scripted · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* video grid + cards */
+  .h-vGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .h-vCard{display:flex;flex-direction:column;gap:0;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);overflow:hidden;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+  .h-vCard:hover{border-color:var(--signal);transform:translateY(-2px)}
+  .h-vCard__thumb{position:relative;aspect-ratio:16/9;background:var(--paper-2);display:grid;place-items:center;border-bottom:var(--hairline);overflow:hidden}
+  .h-vCard__ph{font:500 .68rem/1.4 var(--font-mono);color:var(--slate);letter-spacing:.06em;text-align:center;padding:0 16px}
+  .h-vCard__play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;border:1px solid var(--signal);display:grid;place-items:center;color:var(--signal);font-size:1.25rem;background:rgba(255,255,255,0.04);pointer-events:none}
+  .h-vCard__dur{position:absolute;bottom:10px;right:10px;font-family:var(--font-mono);font-size:.66rem;color:var(--ink);background:var(--surface);border:var(--hairline);border-radius:var(--radius-sm);padding:2px 8px;letter-spacing:.04em}
+  .h-vCard__body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .h-vCard__cat{font:500 .62rem/1 var(--font-mono);color:var(--signal);letter-spacing:.08em;text-transform:uppercase}
+  .h-vCard__title{font:600 1.02rem/1.35 var(--font-display);color:var(--ink);letter-spacing:-0.01em}
+
+  /* category nav */
+  .h-vCats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .h-vCats span{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-soft);padding:6px 12px;border:var(--hairline);border-radius:var(--radius-pill);background:var(--paper-2)}
+
+  @media(max-width:960px){
+    .h-vGrid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:640px){
+    .h-vGrid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-screen-label="Videos — short tutorials, tightly scripted">
+
+<div data-include="_header.html"></div>
+
+
+<!-- HERO -->
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Learn · short videos</div>
+    <h1>Short videos. Tightly scripted.<br /><span class="sig">Watch one — build something.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">No 40-minute monologues. Every video is the shortest possible walkthrough of one feature you'll actually use — Trust Score, WhatsApp alerts, AI audit, True-Net PnL, marketplace cards. Watch one between meetings. Apply it the same day.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="https://www.youtube.com/channel/UCvw85AMGH07-1J_VVEx0Txg" target="_blank" rel="noopener" class="h-btn h-btn--ghost">Subscribe on YouTube</a>
+    </div>
+    <div class="h-truststrip" style="margin-top:18px">
+      <span>2 to 8 min each</span><span>One feature per video</span><span>No fluff</span><span>Free, all of it</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- CATEGORIES -->
+<section class="h-container h-section" id="library">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:24px">
+    <div>
+      <span class="h-eyebrow">The library</span>
+      <h2 class="h-h2" style="margin-top:14px">Pick a category. Watch what you need.</h2>
+    </div>
+    <span class="h-micro" style="max-width:32ch;text-align:right">all thumbnails sample · pending content review · live channel at youtube.com/tradetron</span>
+  </div>
+  <div class="h-vCats">
+    <span>Getting started</span>
+    <span>Building strategies</span>
+    <span>Backtesting</span>
+    <span>Going live</span>
+    <span>Trust &amp; alerts</span>
+    <span>Marketplace</span>
+    <span>Advanced</span>
+  </div>
+
+  <div class="h-vGrid">
+
+    <!-- TRUST & ALERTS · headline-feature tied -->
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">4 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Trust &amp; alerts</span>
+        <span class="h-vCard__title">Setting up WhatsApp Risk Alerts</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">2 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Trust &amp; alerts</span>
+        <span class="h-vCard__title">Reading Your Trust Score</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">5 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Verify</span>
+        <span class="h-vCard__title">AI Strategy Audit walkthrough</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">3 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Operate</span>
+        <span class="h-vCard__title">True-Net PnL: where your gross goes</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="marketplace.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">3 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Marketplace</span>
+        <span class="h-vCard__title">Verified Live: how to read a marketplace card</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">2 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Operate</span>
+        <span class="h-vCard__title">Plain-English Trade Replay</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="option-wizard.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">8 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Building strategies</span>
+        <span class="h-vCard__title">Your first multi-leg straddle</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">2 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Operate</span>
+        <span class="h-vCard__title">Day Journal: end-of-day review in 60 seconds</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">3 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Trust &amp; alerts</span>
+        <span class="h-vCard__title">Daily Broker Reconciliation explained</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="backtest.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">4 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Backtesting</span>
+        <span class="h-vCard__title">Backtest realism flags</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="paper-trading.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">5 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Going live</span>
+        <span class="h-vCard__title">From paper to live: 5-minute checklist</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="integrations.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">3 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Getting started</span>
+        <span class="h-vCard__title">Connecting Zerodha</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="integrations.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">3 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Getting started</span>
+        <span class="h-vCard__title">Connecting Alpaca (US brokers)</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="create-with-claude.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">6 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Building strategies</span>
+        <span class="h-vCard__title">Build with Claude — plain-English to deployed</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">5 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Building strategies</span>
+        <span class="h-vCard__title">Drag-and-drop your first NIFTY entry</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="stockbag.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">7 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Advanced</span>
+        <span class="h-vCard__title">Stockbag — building a momentum basket</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="marketplace.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">5 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Marketplace</span>
+        <span class="h-vCard__title">List your first algo as a creator</span>
+      </div>
+    </a>
+
+    <a class="h-vCard" href="features.html">
+      <div class="h-vCard__thumb">
+        <span class="h-vCard__ph">[ PLACEHOLDER · 16:9 still ]</span>
+        <span class="h-vCard__play" aria-hidden="true">▶</span>
+        <span class="h-vCard__dur">4 min</span>
+      </div>
+      <div class="h-vCard__body">
+        <span class="h-vCard__cat">Advanced</span>
+        <span class="h-vCard__title">Python blocks for the 1% the wizard can't express</span>
+      </div>
+    </a>
+
+  </div>
+
+  <p class="h-micro" style="margin-top:24px">Titles indicative · production in progress. The live channel has the current set — <a href="https://www.youtube.com/channel/UCvw85AMGH07-1J_VVEx0Txg" target="_blank" rel="noopener" style="color:var(--signal)">see all videos on YouTube →</a></p>
+</section>
+
+
+<!-- CLOSING CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size:clamp(2.4rem,4.5vw,4rem);text-align:center;max-width:24ch">Watch one.<br />Build the same thing <span class="sig">tonight.</span></h2>
+  <p class="h-cta__sub">Free paper trading to try anything you learned. A subscription only when you take a strategy live in your own broker.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="https://learn.tradetron.tech/" target="_blank" rel="noopener" class="h-btn h-btn--ghost">Visit TT Uni</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

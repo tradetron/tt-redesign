@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Invoice Template · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Shared .acct-* sidebar + token-built form kit (.f-*).
+     Two-column body: editable fields | live invoice preview. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+  .acct { display: grid; grid-template-columns: 248px 1fr; gap: 26px; align-items: start; }
+
+  .acct-nav { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 86px; }
+  .acct-nav__head { padding: 14px 16px; border-bottom: var(--hairline); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft); text-decoration: none; transition: background 140ms, color 140ms; border-left: 2px solid transparent; }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active { background: var(--signal-tint); color: var(--signal); border-left-color: var(--signal); font-weight: 500; }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+
+  .d-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+  .d-head__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; margin: 8px 0 0; }
+  .d-head__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); margin-top: 4px; display: block; }
+
+  .d-panel { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden; }
+  .d-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline); }
+  .d-panel__title { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__body { padding: 20px; }
+  .d-panel__foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-top: var(--hairline); background: var(--paper-2); }
+
+  /* two-column: fields | preview */
+  .it-split { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+
+  /* form kit */
+  .f-grid { display: flex; flex-direction: column; gap: 16px; }
+  .f-field { display: flex; flex-direction: column; gap: 7px; }
+  .f-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .f-input, .f-textarea { width: 100%; padding: 0 13px; background: var(--field); color: var(--ink); border: 1px solid var(--rule-strong); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.92rem; transition: border-color 140ms, box-shadow 140ms; }
+  .f-input { height: 42px; }
+  .f-textarea { padding: 11px 13px; min-height: 84px; resize: vertical; line-height: 1.5; }
+  .f-input:focus, .f-textarea:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-tint); }
+  .f-input::placeholder, .f-textarea::placeholder { color: var(--slate-soft); }
+  .f-hint { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+
+  /* preview placeholder (uses system .h-placeholder for the logo slot) */
+  .it-preview { padding: 20px; }
+  .it-doc { border: var(--hairline); border-radius: var(--radius-sm); background: var(--paper); padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+  .it-doc__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .it-logo { width: 120px; height: 44px; }
+  .it-doc__no { text-align: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .it-doc__no b { display: block; color: var(--ink); font-size: 0.82rem; }
+  .it-biz { display: flex; flex-direction: column; gap: 3px; }
+  .it-biz__name { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.015em; color: var(--ink); }
+  .it-biz__line { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .it-line { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); padding: 9px 0; border-top: var(--hairline); }
+  .it-line:first-of-type { border-top: 0; }
+  .it-total { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: var(--hairline-strong); font-family: var(--font-mono); }
+  .it-total b { color: var(--ink); }
+  .it-total .it-amt { color: var(--signal); font-size: 1rem; }
+
+  @media (max-width: 1024px) { .it-split { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+</style>
+</head>
+<body data-screen-label="Invoice Template">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Invoice Template</h1>
+      <span class="d-head__sub">Put your business identity on every invoice your subscribers receive</span>
+    </div>
+  </div>
+
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item is-active" href="invoice-template.html" aria-current="page"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+      <form class="d-panel" onsubmit="return false">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Template</span><span class="d-panel__sub">edit on the left, preview on the right</span></span>
+        </div>
+
+        <div class="it-split">
+
+          <!-- FIELDS -->
+          <div class="d-panel__body">
+            <div class="f-grid">
+              <div class="f-field">
+                <label class="f-label" for="it-name">Business name</label>
+                <input class="f-input" id="it-name" type="text" placeholder="e.g. Algolive Capital LLP" />
+              </div>
+              <div class="f-field">
+                <label class="f-label" for="it-address">Business address</label>
+                <textarea class="f-textarea" id="it-address" placeholder="Street, City, State, PIN"></textarea>
+              </div>
+              <div class="f-field">
+                <label class="f-label" for="it-gstin">GSTIN</label>
+                <input class="f-input" id="it-gstin" type="text" placeholder="22AAAAA0000A1Z5" style="font-family:var(--font-mono); letter-spacing:0.04em" />
+                <span class="f-hint">15-character GST identification number — printed on every invoice.</span>
+              </div>
+              <div class="f-field">
+                <label class="f-label" for="it-footer">Invoice footer note <span style="text-transform:none; color:var(--slate-soft)">(optional)</span></label>
+                <input class="f-input" id="it-footer" type="text" placeholder="Thank you for your subscription." />
+              </div>
+            </div>
+          </div>
+
+          <!-- PREVIEW -->
+          <div class="it-preview">
+            <div class="it-doc" aria-label="Invoice preview">
+              <div class="it-doc__top">
+                <div class="h-placeholder it-logo">Your logo</div>
+                <div class="it-doc__no">Invoice<b>#TT-PREVIEW</b><span>23 May 2026</span></div>
+              </div>
+              <div class="it-biz">
+                <span class="it-biz__name">Business name</span>
+                <span class="it-biz__line">Business address line</span>
+                <span class="it-biz__line">GSTIN: —</span>
+              </div>
+              <div>
+                <div class="it-line"><span>Subscription — Strategy plan (1 mo)</span><span>₹0.00</span></div>
+                <div class="it-line"><span>GST (18%)</span><span>₹0.00</span></div>
+              </div>
+              <div class="it-total"><b>Total</b><span class="it-amt">₹0.00</span></div>
+              <span class="it-biz__line">Footer note appears here.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="d-panel__foot">
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">Reset</a>
+          <button type="submit" class="h-btn h-btn--primary h-btn--sm">Save template</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Debug · Stocks · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- strategy-data page chrome (sd-*) ----
+     Shared across Statistics / Payoff / Intraday PNL / Notification Log /
+     Runtime Data / Debug / User Notes. Built only from tokens; no app.css. */
+
+  .d-wrap { padding-block: clamp(22px, 3.2vw, 34px); }
+
+  /* breadcrumb */
+  .sd-crumb {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: var(--tracking-mono); color: var(--slate);
+    margin-bottom: 14px;
+  }
+  .sd-crumb a { color: var(--slate); }
+  .sd-crumb a:hover { color: var(--signal); }
+  .sd-crumb .sep { color: var(--slate-soft); }
+  .sd-crumb .here { color: var(--ink-soft); }
+
+  /* strategy header strip */
+  .sd-banner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; padding: 18px 20px;
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 18px;
+  }
+  .sd-banner__l { display: flex; flex-direction: column; gap: 4px; }
+  .sd-banner__name {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.25rem, 2vw, 1.5rem); letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .sd-banner__meta {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .sd-banner__meta b { color: var(--ink-soft); font-weight: 500; }
+  .sd-banner__r { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* sub-tab strip — sibling page nav */
+  .sd-tabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 6px; margin-bottom: 22px;
+  }
+  .sd-tab {
+    border-bottom: 2px solid transparent;
+    padding: 14px 14px; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); text-decoration: none;
+    transition: color 160ms, border-color 160ms;
+  }
+  .sd-tab:hover { color: var(--ink); }
+  .sd-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* panels reuse the d-panel chrome from dashboard/notifications */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 22px; overflow: hidden;
+  }
+  .d-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .d-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem;
+    letter-spacing: -0.015em;
+  }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-top: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.74rem;
+  }
+
+  /* tables (shared) */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 11px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+  .d-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; }
+  .d-table .num.pos { color: var(--positive); }
+  .d-table .num.neg { color: var(--negative); }
+  .sd-kvtable td:nth-child(2) { color: var(--ink); }
+  code { font-family: var(--font-mono); font-size: 0.86em; color: var(--ink-soft); background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+
+  /* select */
+  .sd-select {
+    height: 30px; padding: 0 26px 0 10px; font: 500 0.78rem var(--font-mono);
+    color: var(--ink); background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 9px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    -webkit-appearance: none; appearance: none; cursor: pointer;
+  }
+  .sd-select:focus { outline: 0; border-color: var(--signal); }
+
+  /* chart panel + axis labels */
+  .sd-chart { position: relative; padding: 18px 18px 4px 50px; }
+  .sd-chart svg { display:block; width: 100%; height: auto; }
+  .sd-chart__y { font: 500 0.65rem var(--font-mono); fill: var(--slate); }
+  .sd-chart__x {
+    display: flex; justify-content: space-between; padding: 8px 0 18px 0;
+    font: 500 0.66rem var(--font-mono); color: var(--slate); letter-spacing: var(--tracking-mono);
+  }
+
+  /* mini KPIs (used on intraday-pnl) */
+  .sd-kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: var(--hairline);
+  }
+  .sd-kpi { padding: 14px 18px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 4px; }
+  .sd-kpi:last-child { border-right: 0; }
+  .sd-kpi__lbl { font: 500 0.62rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
+  .sd-kpi__val { font: 500 1.1rem var(--font-mono); font-feature-settings: "tnum" 1; color: var(--ink); }
+  .sd-pos { color: var(--positive) !important; }
+  .sd-neg { color: var(--negative) !important; }
+
+  /* preformatted log/error block */
+  .sd-pre {
+    margin: 0; padding: 18px 20px;
+    font: 500 0.78rem/1.55 var(--font-mono);
+    background: var(--paper-2); color: var(--ink-soft);
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .sd-pre--log { max-height: 320px; overflow: auto; }
+
+  /* user-notes editor */
+  .sd-editor { border-top: 1px solid transparent; }
+  .sd-editor__toolbar {
+    display: flex; gap: 6px; align-items: center; padding: 8px 12px;
+    background: var(--paper-2); border-bottom: var(--hairline); flex-wrap: wrap;
+  }
+  .sd-tb {
+    height: 28px; min-width: 30px; padding: 0 8px;
+    background: transparent; border: 0; border-radius: var(--radius-sm);
+    color: var(--ink-soft); cursor: pointer;
+    font: 500 0.84rem var(--font-mono);
+  }
+  .sd-tb:hover { background: var(--surface); color: var(--ink); }
+  .sd-tb-sep { width: 1px; height: 18px; background: var(--rule); margin: 0 4px; }
+  .sd-tb--strong { font-weight: 700; }
+  .sd-tb--em i { font-style: italic; }
+  .sd-tb--right { margin-left: auto; }
+  .sd-editor__area {
+    min-height: 340px; padding: 18px 22px;
+    font: 400 0.95rem/1.55 var(--font-body); color: var(--ink);
+    outline: 0;
+  }
+  .sd-editor__area[contenteditable]:empty::before {
+    content: attr(data-placeholder); color: var(--slate-soft);
+  }
+
+  @media (max-width: 880px) {
+    .sd-kpis { grid-template-columns: repeat(2, 1fr); }
+    .sd-kpi:nth-child(2) { border-right: 0; }
+    .sd-kpi:nth-child(1), .sd-kpi:nth-child(2) { border-bottom: var(--hairline); }
+  }
+  @media (max-width: 1100px) {
+    .d-tablewrap { overflow-x: auto; }
+    .d-table { min-width: 640px; }
+  }
+</style>
+</head>
+<body data-screen-label="Strategy · Debug">
+
+<header class="h-nav">
+  <div class="h-container h-nav__inner">
+    <a href="dashboard.html" class="h-brand">
+      <img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron">
+      <img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron">
+    </a>
+    <nav class="h-nav__links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="features.html">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="crypto-trading.html">Markets</a>
+      <a href="faq.html">Learn</a>
+    </nav>
+    <div class="h-nav__right">
+      <div class="h-region" role="group" aria-label="Region"><a href="index.html" class="h-region__opt is-active">IN</a><a href="us.html" class="h-region__opt">US</a></div>
+      <button class="h-toggle" data-theme-toggle aria-label="Toggle theme">
+        <span class="h-toggle__dot"></span>
+        <span data-theme-label>Night</span>
+      </button>
+      <span class="h-chip h-chip--live h-chip--dot" style="margin-right:2px">Live</span>
+      <a href="profile.html" class="h-micro" style="color:var(--ink-soft); margin-right:4px">Algolive</a>
+      <a href="index.html" class="h-btn h-btn--ghost h-btn--sm">Sign out</a>
+    </div>
+  </div>
+</header>
+
+
+<main class="h-container d-wrap">
+
+  <!-- breadcrumb -->
+  <div class="sd-crumb">
+    <a href="dashboard.html">Dashboard</a>
+    <span class="sep">›</span>
+    <a href="deployed-strategies.html">Deployed</a>
+    <span class="sep">›</span>
+    <a href="deployed-strategies.html">Stocks</a>
+    <span class="sep">›</span>
+    <span class="here">Debug</span>
+  </div>
+
+  <!-- strategy banner -->
+  <div class="sd-banner">
+    <div class="sd-banner__l">
+      <h1 class="sd-banner__name">Stocks <span style="color: var(--slate); font-weight: 400; font-size: 0.7em">· counter 1</span></h1>
+      <span class="sd-banner__meta">
+        By <b>Algolive</b> · <span style="color: var(--signal)">● LIVE</span> at <b>IIFL (Symphony)</b> · 9 open · 10 positions · Multiplier 1×
+      </span>
+    </div>
+    <div class="sd-banner__r">
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-pause">Pause</a>
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-exit">Exit</a>
+      <a href="deployed-strategies.html" class="h-btn h-btn--ghost h-btn--sm">Back to list</a>
+    </div>
+  </div>
+
+  <!-- sibling-tab nav -->
+  <nav class="sd-tabs" role="tablist" aria-label="Strategy data">
+    <a class="sd-tab" href="strategy-statistics.html">Statistics</a>
+    <a class="sd-tab" href="strategy-payoff.html">Payoff</a>
+    <a class="sd-tab" href="strategy-intraday-pnl.html">Intraday PNL</a>
+    <a class="sd-tab" href="strategy-notification-log.html">Notification Log</a>
+    <a class="sd-tab" href="strategy-runtime-data.html">Runtime Data</a>
+    <a class="sd-tab is-active" href="strategy-debug.html">Debug</a>
+    <a class="sd-tab" href="strategy-user-notes.html">User Notes</a>
+  </nav>
+
+  <!-- content -->
+
+  <section class="d-panel">
+    <div class="d-panel__head">
+      <span><span class="d-panel__title">Last error</span><span class="d-panel__sub">12:42:08 · 2026-05-23</span></span>
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Copy</a>
+    </div>
+    <pre class="sd-pre" aria-label="Last error trace">[2026-05-23T12:42:08+05:30] broker.modify  order_id=250523-0093102
+  symbol=NIFTY26MAY24000CE  side=SELL  qty=225  new_price=42.10
+  status=REJECTED
+  reason="Token expired (broker IIFL Symphony, code=AUTH_EXPIRED)"
+  retry_after=30s  next_retry_at=12:42:38
+  -- engine continued, paused order modifies for this symbol --</pre>
+  </section>
+
+  <section class="d-panel">
+    <div class="d-panel__head">
+      <span><span class="d-panel__title">Engine log</span><span class="d-panel__sub">Tail · last 200 lines · 12 lvl≥DEBUG</span></span>
+      <div style="display:flex; gap:8px; align-items:center; font-family: var(--font-mono); font-size:0.74rem; color: var(--slate)">
+        <select class="sd-select" aria-label="Log level">
+          <option>DEBUG</option><option selected>INFO</option><option>WARN</option><option>ERROR</option>
+        </select>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Pause stream</a>
+      </div>
+    </div>
+    <pre class="sd-pre sd-pre--log" aria-label="Engine log stream">[13:55:30] INFO   notify.webhook  -> telegram chat=-1001*****  status=200
+[13:54:12] INFO   condition.eval   set=5  expr=CURRENT_PREMIUM_TOTAL &lt;= TRAILING_SL  result=false
+[13:54:12] INFO   quote.tick       NIFTY=23719.30  VIX=17.91
+[13:53:09] DEBUG  greeks.update    delta=-12.4  gamma=0.0021  theta=+4180  vega=-2640
+[13:52:55] INFO   condition.eval   set=3  expr=VIX &gt; 18.4  result=false  (hold)
+[13:52:01] INFO   broker.health    broker=IIFL_SYMPHONY  status=OK  rtt=89ms
+[13:50:18] WARN   broker.rate      broker=IIFL_SYMPHONY  hits=14/15s  throttling
+[13:48:00] INFO   schedule.next    next_eval_at=13:56:00
+[13:42:41] INFO   broker.reconnect status=OK  token=refreshed
+[13:42:08] ERROR  broker.modify    order=250523-0093102  reason=Token expired
+[13:41:30] INFO   notify.webhook   -> telegram chat=-1001*****  status=200
+[13:38:00] INFO   iteration        n=8142  ms=42  vars_changed=3
+[13:35:00] INFO   iteration        n=8141  ms=39  vars_changed=2
+[13:31:21] INFO   iteration        n=8140  ms=44  vars_changed=4</pre>
+  </section>
+
+
+  <!-- shared action modals (mirrors deployed-strategies.html so banner buttons work) -->
+  <div class="h-modal" id="strategy-pause" role="dialog" aria-modal="true">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 class="h-h3" style="margin:0">Pause strategy</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 12px 0">New signals will be ignored while paused. Open positions are unaffected and continue to run as usual.</p>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm">Pause</button>
+      </div>
+    </div>
+  </div>
+  <div class="h-modal" id="strategy-exit" role="dialog" aria-modal="true">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 class="h-h3" style="margin:0">Exit strategy</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 12px 0">All <b>open positions will be squared off at market price</b>. The strategy will stop generating new orders.</p>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm" style="background:var(--negative); border-color:var(--negative)">Exit now</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+
+<footer class="h-footer">
+  <div class="h-container">
+    <div class="h-footer__grid">
+      <div class="h-footer__brand">
+        <span class="h-brand"><img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron"><img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron"></span>
+        <p class="h-body" style="max-width: 30ch; font-size: 0.92rem">A marketplace of trading algorithms, run live in their authors' accounts.</p>
+        <p class="h-micro" style="margin-top: 4px">Funds held by you, in your own brokerage. Tradetron never custodies money.</p>
+      </div>
+      <div class="h-footer__col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="features.html">Build</a></li>
+          <li><a href="backtest.html">Backtest</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="integrations.html">Integrations</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Learn</h5>
+        <ul>
+          <li><a href="faq.html">Manual &amp; FAQ</a></li>
+          <li><a href="tt-uni.html">TT Uni</a></li>
+          <li><a href="qna-forum.html">Q&amp;A Forum</a></li>
+          <li><a href="webinar.html">Webinars</a></li>
+          <li><a href="wall-of-love.html">Wall of Love</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="affiliates.html">Affiliates</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Markets</h5>
+        <ul>
+          <li><a href="us.html">United States</a></li>
+          <li><a href="nri-algo-trading.html">NRI trading</a></li>
+          <li><a href="crypto-trading.html">Crypto</a></li>
+          <li><a href="free-trading-app.html">Free app</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="trademark.html">Trademark</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="h-footer__legal">
+      <span>© 2018–2026 Tradetron Tech Pvt. Ltd.</span>
+      <span>Investments carry risk. Past performance is not indicative of future results.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/theme.js"></script>
+</body>
+</html>

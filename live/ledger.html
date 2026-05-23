@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ledger · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- ledger-local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. Mirrors dashboard.html chrome. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* ---- wallet sub-nav (shared d-tabs look, as links) ---- */
+  .d-tabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 2px; margin-bottom: 24px;
+  }
+  .d-tab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 14px 14px; cursor: pointer; white-space: nowrap; text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .d-tab:hover { color: var(--ink); }
+  .d-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- page header row ---- */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- balance callout (single-cell KPI) ---- */
+  .d-kpis {
+    display: grid; grid-template-columns: 1fr;
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 26px;
+  }
+  .d-kpi {
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;
+    border-left: 2px solid var(--signal);
+  }
+  .d-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .d-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .d-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+
+  /* ---- generic panel (matches card chrome) ---- */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .d-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .d-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-top: var(--hairline);
+  }
+
+  /* ---- table ---- */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 13px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+  .d-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; }
+  .d-cell-mono { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.86rem; }
+
+  /* ---- empty state (no transactions) ---- */
+  .d-empty td { padding: 0; }
+  .d-empty__inner {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center; padding: 56px 20px;
+  }
+  .d-empty__mark {
+    width: 34px; height: 34px; border: var(--hairline); border-radius: 50%;
+    display: grid; place-items: center; color: var(--slate-soft);
+    font-family: var(--font-mono); font-size: 0.9rem;
+  }
+  .d-empty__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1rem;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
+  .d-empty__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); max-width: 44ch;
+  }
+
+  @media (max-width: 1100px) {
+    .d-tablewrap { overflow-x: auto; }
+    .d-table { min-width: 680px; }
+  }
+</style>
+</head>
+<body data-screen-label="Ledger">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- WALLET SUB-NAV -->
+<nav class="d-tabs" aria-label="Wallet">
+    <a class="d-tab" href="accounts.html">Accounts</a>
+    <a class="d-tab is-active" href="ledger.html" aria-current="page">Ledger</a>
+    <a class="d-tab" href="withdraw-funds.html">Withdraw Funds</a>
+    <a class="d-tab" href="convert-to-coupon.html">Convert to Coupon</a>
+  </nav>
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Wallet · logged in as Algolive</span>
+      <h1 class="d-head__title">Ledger</h1>
+      <span class="d-head__sub">Every credit, debit and adjustment on your Tradetron wallet</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Export Ledger</a>
+    </div>
+  </div>
+
+  <!-- WALLET BALANCE -->
+  <div class="d-kpis">
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Wallet Balance</span>
+      <span class="d-kpi__val">₹ 0</span>
+      <span class="d-kpi__delta">Available to withdraw or convert to coupon</span>
+    </div>
+  </div>
+
+  <!-- TRANSACTIONS -->
+  <section class="d-panel">
+    <div class="d-panel__head">
+      <span><span class="d-panel__title">Transactions</span><span class="d-panel__sub">0 entries</span></span>
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Filter</a>
+    </div>
+    <div class="d-tablewrap">
+      <table class="d-table">
+        <thead>
+          <tr>
+            <th>Transaction Ref Num.</th>
+            <th>Date</th>
+            <th class="num">Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="d-empty">
+            <td colspan="4">
+              <div class="d-empty__inner">
+                <span class="d-empty__mark" aria-hidden="true">₹</span>
+                <span class="d-empty__title">No transactions yet</span>
+                <span class="d-empty__sub">Your wallet ledger will appear here once you add funds, earn payouts or make a purchase.</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-panel__foot">
+      <span class="h-micro">Showing 0 of 0 transactions</span>
+      <div class="d-pager d-pager--muted">
+        <span class="h-micro" style="color:var(--slate)">‹ Prev · 1 · Next ›</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open an account · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  .auth-shell{display:flex;align-items:flex-start;justify-content:center;padding:64px 20px 80px;background:var(--paper)}
+  .auth-card{width:100%;max-width:480px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-lg);padding:40px 36px;box-shadow:var(--shadow-md)}
+  .auth-card__head{margin-bottom:24px}
+  .auth-card__eyebrow{font-family:var(--font-mono);font-size:.72rem;color:var(--slate);letter-spacing:.08em;text-transform:uppercase}
+  .auth-card__h1{font-family:var(--font-display);font-weight:600;font-size:1.85rem;line-height:1.15;margin:10px 0 8px;color:var(--ink);letter-spacing:-.01em}
+  .auth-card__sub{font-size:.95rem;line-height:1.55;color:var(--ink-soft);margin:0}
+  .auth-card .h-form{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+  .auth-card__cta{width:100%;justify-content:center;box-sizing:border-box;margin-top:6px}
+  .auth-card__foot{margin:22px 0 0;padding-top:18px;border-top:var(--hairline);text-align:center;font-size:.88rem;color:var(--ink-soft)}
+  .auth-card__foot a{color:var(--signal);text-decoration:none;font-weight:500}
+  .auth-card__foot a:hover{text-decoration:underline}
+  .auth-trust-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 14px;margin:18px 0 0;font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.02em}
+  .auth-trust-strip span{display:inline-flex;align-items:center;gap:6px}
+  .auth-trust-strip span::before{content:"·";color:var(--rule-strong)}
+  .auth-trust-strip span:first-child::before{content:none}
+  .auth-trust-line{margin-top:16px;padding:12px 14px;background:var(--paper-2);border:var(--hairline);border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;color:var(--ink-soft)}
+  .auth-trust-line strong{color:var(--ink);font-weight:600}
+  .auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0 6px;font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.08em;text-transform:uppercase}
+  .auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--rule-strong)}
+  .auth-oauth{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+  .auth-oauth--full{grid-template-columns:1fr;margin-top:8px}
+  .auth-oauth-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:42px;padding:0 14px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--paper);color:var(--ink);text-decoration:none;font-family:var(--font-body);font-size:.88rem;font-weight:500;transition:border-color .15s,background .15s}
+  .auth-oauth-btn:hover{border-color:var(--signal);background:var(--paper-2)}
+  .auth-oauth-btn .glyph{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:3px;background:var(--ink);color:var(--paper);font-family:var(--font-display);font-weight:600;font-size:.78rem}
+  .auth-check{display:flex;align-items:flex-start;gap:10px;font-size:.84rem;line-height:1.5;color:var(--ink-soft);cursor:pointer;user-select:none}
+  .auth-check input{margin-top:3px;accent-color:var(--signal)}
+  .auth-check a{color:var(--signal);text-decoration:none}
+  .auth-check a:hover{text-decoration:underline}
+  .auth-hint{font-family:var(--font-mono);font-size:.7rem;color:var(--slate);margin-top:6px;letter-spacing:.02em}
+  .auth-phone{display:grid;grid-template-columns:96px 1fr;gap:8px}
+  .auth-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){
+    .auth-card{padding:30px 22px}
+    .auth-oauth{grid-template-columns:1fr}
+    .auth-split{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-screen-label="Open an account">
+
+<div data-include="_header.html"></div>
+
+
+<main class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-card__head">
+      <span class="auth-card__eyebrow">Open your account</span>
+      <h1 class="auth-card__h1">Free for life on <span class="sig">paper trading.</span></h1>
+      <p class="auth-card__sub">Build, backtest and paper-trade without a card. A subscription only kicks in when you take a strategy live in your broker.</p>
+    </div>
+
+    <div class="auth-oauth">
+      <a href="/register/google" class="auth-oauth-btn"><span class="glyph">G</span> Google</a>
+      <a href="/register/facebook" class="auth-oauth-btn"><span class="glyph">f</span> Facebook</a>
+    </div>
+    <div class="auth-oauth auth-oauth--full">
+      <a href="/register/zerodha" class="auth-oauth-btn"><span class="glyph">Z</span> Continue with Zerodha (Kite)</a>
+    </div>
+
+    <div class="auth-divider">or with email</div>
+
+    <form class="h-form" method="POST" action="/register" name="registerForm">
+      <input type="hidden" name="_token" value="{{csrf_token}}" />
+      <div class="auth-split">
+        <div class="h-field"><label class="h-label" for="reg-first">First name</label><input class="h-input" id="reg-first" name="first_name" type="text" placeholder="Rohan" autocomplete="given-name" required /></div>
+        <div class="h-field"><label class="h-label" for="reg-last">Last name</label><input class="h-input" id="reg-last" name="last_name" type="text" placeholder="Sharma" autocomplete="family-name" required /></div>
+      </div>
+      <div class="h-field">
+        <label class="h-label" for="reg-email">Email</label>
+        <input class="h-input" id="reg-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+      </div>
+      <div class="h-field">
+        <label class="h-label" for="reg-phone">Mobile <span class="h-micro" style="color:var(--slate);text-transform:none;letter-spacing:0">· for OTP and trade alerts</span></label>
+        <div class="auth-phone">
+          <select class="h-select" name="country_code" aria-label="Country code">
+            <option value="+91">+91 IN</option>
+            <option value="+1">+1 US</option>
+            <option value="+44">+44 UK</option>
+            <option value="+65">+65 SG</option>
+            <option value="+971">+971 AE</option>
+          </select>
+          <input class="h-input" id="reg-phone" name="phone" type="tel" placeholder="9XXXX XXXXX" autocomplete="tel" required />
+        </div>
+      </div>
+      <div class="h-field">
+        <label class="h-label" for="reg-pass">Password</label>
+        <input class="h-input" id="reg-pass" name="password" type="password" placeholder="At least 12 characters" autocomplete="new-password" required minlength="12" />
+        <span class="auth-hint">Mix letters, a number, and a symbol. Stronger is better.</span>
+      </div>
+      <div class="h-field">
+        <label class="h-label" for="reg-pass-confirm">Confirm password</label>
+        <input class="h-input" id="reg-pass-confirm" name="password_confirmation" type="password" placeholder="Type it again" autocomplete="new-password" required minlength="12" />
+      </div>
+      <label class="auth-check">
+        <input type="checkbox" name="terms" value="1" required />
+        <span>I agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy policy</a>. I understand trading carries risk.</span>
+      </label>
+
+      <button class="h-btn h-btn--primary auth-card__cta" type="submit">Open my account →</button>
+    </form>
+
+    <div class="auth-trust-strip">
+      <span>Free paper trading</span><span>No code required</span><span>₹0 to start</span><span>Cancel anytime</span>
+    </div>
+    <div class="auth-trust-line">
+      <strong>Funds never leave your broker.</strong> We don't custody money. You can sever the broker link any time, one click.
+    </div>
+
+    <p class="auth-card__foot">Already have an account? <a href="login.html">Sign in →</a></p>
+  </div>
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

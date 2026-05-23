@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TT Assistant — your trading assistant, in the AI you already use · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  .h-cmp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+  .h-cmp__tile{display:flex;flex-direction:column;gap:8px;padding:22px 18px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);text-decoration:none;color:var(--ink);transition:border-color .15s,background .15s;position:relative}
+  .h-cmp__tile:hover{border-color:var(--signal);background:var(--paper-2)}
+  .h-cmp__tile::after{content:"↗";position:absolute;top:14px;right:14px;color:var(--slate-soft);font-family:var(--font-mono);font-size:.85rem}
+  .h-cmp__icon{font-size:1.6rem;line-height:1}
+  .h-cmp__name{font-family:var(--font-display);font-weight:600;font-size:1.02rem}
+  .h-cmp__note{font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.02em}
+  .h-chat{border:var(--hairline);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;max-width:560px}
+  .h-chat__bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:var(--hairline);background:var(--paper-2);font:500 .78rem/1 var(--font-mono);color:var(--slate);letter-spacing:.04em}
+  .h-chat__body{padding:18px;display:flex;flex-direction:column;gap:10px}
+  .h-chat__msg{max-width:88%;padding:11px 15px;border-radius:14px;font-size:.92rem;line-height:1.5}
+  .h-chat__msg--user{align-self:flex-end;background:var(--signal);color:#fff;border-bottom-right-radius:4px}
+  .h-chat__msg--bot{align-self:flex-start;background:var(--paper-2);border:var(--hairline);color:var(--ink);border-bottom-left-radius:4px}
+  .h-chat__cap{padding:0 18px 14px;font:500 .68rem/1.4 var(--font-mono);color:var(--slate);letter-spacing:.06em}
+  @media(max-width:960px){.h-cmp{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body data-screen-label="TT Assistant — your trading assistant, in the AI you already use">
+
+<div data-include="_header.html"></div>
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Service · TT Assistant · AI across Claude, ChatGPT, WhatsApp, Telegram, Slack</div>
+    <h1>Your trading assistant, <span class="sig">in the AI you already use.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">TT Assistant is the Tradetron AI bot — available inside Claude, ChatGPT, WhatsApp, Telegram and Slack. Describe a strategy in plain English; it builds it in your Tradetron account, audits it before you go live, and pings your phone the moment something needs your attention. Same bot, wherever you're already talking.</p>
+    <div class="h-pagehero__cta">
+      <a href="create-with-claude.html" class="h-btn h-btn--primary">Connect your AI →</a>
+      <a href="#what" class="h-btn h-btn--ghost">What it does</a>
+    </div>
+    <div class="h-truststrip" style="margin-top:18px">
+      <span>Included with paid plans</span><span>AI-token quota per plan</span><span>Funds never leave your broker</span><span>Audit before deploy</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 01 · CHANNELS -->
+<section class="h-container h-section--lg" id="what">
+  <div style="display:flex;align-items:end;justify-content:space-between;margin-bottom:28px;gap:24px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">01 · Where it lives</span>
+      <h2 class="h-h2" style="margin-top:16px">Same assistant. <span class="sig">Five surfaces.</span></h2>
+    </div>
+    <p class="h-body" style="max-width:38ch">Pick the AI you already pay for or the messenger your phone already has open. The Tradetron connector wires up once and your strategy actions — build, audit, deploy, alert — work the same in every one.</p>
+  </div>
+  <div class="h-cmp">
+    <a href="create-with-claude.html" class="h-cmp__tile">
+      <span class="h-cmp__icon">🤖</span>
+      <span class="h-cmp__name">Claude</span>
+      <span class="h-cmp__note">Custom connector · paid plan</span>
+    </a>
+    <a href="create-with-claude.html#chatgpt" class="h-cmp__tile">
+      <span class="h-cmp__icon">💬</span>
+      <span class="h-cmp__name">ChatGPT</span>
+      <span class="h-cmp__note">Custom connector · paid plan</span>
+    </a>
+    <a href="create-with-claude.html#whatsapp" class="h-cmp__tile">
+      <span class="h-cmp__icon">📱</span>
+      <span class="h-cmp__name">WhatsApp</span>
+      <span class="h-cmp__note">+1 646 480 7754 · risk alerts</span>
+    </a>
+    <a href="create-with-claude.html#telegram" class="h-cmp__tile">
+      <span class="h-cmp__icon">✈️</span>
+      <span class="h-cmp__name">Telegram</span>
+      <span class="h-cmp__note">@TradetronAssistantBot</span>
+    </a>
+    <a href="create-with-claude.html#slack" class="h-cmp__tile">
+      <span class="h-cmp__icon">#️⃣</span>
+      <span class="h-cmp__name">Slack</span>
+      <span class="h-cmp__note">Add to your workspace</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- 02 · WHAT IT DOES -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display:flex;align-items:end;justify-content:space-between;margin-bottom:28px;gap:24px;flex-wrap:wrap">
+      <div>
+        <span class="h-eyebrow">02 · What it does</span>
+        <h2 class="h-h2" style="margin-top:16px">Build, audit, deploy, watch.</h2>
+      </div>
+      <p class="h-body" style="max-width:38ch">Four jobs you'd otherwise click through the wizard, the audit screen, the broker connect dialog and the alerts panel for — done from one chat window.</p>
+    </div>
+    <div class="h-features cols-2">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Build by describing</div>
+        <div class="h-feature__body">"Short NIFTY ATM straddle, 50-point hedge, exit at 30% profit or 3% MTM SL." The assistant translates that into a valid Tradetron template — leg structure, conditions, exits — ready to backtest in your account.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">AI Strategy Audit (pre-deploy)</div>
+        <div class="h-feature__body">Before the "Go Live" button activates, the assistant runs a plain-English audit: "you asked for X, the template does Y, here are the field-by-field matches and gaps." Catches silent drops — even when our own team built the strategy for you.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Risk alerts on WhatsApp</div>
+        <div class="h-feature__body">Drawdown breach, broker disconnect, order rejection, anomaly detected — straight to your phone. You decide what counts as "wake me up." Default-on for the things that hurt; opt-in for the rest.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">Trust Score on demand</div>
+        <div class="h-feature__body">"How are my strategies?" — get a one-line health check across every live deployment. Green / amber / red, with the reason: "Today: 3 strategies fired 8 trades, no issues, broker reconciled at 15:30."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 · WHAT THE CHAT FEELS LIKE -->
+<section class="h-container h-section--lg">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center">
+    <div>
+      <span class="h-eyebrow">03 · What it feels like</span>
+      <h2 class="h-h2" style="margin-top:14px">Plain English in. <span class="sig">Live strategy out.</span></h2>
+      <p class="h-body" style="margin-top:14px;max-width:42ch">No more wrestling with keywords you don't remember the names of. Tell the assistant what you want; it picks the right blocks, names the legs, sets the conditions, and shows you exactly what it built before anything goes live.</p>
+      <p class="h-body" style="margin-top:14px;max-width:42ch">If the description is ambiguous — "stop loss on the short call" could be on premium or on underlying — the assistant asks one clarifying question instead of guessing. That's the whole game: no silent drops.</p>
+    </div>
+    <div class="h-chat" aria-hidden="true">
+      <div class="h-chat__bar"><span>Claude · TT Assistant connector</span><span>sample</span></div>
+      <div class="h-chat__body">
+        <div class="h-chat__msg h-chat__msg--user">Short NIFTY ATM straddle Thursday 9:30, 50-point wings, 30% profit target or 3% MTM SL.</div>
+        <div class="h-chat__msg h-chat__msg--bot">Built. 4 legs (2 short ATM + 2 long 50-pt wings), entry 09:30 Thu, target 30% on net premium, SL 3% MTM. One ambiguity — is the 50-point hedge fixed strike-distance, or premium-based? Default is strike-distance unless you say otherwise.</div>
+        <div class="h-chat__msg h-chat__msg--user">Strike-distance is fine. Show me the audit.</div>
+        <div class="h-chat__msg h-chat__msg--bot">Audit passed · 7/7 fields match your description. Ready to backtest or paper-trade. Should I queue a backtest from 1 Apr 2024?</div>
+      </div>
+      <div class="h-chat__cap">[ sample · illustrative chat ]</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 04 · PRICING -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display:grid;grid-template-columns:0.9fr 1.1fr;gap:32px;align-items:center">
+      <div>
+        <span class="h-eyebrow">04 · Pricing</span>
+        <h2 class="h-h2" style="margin-top:14px">Included with <span class="sig">paid plans.</span></h2>
+        <p class="h-body" style="margin-top:14px;max-width:42ch">Every paid Tradetron plan ships with a monthly AI-token quota — enough for typical build + audit + alert usage. Heavier users buy token packs at par cost; we don't mark up Anthropic.</p>
+      </div>
+      <div>
+        <a href="pricing.html" class="h-btn h-btn--primary">See the token quotas →</a>
+        <a href="create-with-claude.html" class="h-btn h-btn--ghost" style="margin-left:10px">Connect your AI</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.2rem, 4vw, 3.4rem); text-align: center; max-width: 26ch">Talk to your trading desk like <span class="sig">it's a colleague.</span></h2>
+  <p class="h-cta__sub">Connect Tradetron to Claude, ChatGPT, WhatsApp, Telegram or Slack — and build your first strategy by chat tonight.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="create-with-claude.html" class="h-btn h-btn--primary">Connect your AI →</a>
+    <a href="features.html" class="h-btn h-btn--ghost">Platform features</a>
+  </div>
+</section>
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

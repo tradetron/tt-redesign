@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The trading desk that runs itself · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- hero product preview (mock dashboard) ---- */
+  .h-preview{position:relative;border:var(--hairline);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-md);overflow:hidden}
+  .h-preview__bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:var(--hairline);background:var(--paper-2)}
+  .h-preview__dots{display:flex;gap:6px}
+  .h-preview__dots i{width:8px;height:8px;border-radius:50%;background:var(--rule-strong);display:block}
+  .h-preview__body{padding:18px 18px 20px}
+  .h-preview__row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:var(--hairline)}
+  .h-preview__row:last-child{border-bottom:0}
+  .h-preview__name{font-family:var(--font-display);font-weight:500;font-size:.92rem}
+  .h-preview__meta{font-family:var(--font-mono);font-size:.7rem;color:var(--slate)}
+  .h-preview__pnl{font-family:var(--font-mono);font-feature-settings:"tnum" 1;font-size:1rem}
+  .h-preview__cap{position:absolute;bottom:8px;right:10px;font-family:var(--font-mono);font-size:.62rem;color:var(--slate-soft);letter-spacing:.06em}
+  .h-preview__hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:4px 0 14px;border-bottom:var(--hairline);margin-bottom:6px}
+
+  /* ---- self-select fork doors ---- */
+  .h-door{position:relative;cursor:pointer}
+  .h-door .h-feature__title{display:flex;align-items:center;gap:10px}
+  .h-door:hover{background:var(--paper-2)}
+  .h-door .h-btn--text{margin-top:auto}
+
+  /* ---- product gallery placeholders ---- */
+  .h-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .h-gallery figure{margin:0;display:flex;flex-direction:column;gap:10px}
+  .h-gallery .shot{aspect-ratio:16/10;display:grid;place-items:center;position:relative}
+  .h-gallery figcaption{font-family:var(--font-mono);font-size:.74rem;color:var(--slate);letter-spacing:.02em}
+  .h-gallery figcaption b{color:var(--ink);font-weight:500}
+
+  /* ---- broker strip ---- */
+  .h-broStrip{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:22px 0}
+
+  /* ---- testimonials ---- */
+  .h-quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .h-quote{display:flex;flex-direction:column;gap:18px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);padding:24px}
+  .h-quote p{margin:0;font-size:1rem;line-height:1.5;color:var(--ink)}
+  .h-quote__who{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .h-quote__av{width:38px;height:38px;border-radius:3px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--font-display);font-weight:600;font-size:.9rem}
+  .h-quote__name{font-family:var(--font-display);font-weight:500;font-size:.92rem}
+  .h-quote__role{font-family:var(--font-mono);font-size:.72rem;color:var(--slate)}
+  .h-quote__stars{font-family:var(--font-mono);color:var(--signal);font-size:.82rem;letter-spacing:.18em}
+
+  /* ---- pin-range expanded ---- */
+  .h-try__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .h-try__list span{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-soft);padding:4px 10px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--surface)}
+  .h-try__right{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+
+  /* ---- ask tradetron chat ---- */
+  .h-ask{display:grid;grid-template-columns:0.85fr 1.15fr;gap:40px;align-items:center;border:var(--hairline);border-radius:var(--radius-lg);padding:clamp(24px,3vw,40px);background:var(--surface)}
+  .h-ask__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .h-ask__chip{font:500 .8rem/1 var(--font-body);padding:9px 14px;border:var(--hairline);border-radius:var(--radius-pill);background:var(--paper-2);color:var(--ink-soft);cursor:pointer;transition:border-color .15s,color .15s}
+  .h-ask__chip:hover{border-color:var(--signal);color:var(--ink)}
+  .h-ask__panel{display:flex;flex-direction:column;border:var(--hairline);border-radius:var(--radius-md);background:var(--paper);overflow:hidden;min-height:320px}
+  .h-ask__log{flex:1;padding:18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:360px}
+  .h-ask__msg{max-width:86%;padding:11px 15px;border-radius:14px;font-size:.9rem;line-height:1.5}
+  .h-ask__msg--bot{align-self:flex-start;background:var(--surface);border:var(--hairline);color:var(--ink-soft);border-bottom-left-radius:4px}
+  .h-ask__msg--user{align-self:flex-end;background:var(--signal);color:#fff;border-bottom-right-radius:4px}
+  .h-ask__msg--typing{color:var(--slate);font-style:italic}
+  .h-ask__form{display:flex;gap:10px;padding:14px;border-top:var(--hairline);background:var(--surface)}
+  .h-ask__input{flex:1;height:42px;padding:0 14px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--field);color:var(--ink);font-family:var(--font-body);font-size:.92rem}
+  .h-ask__input:focus{outline:0;border-color:var(--signal)}
+
+  /* ---- safety band ---- */
+  .h-safe{background:var(--surface);border-block:var(--hairline)}
+
+  /* ---- step 1 paths (build modes) ---- */
+  .h-paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+  .h-path{display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);padding:18px 18px 16px;cursor:pointer;color:var(--ink);font:inherit;transition:border-color .15s,background .15s;position:relative}
+  .h-path:hover{border-color:var(--signal);background:var(--paper-2)}
+  .h-path__num{font-family:var(--font-mono);font-size:.72rem;color:var(--slate);letter-spacing:.06em}
+  .h-path__title{font-family:var(--font-display);font-weight:600;font-size:1.05rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .h-path__body{font-size:.92rem;line-height:1.5;color:var(--ink-soft);margin:0}
+  .h-path .h-btn--text{margin-top:auto;align-self:flex-start}
+
+  /* ---- demo modal frame ---- */
+  .h-modal__card--wide{max-width:760px}
+  .h-demoFrame{position:relative;aspect-ratio:16/9;background:var(--paper-2);border:var(--hairline);border-radius:var(--radius-md);margin:18px 0;overflow:hidden}
+  .h-demoChips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .h-demoChips span{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft);padding:5px 10px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--surface)}
+
+  /* ---- CMP tile grid ---- */
+  .h-cmp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+  .h-cmp__tile{display:flex;flex-direction:column;gap:8px;padding:22px 18px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);text-decoration:none;color:var(--ink);transition:border-color .15s,background .15s;position:relative}
+  .h-cmp__tile:hover{border-color:var(--signal);background:var(--paper-2)}
+  .h-cmp__tile::after{content:"↗";position:absolute;top:14px;right:14px;color:var(--slate-soft);font-family:var(--font-mono);font-size:.85rem}
+  .h-cmp__icon{font-size:1.6rem;line-height:1}
+  .h-cmp__name{font-family:var(--font-display);font-weight:600;font-size:1.02rem}
+  .h-cmp__note{font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.02em}
+
+  /* ---- footer · help band ---- */
+  .h-help{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:18px;padding:28px 0;border-bottom:var(--hairline);align-items:center}
+  .h-help__card{display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .h-help__card:hover{border-color:var(--signal)}
+  .h-help__lbl{font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.04em}
+  .h-help__val{font-family:var(--font-display);font-weight:600;font-size:1.05rem}
+
+  /* ---- footer · mobile apps + socials ---- */
+  .h-apps{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .h-app{display:flex;flex-direction:column;justify-content:center;padding:7px 14px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--surface);text-decoration:none;color:var(--ink);transition:border-color .15s;min-width:130px}
+  .h-app:hover{border-color:var(--signal)}
+  .h-app__lbl{font-family:var(--font-mono);font-size:.6rem;color:var(--slate);letter-spacing:.08em;text-transform:uppercase}
+  .h-app__store{font-family:var(--font-display);font-weight:600;font-size:.98rem;margin-top:1px}
+  .h-socials{display:flex;gap:10px;margin-top:18px}
+  .h-socials a{width:34px;height:34px;display:grid;place-items:center;border:var(--hairline);border-radius:50%;color:var(--ink-soft);text-decoration:none;transition:border-color .15s,color .15s,background .15s}
+  .h-socials a:hover{border-color:var(--signal);color:var(--signal);background:var(--paper-2)}
+
+  /* ---- floating Ask Tradetron ---- */
+  .h-fab{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:var(--radius-pill);box-shadow:var(--shadow-md);cursor:pointer;font:600 .92rem/1 var(--font-body);transition:transform .15s,box-shadow .15s}
+  .h-fab:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg, 0 12px 30px rgba(0,0,0,.18))}
+  .h-fab__icon{display:grid;place-items:center;width:26px;height:26px;color:var(--signal)}
+  .h-fab__dot{width:8px;height:8px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 0 var(--signal);animation:fabPulse 1.8s infinite}
+  @keyframes fabPulse{0%{box-shadow:0 0 0 0 rgba(245,158,11,.55)}70%{box-shadow:0 0 0 10px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
+  .h-askPop{position:fixed;right:22px;bottom:84px;width:380px;max-width:calc(100vw - 32px);max-height:560px;z-index:61;background:var(--paper);border:var(--hairline);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg, 0 24px 60px rgba(0,0,0,.22));display:none;flex-direction:column;overflow:hidden}
+  .h-askPop.is-open{display:flex}
+  .h-askPop__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:var(--hairline);background:var(--surface)}
+  .h-askPop__close{background:transparent;border:0;font-size:1.6rem;line-height:1;color:var(--slate);cursor:pointer;padding:0}
+  .h-askPop .h-ask__log{padding:16px;max-height:300px;flex:1}
+  .h-askPop .h-ask__chips{padding:0 16px 10px;margin:6px 0 0}
+  .h-askPop .h-ask__form{padding:12px 14px;border-top:var(--hairline);background:var(--surface);display:flex;gap:8px}
+  .h-askPop .h-ask__input{height:40px;font-size:.9rem}
+
+  @media(max-width:960px){
+    .h-paths{grid-template-columns:1fr}
+    .h-cmp{grid-template-columns:repeat(2,1fr)}
+    .h-help{grid-template-columns:1fr;gap:12px}
+    .h-fab__label{display:none}
+    .h-askPop{right:12px;left:12px;width:auto;bottom:74px}
+  }
+
+  @media(max-width:960px){
+    .h-gallery,.h-quotes{grid-template-columns:1fr}
+    .h-ask{grid-template-columns:1fr;gap:24px}
+  }
+</style>
+</head>
+<body data-screen-label="The trading desk that runs itself">
+
+<div data-include="_header.html"></div>
+
+
+<!-- 01 · HERO -->
+<section class="h-container h-hero h-grid-bg" style="background-position:0 -8px; align-items:center">
+  <div class="h-hero__coords">
+    <span>01 · HERO</span>
+    <span>↳ no-code algorithmic trading · est. 2018</span>
+    <span>HOME</span>
+  </div>
+  <div>
+    <span class="h-eyebrow">No-code algo trading · since 2018</span>
+    <h1 class="h-display" style="margin-top:22px">
+      The trading desk<br />
+      <span class="sig">that runs</span><br />
+      <span class="br">itself.</span>
+    </h1>
+    <p class="h-hero__lede" style="margin-top:26px">
+      Build a strategy by clicking — not coding. Backtest it on years of real market
+      data. Then let it trade <em>your own</em> broker account, patiently and without
+      the fear or FOMO, while you're at work, asleep, or just living your life.
+    </p>
+    <div class="h-hero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="https://tradetron.tech/campaigns/nifty-range" target="_blank" rel="noopener" class="h-btn h-btn--ghost">Watch it run · 2 min</a>
+    </div>
+    <div class="h-hero__trust">
+      <span>Free paper trading</span><span>No code</span><span>405k+ traders</span><span>Funds never leave your broker</span>
+    </div>
+  </div>
+
+  <!-- mock dashboard preview (placeholder, honestly labelled) -->
+  <div class="h-preview" aria-hidden="true">
+    <div class="h-preview__bar">
+      <div class="h-preview__dots"><i></i><i></i><i></i></div>
+      <span class="h-chip h-chip--live h-chip--dot">LIVE</span>
+    </div>
+    <div class="h-preview__body">
+      <div class="h-preview__hero">
+        <div>
+          <div class="h-preview__meta">TODAY · REALISED + OPEN</div>
+          <div class="h-numeric" style="color:var(--positive);font-size:1.9rem">+ ₹14,280</div>
+        </div>
+        <svg class="h-spark pos" viewBox="0 0 130 38" preserveAspectRatio="none" style="width:120px;height:34px">
+          <path d="M0,30 L14,28 L28,31 L42,22 L56,24 L70,16 L84,18 L98,11 L112,13 L130,5" />
+        </svg>
+      </div>
+      <div class="h-preview__row">
+        <div><div class="h-preview__name">NIFTY Pin Range</div><div class="h-preview__meta">PAPER · 2 lots</div></div>
+        <div class="h-preview__pnl" style="color:var(--positive)">+ ₹6,120</div>
+      </div>
+      <div class="h-preview__row">
+        <div><div class="h-preview__name">Bank Nifty Straddle</div><div class="h-preview__meta">LIVE · Zerodha</div></div>
+        <div class="h-preview__pnl" style="color:var(--positive)">+ ₹9,540</div>
+      </div>
+      <div class="h-preview__row">
+        <div><div class="h-preview__name">Momentum Basket</div><div class="h-preview__meta">LIVE · Angel One</div></div>
+        <div class="h-preview__pnl" style="color:var(--negative)">− ₹1,380</div>
+      </div>
+    </div>
+    <span class="h-preview__cap">[ PLACEHOLDER · your dashboard ]</span>
+  </div>
+</section>
+
+
+<!-- 02 · PROOF BAND -->
+<section class="h-band">
+  <div class="h-container">
+    <div style="display:flex;justify-content:space-between;align-items:end;padding:22px 0;border-bottom:var(--hairline)">
+      <span class="h-eyebrow ink">Signal · the platform in numbers</span>
+      <span class="h-micro">figures as published on tradetron.tech</span>
+    </div>
+    <div class="h-stats" style="border-bottom:var(--hairline)">
+      <div class="h-stats__cell" style="padding-left:0">
+        <span class="h-stats__lead">Traders</span>
+        <span class="h-stats__num">405k+</span>
+        <span class="h-stats__lbl">building on the platform</span>
+      </div>
+      <div class="h-stats__cell">
+        <span class="h-stats__lead">Algos created</span>
+        <span class="h-stats__num">~60k</span>
+        <span class="h-stats__lbl">by the community, no code written</span>
+      </div>
+      <div class="h-stats__cell">
+        <span class="h-stats__lead">Live trades / day</span>
+        <span class="h-stats__num">~175k</span>
+        <span class="h-stats__lbl">fired automatically across exchanges</span>
+      </div>
+      <div class="h-stats__cell" style="padding-right:0">
+        <span class="h-stats__lead">Broker APIs</span>
+        <span class="h-stats__num">100+</span>
+        <span class="h-stats__lbl">connected, India &amp; the US</span>
+      </div>
+    </div>
+    <!-- broker logo strip -->
+    <div class="h-broStrip">
+      <span class="h-micro" style="white-space:nowrap">Connect your broker →</span>
+      <div class="h-tilegrid" style="flex:1;min-width:280px">
+        <div>Zerodha <span class="h-mono">IN</span></div>
+        <div>Upstox <span class="h-mono">IN</span></div>
+        <div>Angel One <span class="h-mono">IN</span></div>
+        <div>Fyers <span class="h-mono">IN</span></div>
+        <div>Dhan <span class="h-mono">IN</span></div>
+        <div>ICICI Direct <span class="h-mono">IN</span></div>
+        <div>Alpaca <span class="h-mono">US</span></div>
+        <div>Webull <span class="h-mono">US</span></div>
+        <div>Delta <span class="h-mono">CR</span></div>
+        <a href="integrations.html">+90 more <span class="h-mono">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 · SELF-SELECT FORK -->
+<section class="h-container h-section" style="padding-bottom:0">
+  <div style="margin-bottom:30px">
+    <span class="h-eyebrow">Start anywhere</span>
+    <h2 class="h-h2" style="margin-top:14px">Where do you want to begin?</h2>
+  </div>
+  <div class="h-features cols-3">
+    <a href="https://tradetron.tech/campaigns/nifty-range" target="_blank" rel="noopener" class="h-feature h-door">
+      <span class="h-feature__num">[ 01 ]</span>
+      <span class="h-feature__title">New to all this?</span>
+      <p class="h-feature__body">Watch a real NIFTY strategy trade live in two minutes — on free paper money. No card, no setup, nothing to lose.</p>
+      <span class="h-btn h-btn--text">Try Pin the Range</span>
+    </a>
+    <a href="features.html" class="h-feature h-door">
+      <span class="h-feature__num">[ 02 ]</span>
+      <span class="h-feature__title">Want to build your own?</span>
+      <p class="h-feature__body">Drag your idea onto a canvas — entries, exits, hedges, trailing stops. From buy-and-hold to full market-making. No code.</p>
+      <span class="h-btn h-btn--text">See the builder</span>
+    </a>
+    <a href="marketplace.html" class="h-feature h-door">
+      <span class="h-feature__num">[ 03 ]</span>
+      <span class="h-feature__title">Want something ready-made?</span>
+      <p class="h-feature__body">Browse strategies running live in their authors' own accounts. Subscribe, and the same algo runs in yours.</p>
+      <span class="h-btn h-btn--text">Browse marketplace</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- 04 · HOW IT WORKS -->
+<section class="h-container h-section h-method">
+  <div>
+    <span class="h-eyebrow">How it works</span>
+    <h2 class="h-h2" style="margin-top:18px">Five steps.<br />Then the desk runs itself.</h2>
+    <p class="h-body" style="margin-top:18px;max-width:36ch">
+      Every strategy moves through the same pipeline — composed, proven, paper-traded,
+      then deployed straight into your broker.
+      <strong>We never custody your funds.</strong>
+    </p>
+  </div>
+  <ol class="h-method__list" style="list-style:none;padding:0;margin:0">
+    <li class="h-method__step">
+      <span class="h-method__num">[ 01 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Compose</span>
+        <h3 class="h-h3">Build your strategy — any kind, any complexity.</h3>
+        <p class="h-body">Four ways in. Pick the one that fits how you think. Tap any to see a demo.</p>
+        <div class="h-paths">
+          <button class="h-path" data-modal-open="demoAi">
+            <span class="h-path__num">a.</span>
+            <span class="h-path__title">With AI <span class="h-chip h-chip--paper" style="margin-left:8px">most popular</span></span>
+            <span class="h-path__body">Describe the strategy in plain English. Claude, ChatGPT, WhatsApp, Telegram or Slack — pick your AI; it builds the strategy in your Tradetron account.</span>
+            <span class="h-btn h-btn--text">See demo →</span>
+          </button>
+          <button class="h-path" data-modal-open="demoAsb">
+            <span class="h-path__num">b.</span>
+            <span class="h-path__title">Advanced Strategy Builder</span>
+            <span class="h-path__body">Drag conditions, indicators, legs, hedges and trailing stops onto a visual canvas. Drop in a Python block when you need it — for the 1% of logic the wizard can't express.</span>
+            <span class="h-btn h-btn--text">See demo →</span>
+          </button>
+          <button class="h-path" data-modal-open="demoOw">
+            <span class="h-path__num">c.</span>
+            <span class="h-path__title">Options Wizard</span>
+            <span class="h-path__body">Pick a payoff — straddle, iron condor, butterfly, calendar — set strikes and hedges, and it composes the multi-leg order book for you.</span>
+            <span class="h-btn h-btn--text">See demo →</span>
+          </button>
+          <button class="h-path" data-modal-open="demoSb">
+            <span class="h-path__num">d.</span>
+            <span class="h-path__title">Stockbag</span>
+            <span class="h-path__body">Build a portfolio — equal-weight, market-cap, custom — and let Tradetron rebalance it on the schedule you set. Like an ETF you control.</span>
+            <span class="h-btn h-btn--text">See demo →</span>
+          </button>
+        </div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 02 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Backtest</span>
+        <h3 class="h-h3"><a href="backtest.html" style="color:inherit">Replay history before you risk a rupee.</a></h3>
+        <p class="h-body">Run your strategy across years of real market data — holidays, results, IV and HV all accounted for. Watch the equity curve, the drawdowns, the worst day. Tune until you trust it.</p>
+        <div class="h-method__pills"><span>Years of historical data</span><span>Holidays &amp; results</span><span>IV / HV aware</span><span>Realistic costs</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 03 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Paper trade</span>
+        <h3 class="h-h3">Run it on simulated money. Free.</h3>
+        <p class="h-body">Watch your strategy fire orders in real time on live markets — with simulated capital. No card. One paper deployment is free for life on the Free plan; paid plans include unlimited paper across every strategy you build.</p>
+        <div class="h-method__pills"><span>Real market data</span><span>Simulated fills</span><span>1 strategy free, forever</span><span>Unlimited on paid plans</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 04 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Go live</span>
+        <h3 class="h-h3">Live in <em>your</em> broker. Never ours.</h3>
+        <p class="h-body">Connect Zerodha, Angel, Upstox, IBKR, Alpaca and 100+ brokers. Bots watch your conditions and fire orders straight into your account. Exit from anywhere, one tap — we never touch your money.</p>
+        <div class="h-method__pills"><span>100+ broker APIs</span><span>India + US</span><span>One-tap exit</span><span>Per-fill audit log</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 05 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Operate</span>
+        <h3 class="h-h3">Sleep well. The desk runs itself.</h3>
+        <p class="h-body">A live Trust Score on your dashboard tells you everything's healthy at a glance. WhatsApp finds you when something isn't. True-Net PnL shows what you actually netted — after the broker's cut. Plain-English replay explains every trade. <a href="features.html#operate" style="color:var(--signal)">See what's in Operate →</a></p>
+        <div class="h-method__pills"><span>Trust Score</span><span>WhatsApp risk alerts</span><span>True-Net PnL</span><span>Trade replay</span></div>
+      </div>
+    </li>
+  </ol>
+</section>
+
+
+<!-- 05 · TRY IT NOW — Pin the Range -->
+<section id="try" class="h-container h-section" style="padding-top:0">
+  <div class="h-try" style="align-items:stretch">
+    <div class="h-try__txt">
+      <span class="h-eyebrow ink">Easiest first step</span>
+      <h2 class="h-h3" style="margin-top:10px">See a strategy trade live — <span class="sig">in two minutes, free.</span></h2>
+      <p class="h-body" style="margin-top:8px">Deploy our ready-made <strong>NIFTY Pin the Range</strong> on free paper trading and watch it work in your own dashboard. The fastest way to feel exactly what Tradetron does — before you sign up for anything.</p>
+      <div class="h-try__list">
+        <span>No card</span><span>No download</span><span>Paper money</span><span>Live in your dashboard</span><span>Exit anytime</span>
+      </div>
+    </div>
+    <div class="h-try__right">
+      <span class="h-chip h-chip--paper h-chip--dot">SIMULATED · no real money</span>
+      <a href="https://tradetron.tech/campaigns/nifty-range" target="_blank" rel="noopener" class="h-btn h-btn--primary" data-pin-range-cta>Try Nifty Pin Range →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- 06 · MARKETPLACE STRIP -->
+<section class="h-container h-section">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:36px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">Marketplace</span>
+      <h2 class="h-h2" style="margin-top:18px">Strategies running <span style="color:var(--signal)">live</span> in their authors' accounts.</h2>
+    </div>
+    <div style="max-width:36ch;text-align:right">
+      <p class="h-body">Subscribe and the strategy runs in <em>your</em> account. The author earns a share — you keep the rest.</p>
+      <a href="marketplace.html" class="h-btn h-btn--text" style="margin-top:10px">Browse the marketplace</a>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+    <article class="h-card">
+      <div class="h-tag">NFO · Directional</div>
+      <div class="h-card__head"><div><div class="h-card__title">NIFTY Directional Option Selling With Hedge V1</div><div class="h-card__sub">Patni Capital PVT LTD</div></div></div>
+      <div class="h-card__stats">
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Live deploys</span><span class="h-card__stat__val h-card__stat__val--pos">743</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Monthly</span><span class="h-card__stat__val">₹500</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Track</span><span class="h-card__stat__val h-card__stat__val--sig">Author a/c</span></div>
+      </div>
+    </article>
+    <article class="h-card">
+      <div class="h-tag">NFO · Positional</div>
+      <div class="h-card__head"><div><div class="h-card__title">NIFTY Strategies Basket V2</div><div class="h-card__sub">Patni Capital PVT LTD</div></div></div>
+      <div class="h-card__stats">
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Live deploys</span><span class="h-card__stat__val h-card__stat__val--pos">300</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Monthly</span><span class="h-card__stat__val">₹1,100</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Track</span><span class="h-card__stat__val h-card__stat__val--sig">Author a/c</span></div>
+      </div>
+    </article>
+    <article class="h-card">
+      <div class="h-tag">NFO · Directional</div>
+      <div class="h-card__head"><div><div class="h-card__title">Market User Nifty Directional PS</div><div class="h-card__sub">Algo with CA Siddharth</div></div></div>
+      <div class="h-card__stats">
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Live deploys</span><span class="h-card__stat__val h-card__stat__val--pos">201</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Monthly</span><span class="h-card__stat__val">₹999</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Track</span><span class="h-card__stat__val h-card__stat__val--sig">Author a/c</span></div>
+      </div>
+    </article>
+    <article class="h-card">
+      <div class="h-tag">NFO · Positional</div>
+      <div class="h-card__head"><div><div class="h-card__title">NIFTY Strategies Basket V3</div><div class="h-card__sub">Patni Capital PVT LTD</div></div></div>
+      <div class="h-card__stats">
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Live deploys</span><span class="h-card__stat__val h-card__stat__val--pos">164</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Monthly</span><span class="h-card__stat__val">₹1,100</span></div>
+        <div class="h-card__stat"><span class="h-card__stat__lbl">Track</span><span class="h-card__stat__val h-card__stat__val--sig">Author a/c</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+<!-- 07 · TESTIMONIALS -->
+<section class="h-container h-section" style="padding-top:0">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:30px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">Wall of Love</span>
+      <h2 class="h-h2" style="margin-top:14px">Built by traders. <span class="sig">Trusted by traders.</span></h2>
+    </div>
+    <span class="h-micro" style="max-width:30ch;text-align:right">sample testimonials — pending content review · <a href="wall-of-love.html" style="color:var(--signal)">read all →</a></span>
+  </div>
+  <div class="h-quotes">
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <p>"I run a 9-to-6 job. Tradetron trades my plan while I'm in meetings — no more sneaking glances at the chart. First time my strategy and my discipline actually match."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">RK</span><span><span class="h-quote__name">Rohit K.</span><br><span class="h-quote__role">Pune · options seller</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <p>"I can't code. I built and backtested three strategies in a weekend. The fact that money stays in my own Zerodha account is what made me trust it."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">AS</span><span><span class="h-quote__name">Anjali S.</span><br><span class="h-quote__role">Bengaluru · swing trader</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <p>"Listed two algos on the marketplace. They run in subscribers' own accounts and I earn a share every month. It turned my edge into income."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">MV</span><span><span class="h-quote__name">Mahesh V.</span><br><span class="h-quote__role">Surat · strategy author</span></span></figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- 08 · TRUST / SAFETY -->
+<section class="h-safe">
+  <div class="h-container h-section">
+    <div style="margin-bottom:30px">
+      <span class="h-eyebrow">The part that matters</span>
+      <h2 class="h-h2" style="margin-top:14px">Your money. Your broker. <span class="sig">Your control.</span></h2>
+      <p class="h-body" style="margin-top:14px;max-width:48ch">The single most common question we get is "is my money safe?" Here's the honest answer: we never hold it.</p>
+    </div>
+    <div class="h-features cols-3">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <span class="h-feature__title">Funds never leave your account</span>
+        <p class="h-feature__body">Every order is placed into <em>your own</em> brokerage via its official API. Tradetron never custodies, withdraws, or even touches your capital.</p>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <span class="h-feature__title">Kill it in one click</span>
+        <p class="h-feature__body">Pause, exit, or sever the broker link instantly — from any device. You are never locked in, and you're always the one holding the off switch.</p>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <span class="h-feature__title">Regulated brokers only</span>
+        <p class="h-feature__body">You connect to SEBI-registered (India) and regulated US brokers. Trading carries risk; past performance never guarantees future results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 09 · MORE WAYS TO USE TRADETRON (CMP / AI clients) -->
+<section class="h-container h-section">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:30px">
+    <div>
+      <span class="h-eyebrow">More ways in</span>
+      <h2 class="h-h2" style="margin-top:14px">Use Tradetron from the <span class="sig">AI you already pay for.</span></h2>
+      <p class="h-body" style="margin-top:14px;max-width:50ch">Add Tradetron as a custom connector inside Claude or ChatGPT. Or message the bot on WhatsApp, Telegram or Slack. Same engine, wherever you're already talking.</p>
+    </div>
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai" target="_blank" rel="noopener" class="h-btn h-btn--ghost">See setup &amp; details →</a>
+  </div>
+  <div class="h-cmp">
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai#claude" target="_blank" rel="noopener" class="h-cmp__tile">
+      <span class="h-cmp__icon">🤖</span>
+      <span class="h-cmp__name">Claude</span>
+      <span class="h-cmp__note">Custom connector · paid plan</span>
+    </a>
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai#chatgpt" target="_blank" rel="noopener" class="h-cmp__tile">
+      <span class="h-cmp__icon">💬</span>
+      <span class="h-cmp__name">ChatGPT</span>
+      <span class="h-cmp__note">Custom connector · paid plan</span>
+    </a>
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai#whatsapp" target="_blank" rel="noopener" class="h-cmp__tile">
+      <span class="h-cmp__icon">📱</span>
+      <span class="h-cmp__name">WhatsApp</span>
+      <span class="h-cmp__note">+1 646 480 7754 · uses AI tokens</span>
+    </a>
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai#telegram" target="_blank" rel="noopener" class="h-cmp__tile">
+      <span class="h-cmp__icon">✈️</span>
+      <span class="h-cmp__name">Telegram</span>
+      <span class="h-cmp__note">@TradetronAssistantBot</span>
+    </a>
+    <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai#slack" target="_blank" rel="noopener" class="h-cmp__tile">
+      <span class="h-cmp__icon">#️⃣</span>
+      <span class="h-cmp__name">Slack</span>
+      <span class="h-cmp__note">Add to your workspace</span>
+    </a>
+  </div>
+</section>
+
+
+<!-- 11 · CLOSING CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size:clamp(2.4rem,4.5vw,4rem);text-align:center;max-width:24ch">Your first algorithm,<br />live by <span class="sig">this evening.</span></h2>
+  <p class="h-cta__sub">Free paper trading to get going. A subscription only when you take a strategy live in your broker.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="#" class="h-btn h-btn--ghost" data-modal-open="demoModal">Book a demo</a>
+  </div>
+</section>
+
+
+<footer class="h-footer">
+  <div class="h-container">
+    <!-- always-here-to-help band -->
+    <div class="h-help">
+      <div class="h-help__intro">
+        <span class="h-eyebrow ink">We're always here to help</span>
+        <p class="h-body" style="margin-top:8px;max-width:34ch">Real humans, Mon–Sat. Call us, write to us, or message us on WhatsApp — we usually reply in minutes.</p>
+      </div>
+      <a href="tel:08047189100" class="h-help__card">
+        <span class="h-help__lbl">Call us</span>
+        <span class="h-help__val">080 4718 9100</span>
+      </a>
+      <a href="mailto:contact@tradetron.tech" class="h-help__card">
+        <span class="h-help__lbl">Mail us</span>
+        <span class="h-help__val">contact@tradetron.tech</span>
+      </a>
+      <a href="https://wa.me/16464807754" target="_blank" rel="noopener" class="h-help__card">
+        <span class="h-help__lbl">WhatsApp us</span>
+        <span class="h-help__val">+1 646 480 7754</span>
+      </a>
+    </div>
+
+    <div class="h-footer__grid">
+      <div class="h-footer__brand">
+        <span class="h-brand"><img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron"><img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron"></span>
+        <p class="h-body" style="max-width:30ch;font-size:0.92rem">A marketplace of trading algorithms, run live in their authors' own accounts.</p>
+        <p class="h-micro" style="margin-top:4px">Funds held by you, in your own brokerage. Tradetron never custodies money.</p>
+
+        <!-- mobile apps -->
+        <div class="h-apps">
+          <a class="h-app" href="https://play.google.com/store/apps/details?id=com.tradetron" target="_blank" rel="noopener" aria-label="Get it on Google Play">
+            <span class="h-app__lbl">GET IT ON</span>
+            <span class="h-app__store">Google Play</span>
+          </a>
+          <a class="h-app" href="https://apps.apple.com/in/app/tradetron/id1540269842" target="_blank" rel="noopener" aria-label="Download on the App Store">
+            <span class="h-app__lbl">Download on the</span>
+            <span class="h-app__store">App Store</span>
+          </a>
+        </div>
+
+        <!-- socials -->
+        <div class="h-socials" aria-label="Tradetron on social media">
+          <a href="https://www.facebook.com/tradetron" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h2.7l.4-3.2H13V8.7c0-.9.3-1.5 1.6-1.5H16V4.3a23 23 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.2v2.4H6.6V14H9.3v8H13z"/></svg>
+          </a>
+          <a href="https://twitter.com/Tradetron1" target="_blank" rel="noopener" aria-label="X (Twitter)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21l-6.55 7.49L22 22h-6.32l-4.95-6.47L5 22H2.244l7.01-8.02L2 2h6.47l4.48 5.92L18.244 2zm-1.1 18h1.7L7.93 4H6.16l10.984 16z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/tradetron" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM3 8.5h3.88V21H3V8.5zM9.4 8.5h3.72v1.7h.05c.52-.94 1.8-1.94 3.7-1.94 3.95 0 4.68 2.6 4.68 5.98V21h-3.88v-5.34c0-1.27-.02-2.91-1.77-2.91-1.78 0-2.05 1.39-2.05 2.82V21H9.4V8.5z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/channel/UCvw85AMGH07-1J_VVEx0Txg" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.7-1.7C18.2 5 12 5 12 5s-6.2 0-7.9.5a2.5 2.5 0 0 0-1.7 1.7A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.7 1.7c1.7.5 7.9.5 7.9.5s6.2 0 7.9-.5a2.5 2.5 0 0 0 1.7-1.7A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15.5v-7l5.5 3.5L10 15.5z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="h-footer__col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="features.html">Features</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="integrations.html">Integrations &amp; brokers</a></li>
+          <li><a href="affiliates.html">Affiliates</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="https://tradetron.tech/blog" target="_blank" rel="noopener">Blog</a></li>
+          <li><a href="https://help.tradetron.tech" target="_blank" rel="noopener">Helpdesk</a></li>
+          <li><a href="backtest.html">Backtest</a></li>
+          <li><a href="paper-trading.html">Paper trading</a></li>
+          <li><a href="option-wizard.html">Options Wizard</a></li>
+          <li><a href="stockbag.html">Stockbag</a></li>
+          <li><a href="strategy-templates.html">Strategy templates</a></li>
+          <li><a href="https://tradetron.tech/docs/keywords" target="_blank" rel="noopener">Keyword docs</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Community</h5>
+        <ul>
+          <li><a href="wall-of-love.html">Wall of Love</a></li>
+          <li><a href="top-creators.html">Top creators</a></li>
+          <li><a href="https://forum.tradetron.tech" target="_blank" rel="noopener">QnA forum</a></li>
+          <li><a href="tt-uni.html">TT Uni</a></li>
+          <li><a href="webinar.html">Webinars</a></li>
+          <li><a href="https://status.tradetron.tech" target="_blank" rel="noopener">TT Status</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Company &amp; legal</h5>
+        <ul>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="privacy.html">Privacy policy</a></li>
+          <li><a href="terms.html">Terms of use</a></li>
+          <li><a href="trademark.html">Trademark</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="h-footer__legal">
+      <span>Tradetron® · © 2018–2026 Tradetron Tech Pvt. Ltd.</span>
+      <span>Investments carry risk. Past performance is not indicative of future results.</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ============ STEP 1 DEMO MODALS ============ -->
+<div class="h-modal" id="demoAi" role="dialog" aria-modal="true" aria-label="Build with AI demo">
+  <div class="h-modal__card h-modal__card--wide">
+    <div class="h-modal__head">
+      <h3 class="h-h3">Build with AI</h3>
+      <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+    </div>
+    <div class="h-modal__body">
+      <p class="h-body">Describe the strategy in plain English in any of the AI surfaces below. Tradetron's connector translates your words into a working strategy, ready to backtest or paper-trade in your account.</p>
+      <div class="h-demoFrame">
+        <span class="h-placeholder" style="position:absolute;inset:0;border:0;border-radius:0;display:grid;place-items:center">[ PLACEHOLDER · short screen recording — building a NIFTY short straddle by chat ]</span>
+      </div>
+      <div class="h-demoChips">
+        <span>Claude</span><span>ChatGPT</span><span>WhatsApp</span><span>Telegram</span><span>Slack</span><span>Native chat on tradetron.tech</span>
+      </div>
+      <p class="h-micro">Setup &amp; auth: see <a href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai" target="_blank" rel="noopener" style="color:var(--signal)">Use Tradetron with AI →</a></p>
+    </div>
+    <div class="h-modal__foot">
+      <button class="h-btn h-btn--ghost" data-modal-close>Close</button>
+      <a class="h-btn h-btn--primary" href="https://staging.tradetron.tech/strategies/use-tradetron-with-ai" target="_blank" rel="noopener">Set it up →</a>
+    </div>
+  </div>
+</div>
+
+<div class="h-modal" id="demoAsb" role="dialog" aria-modal="true" aria-label="Advanced Strategy Builder demo">
+  <div class="h-modal__card h-modal__card--wide">
+    <div class="h-modal__head">
+      <h3 class="h-h3">Advanced Strategy Builder</h3>
+      <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+    </div>
+    <div class="h-modal__body">
+      <p class="h-body">A visual canvas for the rule-based side of your brain. Drop conditions, indicators, multi-leg orders, hedges and trailing stops as blocks. When the wizard can't express something, drop in a Python block and own that 1%.</p>
+      <div class="h-demoFrame">
+        <span class="h-placeholder" style="position:absolute;inset:0;border:0;border-radius:0;display:grid;place-items:center">[ PLACEHOLDER · canvas walkthrough — entry, exit, hedge, trailing SL ]</span>
+      </div>
+      <div class="h-demoChips">
+        <span>100+ keywords</span><span>Multi-leg options</span><span>Trailing SL / OCO</span><span>Stockbag &amp; baskets</span><span>Python blocks</span><span>Re-entry rules</span>
+      </div>
+    </div>
+    <div class="h-modal__foot">
+      <button class="h-btn h-btn--ghost" data-modal-close>Close</button>
+      <a class="h-btn h-btn--primary" href="features.html">Explore the builder →</a>
+    </div>
+  </div>
+</div>
+
+<div class="h-modal" id="demoOw" role="dialog" aria-modal="true" aria-label="Options Wizard demo">
+  <div class="h-modal__card h-modal__card--wide">
+    <div class="h-modal__head">
+      <h3 class="h-h3">Options Wizard</h3>
+      <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+    </div>
+    <div class="h-modal__body">
+      <p class="h-body">Pick a payoff — straddle, strangle, iron condor, butterfly, calendar, ratio — set strikes, expiries and hedges, and the wizard composes the multi-leg order book for you. Backtest and deploy without writing a single condition by hand.</p>
+      <div class="h-demoFrame">
+        <span class="h-placeholder" style="position:absolute;inset:0;border:0;border-radius:0;display:grid;place-items:center">[ PLACEHOLDER · picking an iron condor &amp; previewing the payoff ]</span>
+      </div>
+      <div class="h-demoChips">
+        <span>Straddles</span><span>Iron condors</span><span>Butterflies</span><span>Calendars</span><span>Custom hedges</span><span>Greeks-aware adjustments</span>
+      </div>
+    </div>
+    <div class="h-modal__foot">
+      <button class="h-btn h-btn--ghost" data-modal-close>Close</button>
+      <a class="h-btn h-btn--primary" href="option-wizard.html">Open Options Wizard →</a>
+    </div>
+  </div>
+</div>
+
+<div class="h-modal" id="demoSb" role="dialog" aria-modal="true" aria-label="Stockbag demo">
+  <div class="h-modal__card h-modal__card--wide">
+    <div class="h-modal__head">
+      <h3 class="h-h3">Stockbag · portfolio rebalancing</h3>
+      <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+    </div>
+    <div class="h-modal__body">
+      <p class="h-body">Define a portfolio — equal-weight, market-cap, momentum, custom — and Tradetron rebalances it on the schedule you choose. An ETF you control, executed in your own broker.</p>
+      <div class="h-demoFrame">
+        <span class="h-placeholder" style="position:absolute;inset:0;border:0;border-radius:0;display:grid;place-items:center">[ PLACEHOLDER · building a momentum basket &amp; scheduling a monthly rebalance ]</span>
+      </div>
+      <div class="h-demoChips">
+        <span>Equal-weight</span><span>Market-cap weighted</span><span>Momentum / value screens</span><span>Schedule-based rebalance</span><span>Threshold rebalance</span><span>Tax-lot aware</span>
+      </div>
+    </div>
+    <div class="h-modal__foot">
+      <button class="h-btn h-btn--ghost" data-modal-close>Close</button>
+      <a class="h-btn h-btn--primary" href="stockbag.html">Explore Stockbag →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FLOATING ASK TRADETRON ============ -->
+<button class="h-fab" id="askFab" type="button" aria-label="Ask Tradetron — have a question?">
+  <span class="h-fab__icon" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.45L3 21l2.05-5.4A8.5 8.5 0 1 1 21 11.5z"/>
+    </svg>
+  </span>
+  <span class="h-fab__label">Still have a question?</span>
+  <span class="h-fab__dot" aria-hidden="true"></span>
+</button>
+
+<div class="h-askPop" id="askPop" role="dialog" aria-modal="false" aria-label="Ask Tradetron">
+  <div class="h-askPop__head">
+    <div>
+      <span class="h-eyebrow ink">Ask Tradetron</span>
+      <p class="h-micro" style="margin-top:4px">Pricing, brokers, strategies — anything.</p>
+    </div>
+    <button class="h-askPop__close" id="askPopClose" aria-label="Close">×</button>
+  </div>
+  <div class="h-ask__log" id="askLog" aria-live="polite">
+    <div class="h-ask__msg h-ask__msg--bot">Hi! Ask me anything about Tradetron — paper trading, brokers, pricing, or how to get started.</div>
+  </div>
+  <div class="h-ask__chips" style="padding:0 14px">
+    <button class="h-ask__chip" data-ask-q="How does free paper trading work?">Paper trading?</button>
+    <button class="h-ask__chip" data-ask-q="Which brokers does Tradetron support?">Brokers?</button>
+    <button class="h-ask__chip" data-ask-q="How do I deploy a strategy?">Go live?</button>
+  </div>
+  <form class="h-ask__form" id="askForm">
+    <input class="h-ask__input" id="askInput" type="text" placeholder="Type your question…" autocomplete="off" aria-label="Ask Tradetron" />
+    <button class="h-btn h-btn--primary" type="submit">Ask&nbsp;→</button>
+  </form>
+</div>
+
+
+<!-- Book a demo modal -->
+<div class="h-modal" id="demoModal" role="dialog" aria-modal="true" aria-label="Book a demo">
+  <div class="h-modal__card">
+    <div class="h-modal__head">
+      <h3 class="h-h3">Book a 1-on-1 demo</h3>
+      <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+    </div>
+    <div class="h-modal__body">
+      <p class="h-body" style="margin-bottom:18px">15 minutes with our team. We'll build a strategy with you, live, and answer anything. No pitch.</p>
+      <form class="h-form" onsubmit="return false">
+        <div class="h-field"><label class="h-label">Name</label><input class="h-input" type="text" placeholder="Your name"></div>
+        <div class="h-field"><label class="h-label">Email</label><input class="h-input" type="email" placeholder="you@email.com"></div>
+        <div class="h-field"><label class="h-label">Phone (WhatsApp)</label><input class="h-input" type="tel" placeholder="+91…"></div>
+      </form>
+    </div>
+    <div class="h-modal__foot">
+      <button class="h-btn h-btn--ghost" data-modal-close>Cancel</button>
+      <button class="h-btn h-btn--primary">Request demo →</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/theme.js"></script>
+<script>
+(function(){
+  var log=document.getElementById('askLog'),form=document.getElementById('askForm'),input=document.getElementById('askInput');
+  if(!log||!form)return;
+  var canned={
+    "how does free paper trading work?":"Paper trading runs any strategy with simulated money — no real funds, zero risk. It's free to start, and you get a free paper deployment for life, so you can test and refine before going live. When you're ready, deploy the same strategy to your real broker in one click.",
+    "which brokers does tradetron support?":"We connect to 100+ broker APIs. India: Zerodha, Upstox, Angel One, Fyers, Dhan, Alice Blue, ICICI Direct, Kotak and more. US: Alpaca, TradeStation, TradeZero, Tradier, Webull, Tastytrade. Crypto: Delta Exchange, CoinDCX, CoinSwitch. Orders always execute in your own broker account — we never hold your funds.",
+    "how do i deploy a strategy?":"Build it in the no-code wizard (or pick one from the marketplace), backtest it on historical data, then hit deploy — it runs live in your own broker account. You can pause, exit, or change the multiplier any time from your dashboard."
+  };
+  function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function md(t){t=esc(t);t=t.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');t=t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');t=t.replace(/(^|[\s(])(https?:\/\/[^\s)]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');return t.replace(/\n/g,'<br>');}
+  function add(text,who){var d=document.createElement('div');d.className='h-ask__msg h-ask__msg--'+who;if(who==='bot'){d.innerHTML=md(text);}else{d.textContent=text;}log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
+  function ask(q){
+    add(q,'user');
+    var key=q.trim().toLowerCase();
+    if(canned[key]){setTimeout(function(){add(canned[key],'bot');},350);return;}
+    var typing=add('Typing…','bot');typing.classList.add('h-ask__msg--typing');
+    fetch('api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})})
+      .then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json();})
+      .then(function(j){typing.remove();add(j.answer||"I couldn't find a confident answer for that — try rephrasing, or reach our team on chat.",'bot');})
+      .catch(function(){typing.remove();add("I'm still being connected to Tradetron's live knowledge base on this preview. Try one of the suggested questions above for now — once I'm wired up, I'll answer anything about Tradetron.",'bot');});
+  }
+  form.addEventListener('submit',function(e){e.preventDefault();var q=input.value.trim();if(!q)return;input.value='';ask(q);});
+  document.querySelectorAll('[data-ask-q]').forEach(function(b){b.addEventListener('click',function(){ask(b.getAttribute('data-ask-q'));});});
+
+  // floating Ask popup open/close
+  var fab=document.getElementById('askFab'),pop=document.getElementById('askPop'),popClose=document.getElementById('askPopClose');
+  if(fab&&pop){
+    function open(){pop.classList.add('is-open');fab.style.display='none';setTimeout(function(){input&&input.focus();},80);}
+    function close(){pop.classList.remove('is-open');fab.style.display='';}
+    fab.addEventListener('click',open);
+    if(popClose)popClose.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pop.classList.contains('is-open'))close();});
+  }
+})();
+</script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

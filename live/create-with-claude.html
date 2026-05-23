@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Use Tradetron with Claude, ChatGPT, WhatsApp, Slack &amp; Telegram · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- page-local styling for the AI-clients page ----
+     Built only from system primitives — hairlines, mono numerics,
+     amber signal. Adds a small code-panel pattern for MCP URLs +
+     a client-anchor pill strip. */
+
+  /* anchor pill strip — jump to a client section */
+  .h-clients-strip {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 28px 0 8px;
+  }
+  .h-client-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 9px 16px;
+    border: var(--hairline); border-radius: var(--radius-pill);
+    background: var(--surface);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 0.92rem; color: var(--ink);
+    text-decoration: none;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .h-client-pill:hover {
+    border-color: var(--signal); color: var(--signal);
+    background: color-mix(in oklab, var(--signal) 6%, var(--surface));
+  }
+  .h-client-pill small {
+    color: var(--slate);
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+
+  /* code panel — MCP URL, phone numbers, bot handles */
+  .h-codepanel {
+    display: flex; flex-direction: column; gap: 0;
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--paper-2);
+    overflow: hidden;
+    margin-top: 22px;
+  }
+  .h-codepanel__row {
+    display: grid;
+    grid-template-columns: 170px 1fr auto;
+    gap: 14px; align-items: center;
+    padding: 14px 18px;
+    border-bottom: var(--hairline);
+  }
+  .h-codepanel__row:last-child { border-bottom: 0; }
+  .h-codepanel__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--slate);
+  }
+  .h-codepanel__val {
+    font-family: var(--font-mono); font-size: 0.9rem;
+    color: var(--ink); word-break: break-all;
+  }
+  .h-codepanel__copy {
+    appearance: none; cursor: pointer;
+    border: var(--hairline); background: var(--surface);
+    color: var(--ink-soft);
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    transition: color .15s, border-color .15s;
+  }
+  .h-codepanel__copy:hover { color: var(--ink); border-color: var(--rule-strong); }
+  .h-codepanel__copy.is-copied { color: var(--positive); border-color: var(--positive); }
+
+  /* per-client section header — eyebrow + plan badge + title row */
+  .h-client-head {
+    display: flex; align-items: end; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .h-client-head__l { display: flex; flex-direction: column; gap: 10px; }
+  .h-client-head__badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .h-client-badge {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 5px 10px; border: var(--hairline);
+    border-radius: var(--radius-sm); background: var(--surface);
+  }
+  .h-client-badge--signal { color: var(--signal); border-color: var(--signal); }
+  .h-client-head__r { max-width: 40ch; }
+  .h-client-head__r p { margin: 0; }
+
+  /* per-section CTA row */
+  .h-client-cta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+  /* "Try right here" mini-card */
+  .h-trycard {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    padding: 22px 26px;
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--signal) 5%, var(--surface));
+    border-left: 3px solid var(--signal);
+  }
+  .h-trycard__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--signal);
+    display: block; margin-bottom: 6px;
+  }
+  .h-trycard__txt {
+    font-family: var(--font-display); font-size: 1.08rem;
+    color: var(--ink); max-width: 56ch;
+  }
+
+  /* footnote under each client */
+  .h-client-foot {
+    margin-top: 18px;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.04em; color: var(--slate);
+    max-width: 72ch;
+  }
+
+  @media (max-width: 640px) {
+    .h-codepanel__row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body data-screen-label="Use Tradetron with AI — Claude · ChatGPT · WhatsApp · Slack · Telegram">
+
+<div data-include="_header.html"></div>
+
+<!-- HERO -->
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Connect · Claude · ChatGPT · WhatsApp · Slack · Telegram</div>
+    <h1>More ways to use Tradetron.<br /><span class="sig">From the AI you already pay for.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">
+      Build, edit and manage strategies from inside Claude, ChatGPT, WhatsApp,
+      Slack or Telegram — the same Tradetron engine, reached from wherever you
+      already chat. Your plan includes a pool of free <em>AI tokens</em> every month;
+      the WhatsApp, Telegram and Slack bots spend them <strong>at par</strong> — exactly what
+      Claude charges us, no markup. Prefer to use a paid Claude or ChatGPT plan
+      you already have? Plug Tradetron in as a <strong>custom connector</strong> and
+      build there for free — you're on your own LLM subscription.
+    </p>
+    <div class="h-pagehero__cta">
+      <a href="https://staging.tradetron.tech/ai-tokens" class="h-btn h-btn--primary">Buy AI tokens →</a>
+      <a href="#try-here" class="h-btn h-btn--ghost">Try the on-site chat</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>OAuth secure</span><span>No markup</span><span>Auto-auth by phone</span><span>No code</span>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT ANCHOR STRIP -->
+<section class="h-container" style="padding-top:0">
+  <span class="h-eyebrow ink">Jump to a client</span>
+  <div class="h-clients-strip" aria-label="Jump to a client">
+    <a class="h-client-pill" href="#claude">Claude <small>OAuth · MCP</small></a>
+    <a class="h-client-pill" href="#chatgpt">ChatGPT <small>OAuth · MCP</small></a>
+    <a class="h-client-pill" href="#whatsapp">WhatsApp <small>Auto-auth</small></a>
+    <a class="h-client-pill" href="#slack">Slack <small>OAuth · multi-user</small></a>
+    <a class="h-client-pill" href="#telegram">Telegram <small>Auto-auth</small></a>
+    <a class="h-client-pill" href="#audit">Audit <small>All channels</small></a>
+  </div>
+</section>
+
+<!-- CLAUDE -->
+<section class="h-container h-section--lg" id="claude">
+  <div class="h-client-head">
+    <div class="h-client-head__l">
+      <span class="h-eyebrow">01 · Claude</span>
+      <h2 class="h-h2" style="margin-top:6px">Add Tradetron as a <span class="sig">custom connector</span>.</h2>
+      <div class="h-client-head__badges">
+        <span class="h-client-badge h-client-badge--signal">Pro · Max · Team · Enterprise</span>
+        <span class="h-client-badge">No Tradetron tokens used</span>
+      </div>
+    </div>
+    <div class="h-client-head__r">
+      <p class="h-body">Claude's paid plans let you add a custom connector. Add Tradetron once and the strategy-building tools are available in every chat — you only pay your normal Claude subscription, no Tradetron tokens consumed.</p>
+    </div>
+  </div>
+
+  <div class="h-codepanel">
+    <div class="h-codepanel__row">
+      <span class="h-codepanel__lbl">MCP Server URL</span>
+      <code class="h-codepanel__val" data-copy>https://mcp.tradetron.tech/mcp</code>
+      <button class="h-codepanel__copy" data-copy-trigger="https://mcp.tradetron.tech/mcp">Copy</button>
+    </div>
+    <div class="h-codepanel__row">
+      <span class="h-codepanel__lbl">Authentication</span>
+      <span class="h-codepanel__val">OAuth — sign in with your Tradetron account</span>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="h-features cols-4" style="margin-top:28px">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Open Connectors</div>
+      <div class="h-feature__body">In Claude, open <strong>Settings → Connectors</strong> and click <strong>Add custom connector</strong>.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Name &amp; paste URL</div>
+      <div class="h-feature__body">Set <strong>Name</strong> to <em>Tradetron</em>, paste the <strong>Remote MCP server URL</strong> above, then click <strong>Add</strong>.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Authorize with OAuth</div>
+      <div class="h-feature__body">Click <strong>Connect</strong>. A Tradetron sign-in window opens — log in and <strong>Authorize</strong> access.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Start chatting</div>
+      <div class="h-feature__body">Enable the <em>Tradetron</em> connector in a chat, then ask — e.g. <em>"Create a Nifty short straddle with a 30% stop-loss."</em></div>
+    </div>
+  </div>
+
+  <p class="h-client-foot">Custom connectors require a paid Claude plan. Exact menu labels may vary slightly by plan and region.</p>
+</section>
+
+<!-- CHATGPT (banded) -->
+<section class="h-band">
+  <div class="h-container h-section--md" id="chatgpt">
+    <div class="h-client-head">
+      <div class="h-client-head__l">
+        <span class="h-eyebrow">02 · ChatGPT</span>
+        <h2 class="h-h2" style="margin-top:6px">Use Tradetron from the tools menu.</h2>
+        <div class="h-client-head__badges">
+          <span class="h-client-badge h-client-badge--signal">Plus · Pro · Business · Enterprise</span>
+          <span class="h-client-badge">Developer mode required</span>
+        </div>
+      </div>
+      <div class="h-client-head__r">
+        <p class="h-body">ChatGPT's paid plans support custom <em>MCP connectors</em> via Developer mode. Add Tradetron once and use it from the tools menu in any chat — billed only to your ChatGPT subscription.</p>
+      </div>
+    </div>
+
+    <div class="h-codepanel">
+      <div class="h-codepanel__row">
+        <span class="h-codepanel__lbl">MCP Server URL</span>
+        <code class="h-codepanel__val">https://mcp.tradetron.tech/mcp</code>
+        <button class="h-codepanel__copy" data-copy-trigger="https://mcp.tradetron.tech/mcp">Copy</button>
+      </div>
+      <div class="h-codepanel__row">
+        <span class="h-codepanel__lbl">Authentication</span>
+        <span class="h-codepanel__val">OAuth — sign in with your Tradetron account</span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="h-features cols-4" style="margin-top:28px">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Enable developer mode</div>
+        <div class="h-feature__body">Open <strong>Settings → Connectors</strong>. If custom connectors aren't shown, turn on <strong>Advanced → Developer mode</strong> first.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Add a connector</div>
+        <div class="h-feature__body">Click <strong>Create</strong> or <strong>Add custom connector</strong> and name it <em>Tradetron</em>.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Paste &amp; sign in</div>
+        <div class="h-feature__body">Paste the <strong>MCP Server URL</strong>, set auth to <strong>OAuth</strong>, click <strong>Create</strong> → sign in and <strong>Authorize</strong>.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">Use from tools menu</div>
+        <div class="h-feature__body">In a chat, open the <strong>+</strong> / tools menu, pick <em>Tradetron</em>, and describe the strategy you want.</div>
+      </div>
+    </div>
+
+    <p class="h-client-foot">Custom / developer connectors require a paid ChatGPT plan and may be rolling out gradually. Menu labels can differ by plan and region.</p>
+  </div>
+</section>
+
+<!-- WHATSAPP -->
+<section class="h-container h-section--md" id="whatsapp">
+  <div class="h-client-head">
+    <div class="h-client-head__l">
+      <span class="h-eyebrow">03 · WhatsApp</span>
+      <h2 class="h-h2" style="margin-top:6px">Message the bot. <span class="sig">No login. No setup.</span></h2>
+      <div class="h-client-head__badges">
+        <span class="h-client-badge h-client-badge--signal">Auto-auth by number</span>
+        <span class="h-client-badge">Uses AI tokens</span>
+      </div>
+    </div>
+    <div class="h-client-head__r">
+      <p class="h-body">Prefer chat? Message the Tradetron bot on WhatsApp. Regular conversation is no longer charged per message — your monthly AI tokens are spent only when the AI runs, at par. If your tokens run out, the bot offers to top up. Nothing to install.</p>
+    </div>
+  </div>
+
+  <div class="h-codepanel">
+    <div class="h-codepanel__row">
+      <span class="h-codepanel__lbl">WhatsApp number</span>
+      <code class="h-codepanel__val">+1 646 480 7754</code>
+      <button class="h-codepanel__copy" data-copy-trigger="+16464807754">Copy</button>
+    </div>
+  </div>
+
+  <div class="h-client-cta">
+    <a href="https://api.whatsapp.com/send/?phone=16464807754&amp;text=help&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open WhatsApp &amp; say "help" →</a>
+  </div>
+
+  <div class="h-features cols-2" style="margin-top:28px">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Send "help"</div>
+      <div class="h-feature__body">Send any message (start with <em>"help"</em>) to the number above, or tap the button. The bot replies with what it can do.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Auto-linked</div>
+      <div class="h-feature__body">You're authenticated automatically when your WhatsApp number matches the mobile on your Tradetron account — no login, no API key.</div>
+    </div>
+  </div>
+
+  <p class="h-client-foot">Make sure your Tradetron account uses the same phone number as your WhatsApp.</p>
+</section>
+
+<!-- SLACK (banded) -->
+<section class="h-band">
+  <div class="h-container h-section--md" id="slack">
+    <div class="h-client-head">
+      <div class="h-client-head__l">
+        <span class="h-eyebrow">04 · Slack</span>
+        <h2 class="h-h2" style="margin-top:6px">A Tradetron assistant in <em style="font-style:italic">your</em> workspace.</h2>
+        <div class="h-client-head__badges">
+          <span class="h-client-badge h-client-badge--signal">Add to any workspace</span>
+          <span class="h-client-badge">Multi-user</span>
+        </div>
+      </div>
+      <div class="h-client-head__r">
+        <p class="h-body">Add the Tradetron assistant to your Slack workspace and build strategies without leaving Slack. Every teammate links their own Tradetron account, so each person's strategies land in their own account.</p>
+      </div>
+    </div>
+
+    <div class="h-client-cta">
+      <a href="https://mcp.tradetron.tech/slack/install" target="_blank" rel="noopener" class="h-btn h-btn--primary">Add Tradetron to Slack →</a>
+    </div>
+
+    <div class="h-features cols-3" style="margin-top:28px">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Install the app</div>
+        <div class="h-feature__body">Click <strong>Add Tradetron to Slack</strong> above and approve the install for your workspace. A workspace admin may need to approve.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Open the assistant pane</div>
+        <div class="h-feature__body">Open the <em>Tradetron</em> app in Slack — start a DM or open its assistant pane. It greets you with a <strong>Connect Tradetron</strong> button.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Connect once, then ask</div>
+        <div class="h-feature__body">Tap <strong>Connect Tradetron</strong> and sign in once. Then ask — e.g. <em>"Create a Bank Nifty iron condor with a 25% stop-loss."</em></div>
+      </div>
+    </div>
+
+    <p class="h-client-foot">Each teammate connects their own Tradetron account from the same app. Use the <em>Connect Tradetron</em> button — slash commands don't work inside threads or the assistant pane.</p>
+  </div>
+</section>
+
+<!-- TELEGRAM -->
+<section class="h-container h-section--md" id="telegram">
+  <div class="h-client-head">
+    <div class="h-client-head__l">
+      <span class="h-eyebrow">05 · Telegram</span>
+      <h2 class="h-h2" style="margin-top:6px">Linked by your phone number.</h2>
+      <div class="h-client-head__badges">
+        <span class="h-client-badge h-client-badge--signal">Auto-auth by number</span>
+        <span class="h-client-badge">Uses AI tokens</span>
+      </div>
+    </div>
+    <div class="h-client-head__r">
+      <p class="h-body">Message the Tradetron assistant on Telegram. Like WhatsApp, there's nothing to install — you're linked by the phone number on your Tradetron account.</p>
+    </div>
+  </div>
+
+  <div class="h-codepanel">
+    <div class="h-codepanel__row">
+      <span class="h-codepanel__lbl">Telegram bot</span>
+      <code class="h-codepanel__val">@TradetronAssistantBot</code>
+      <button class="h-codepanel__copy" data-copy-trigger="@TradetronAssistantBot">Copy</button>
+    </div>
+  </div>
+
+  <div class="h-client-cta">
+    <a href="https://t.me/TradetronAssistantBot" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open @TradetronAssistantBot →</a>
+  </div>
+
+  <div class="h-features cols-3" style="margin-top:28px">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Start the bot</div>
+      <div class="h-feature__body">Open <strong>@TradetronAssistantBot</strong> (tap the button) and press <strong>Start</strong>.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Share phone number</div>
+      <div class="h-feature__body">Send <code>/link</code>, then tap <strong>Share my phone number</strong>. You're linked when your Telegram number matches your Tradetron mobile.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Ask in plain English</div>
+      <div class="h-feature__body">Ask it to build or edit a strategy. Send <code>/whoami</code> to check your link status, or <code>/disconnect</code> to unlink.</div>
+    </div>
+  </div>
+
+  <p class="h-client-foot">Make sure your Tradetron account uses the same phone number as your Telegram.</p>
+</section>
+
+<!-- 06 · STRATEGY AUDIT — cross-channel -->
+<section class="h-band" id="audit">
+  <div class="h-container h-section--md">
+    <div class="h-client-head">
+      <div class="h-client-head__l">
+        <span class="h-eyebrow">06 · Strategy Audit</span>
+        <h2 class="h-h2" style="margin-top:6px">Audit the strategy <span class="sig">on every AI channel</span>.</h2>
+        <div class="h-client-head__badges">
+          <span class="h-client-badge h-client-badge--signal">Available on all 5 channels</span>
+          <span class="h-client-badge">Pre-deploy &amp; post-build</span>
+        </div>
+      </div>
+      <div class="h-client-head__r">
+        <p class="h-body">Building is half the job. After a strategy is created, ask any AI to audit it — plain-English diff between what you described and what actually got built. The same audit runs on Claude, ChatGPT, WhatsApp, Slack and Telegram, against the same engine that powers the Go-Live audit on your dashboard.</p>
+      </div>
+    </div>
+
+    <!-- example interaction -->
+    <div class="h-codepanel" style="margin-top: 6px">
+      <div class="h-codepanel__row" style="grid-template-columns: 110px 1fr">
+        <span class="h-codepanel__lbl">You</span>
+        <span class="h-codepanel__val" style="color: var(--ink)">audit strategy 12345</span>
+      </div>
+      <div class="h-codepanel__row" style="grid-template-columns: 110px 1fr">
+        <span class="h-codepanel__lbl">Claude</span>
+        <span class="h-codepanel__val" style="color: var(--ink-soft); white-space: pre-wrap; line-height: 1.55">You said: NIFTY short straddle, ATM, 30% SL on each leg, square off 15:15.
+Strategy does: short CE + short PE at ATM, exit 15:15. ✓
+Gap: 30% stop-loss legs are missing on both options. ⚠
+Recommend: add SL legs before Go-Live.</span>
+      </div>
+    </div>
+
+    <div class="h-features cols-3" style="margin-top: 28px">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">What the audit does</div>
+        <div class="h-feature__body">A plain-English, field-by-field diff between your original intent and what got built — entries, exits, hedges, SL legs, strikes, expiries, lot multipliers. Lifted from the same engine that gates Go-Live.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Why it matters</div>
+        <div class="h-feature__body">Catches silent drops — a missing SL leg, a wrong strike, a mismatched expiry — before they show up in your live PnL. The most expensive bug is the one you don't know about.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Same call, every channel</div>
+        <div class="h-feature__body">"audit 12345" on WhatsApp, <em>/audit 12345</em> on Telegram, or just ask Claude / ChatGPT / Slack — the strategy id is enough. Output is identical across surfaces.</div>
+      </div>
+    </div>
+
+    <div class="h-client-cta">
+      <a href="#claude" class="h-btn h-btn--primary">Try it via Claude →</a>
+      <a href="features.html#backtest" class="h-btn h-btn--ghost">How the audit works</a>
+    </div>
+
+    <p class="h-client-foot">Audit runs against your latest saved strategy version. Uses AI tokens on WhatsApp / Telegram / Slack; free on Claude / ChatGPT custom connectors (billed to your LLM plan).</p>
+  </div>
+</section>
+
+<!-- TRY ON-SITE -->
+<section class="h-container h-section--md" id="try-here">
+  <div class="h-trycard">
+    <div>
+      <span class="h-trycard__lbl">No account yet?</span>
+      <span class="h-trycard__txt">Just want to try it right here? The on-site chat is always available — same engine, same tools.</span>
+    </div>
+    <a href="create-strategy.html" class="h-btn h-btn--primary">Open Create with Claude →</a>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.2rem, 4vw, 3.4rem); text-align: center; max-width: 26ch">Build a strategy <span class="sig">from any chat</span>.</h2>
+  <p class="h-cta__sub">Free for life on paper trading. Upgrade only when you go live. Join 405k+ traders running ~60k algos across 100+ broker APIs.</p>
+  <div class="h-hero__cta" style="margin-top: 8px">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="pricing.html" class="h-btn h-btn--ghost">See pricing</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+<script>
+  /* Copy-to-clipboard for MCP URL / phone / handle panels.
+     Reuses the same data-copy-trigger pattern; on success flips the
+     button to "Copied!" for 1.5s then restores. Falls back silently
+     if clipboard API is unavailable. */
+  (function(){
+    document.querySelectorAll('[data-copy-trigger]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var v = btn.getAttribute('data-copy-trigger');
+        if (!v) return;
+        var done = function(){
+          var orig = btn.textContent;
+          btn.textContent = 'Copied';
+          btn.classList.add('is-copied');
+          setTimeout(function(){
+            btn.textContent = orig || 'Copy';
+            btn.classList.remove('is-copied');
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(v).then(done).catch(function(){});
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = v; document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch(e){}
+          document.body.removeChild(ta);
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>

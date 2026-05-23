@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Community Forum · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Forum thread cards — sample feed */
+  .h-threads { border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
+  .h-thread {
+    display: grid; grid-template-columns: 68px 68px 1fr; gap: 18px; align-items: center;
+    padding: 18px 22px; border-bottom: var(--hairline); transition: background 140ms;
+  }
+  .h-thread:last-child { border-bottom: 0; }
+  .h-thread:hover { background: var(--paper-2); }
+  .h-thread__stat { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+  .h-thread__num { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 1.1rem; color: var(--ink); }
+  .h-thread__num.answered { color: var(--positive); }
+  .h-thread__lbl { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .h-thread__main { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+  .h-thread__title { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--ink); }
+  .h-thread:hover .h-thread__title { color: var(--signal); }
+  .h-thread__tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .h-thread__tag {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em;
+    padding: 2px 8px; border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+  }
+  .h-thread__by { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); }
+  @media (max-width: 640px) {
+    .h-thread { grid-template-columns: 1fr; gap: 10px; }
+  }
+
+  /* Category grid */
+  .h-cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .h-cat {
+    padding: 22px;
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    transition: background 140ms;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .h-cat:hover { background: var(--paper-2); }
+  .h-cat__name { font: 500 1.02rem/1.2 var(--font-display); color: var(--ink); }
+  .h-cat__body { font: 400 0.86rem/1.45 var(--font-body); color: var(--slate); }
+  .h-cat__count { font: 500 0.66rem/1 var(--font-mono); color: var(--slate); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+  @media (max-width: 760px) { .h-cats { grid-template-columns: 1fr; } }
+
+  /* Sample-data banner */
+  .h-samplebanner {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: var(--paper-2);
+    border: var(--hairline);
+    border-radius: var(--radius-pill);
+    font: 500 0.7rem/1 var(--font-mono);
+    color: var(--slate);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body data-screen-label="Community Forum">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Community · Forum</div>
+    <h1>Talk to 405k+ traders. <span class="sig">Ask, answer, learn.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">The Tradetron forum is where traders work through real problems — building an opening-range breakout, debugging a Zerodha disconnect, figuring out a trailing SL on options. Searchable, voted-on, moderated by Tradetron staff. Fastest place to get a peer answer.</p>
+    <div class="h-pagehero__cta">
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open the forum →</a>
+      <a href="faq.html" class="h-btn h-btn--ghost">Or check the FAQ</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>405k+ traders</span><span>Anonymous OK</span><span>Moderated by TT staff</span><span>No spam</span>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 22px">
+    <div>
+      <span class="h-eyebrow">Hot topics this week</span>
+      <h2 class="h-h2" style="margin-top: 14px">What traders are <span class="sig">working on.</span></h2>
+    </div>
+    <span class="h-samplebanner">sample · live thread feed pending</span>
+  </div>
+
+  <div class="h-threads">
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">42</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">7</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">How do I trail a stop-loss by a percentage instead of an absolute value?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">strategies</span><span class="h-thread__tag">stop-loss</span><span class="h-chip h-chip--pos" style="height:20px">solved</span></div>
+        <span class="h-thread__by">last activity 2 hours ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">38</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">5</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Why does my live Sharpe differ from my backtest, and how do I close the gap?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">strategies</span><span class="h-thread__tag">slippage</span><span class="h-chip h-chip--pos" style="height:20px">solved</span></div>
+        <span class="h-thread__by">last activity 6 hours ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">29</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">4</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Best way to build an opening-range breakout (ORB) on NIFTY without Python?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">strategies</span><span class="h-thread__tag">no-code</span><span class="h-thread__tag">nifty</span></div>
+        <span class="h-thread__by">last activity 12 hours ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">24</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">6</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Zerodha Kite token expiring overnight — anyone else hitting this since the update?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">brokers</span><span class="h-thread__tag">zerodha</span><span class="h-chip h-chip--pos" style="height:20px">solved</span></div>
+        <span class="h-thread__by">last activity 1 day ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">18</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num">0</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">How do I size positions by volatility target across multiple symbols?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">strategies</span><span class="h-thread__tag">risk</span><span class="h-chip h-chip--paper" style="height:20px">awaiting answer</span></div>
+        <span class="h-thread__by">last activity 2 days ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">16</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">3</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Can I deploy the same strategy to Zerodha and Fyers and split quantity?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">brokers</span><span class="h-thread__tag">deployment</span></div>
+        <span class="h-thread__by">last activity 3 days ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">14</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">2</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Marketplace: how did your first month go after publishing? Honest numbers.</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">marketplace</span><span class="h-thread__tag">creators</span></div>
+        <span class="h-thread__by">last activity 4 days ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">11</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num answered">2</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Sending TradingView alerts into Tradetron via the API — webhook format?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">strategies</span><span class="h-thread__tag">api</span></div>
+        <span class="h-thread__by">last activity 5 days ago</span>
+      </div>
+    </article>
+
+    <article class="h-thread">
+      <div class="h-thread__stat"><span class="h-thread__num">9</span><span class="h-thread__lbl">replies</span></div>
+      <div class="h-thread__stat"><span class="h-thread__num">0</span><span class="h-thread__lbl">solutions</span></div>
+      <div class="h-thread__main">
+        <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-thread__title">Trust Score is amber on a strategy that's profitable — what am I missing?</a>
+        <div class="h-thread__tags"><span class="h-thread__tag">getting-started</span><span class="h-thread__tag">trust-score</span><span class="h-chip h-chip--paper" style="height:20px">awaiting answer</span></div>
+        <span class="h-thread__by">last activity 1 week ago</span>
+      </div>
+    </article>
+  </div>
+
+  <div style="display: flex; justify-content: center; margin-top: 24px">
+    <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--ghost">See all threads on the forum →</a>
+  </div>
+</section>
+
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="margin-bottom: 28px">
+      <span class="h-eyebrow">Categories</span>
+      <h2 class="h-h2" style="margin-top: 14px">Six places to <span class="sig">land first.</span></h2>
+    </div>
+    <div class="h-cats">
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Getting started</span>
+        <span class="h-cat__body">First strategy, first broker, first deployment. The friendliest corner — no question is too basic.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Strategies</span>
+        <span class="h-cat__body">ORB, mean reversion, theta plays, pair trades. How traders are building them — and what's working.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Brokers</span>
+        <span class="h-cat__body">Zerodha, Upstox, Fyers, Alpaca, Delta — connectivity issues, OAuth tokens, broker-specific quirks.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Marketplace</span>
+        <span class="h-cat__body">For creators publishing strategies and subscribers picking them. Pricing, performance, expectations.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Bugs &amp; issues</span>
+        <span class="h-cat__body">Found something broken? Post the repro here. Tradetron engineers read this category daily.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+      <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-cat">
+        <span class="h-cat__name">Off-topic</span>
+        <span class="h-cat__body">Market commentary, macro takes, "what are you reading" — the watercooler. Stay civil.</span>
+        <span class="h-cat__count">sample category</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="margin-bottom: 28px">
+    <span class="h-eyebrow">Why join</span>
+    <h2 class="h-h2" style="margin-top: 14px">Built for traders, <span class="sig">not for engagement metrics.</span></h2>
+  </div>
+  <div class="h-features cols-4">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Anonymous OK</div>
+      <div class="h-feature__body">Pseudonym is fine. PnL questions are sensitive; we don't make you trade under your real name.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Moderated by TT staff</div>
+      <div class="h-feature__body">Tradetron engineers and support read every category daily. You're not alone with random advice — staff weigh in on technical answers.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">No spam, no pumping</div>
+      <div class="h-feature__body">No "buy my course" links, no signal-selling, no penny-stock pumping. Mods remove it on sight.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Fastest peer answers</div>
+      <div class="h-feature__body">Median time-to-first-reply is under an hour on weekdays. Other traders have probably hit the same wall — and remembered the fix.</div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Join in</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 24ch">Build with <span class="sig">405k+</span> traders, not alone.</h2>
+  <p class="h-cta__sub">The forum is free to read. A Tradetron account (also free) lets you post. Funds never leave your broker either way.</p>
+  <div class="h-hero__cta" style="margin-top: 8px; justify-content: center">
+    <a href="https://forum.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open the forum →</a>
+    <a href="register.html" class="h-btn h-btn--ghost">Create an account</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

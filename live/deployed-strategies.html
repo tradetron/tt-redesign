@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deployed Strategies · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- deployed-strategies local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal, green positive / oxblood negative.
+     Mirrors dashboard.html's data-dense table styling. Numbers
+     are the priority: tabular figures, right-aligned, monospace. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* a compact select, themed like h-input but shorter */
+  .d-select {
+    height: 32px; padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); -webkit-appearance: none; appearance: none;
+    cursor: pointer; transition: border-color 160ms;
+  }
+  .d-select:focus { outline: 0; border-color: var(--signal); }
+  .d-select--mini { height: 26px; padding: 0 26px 0 9px; font-size: 0.74rem; }
+
+  /* ---- sub-tab row (page-level nav) ---- */
+  .d-subtabs {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    border-bottom: var(--hairline); margin-bottom: 22px; padding-bottom: 0;
+  }
+  .d-subtab {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 11px 14px; text-decoration: none;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.03em;
+    color: var(--slate); white-space: nowrap; transition: color 160ms, border-color 160ms;
+  }
+  .d-subtab:hover { color: var(--ink); }
+  .d-subtab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+  .d-subtab .ct {
+    font-size: 0.66rem; color: var(--slate); background: var(--paper-2);
+    border: var(--hairline); border-radius: var(--radius-pill); padding: 1px 7px;
+  }
+  .d-subtab.is-active .ct { color: var(--signal); border-color: color-mix(in oklab, var(--signal) 40%, transparent); background: var(--signal-tint); }
+  .d-subtabs__right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  /* ---- KPI bar ---- */
+  .d-kpis {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 26px;
+  }
+  .d-kpi { padding: 18px 20px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+  .d-kpi:last-child { border-right: 0; }
+  .d-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .d-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .d-kpi__val--up   { color: var(--positive); }
+  .d-kpi__val--down { color: var(--negative); }
+  .d-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+
+  /* ---- strategy card (deployed) ---- */
+  .d-strat {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden;
+  }
+  .d-strat__head {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(0, 1fr)) auto;
+    gap: 14px 22px; align-items: start;
+    padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  /* identity block (name + creator + sid + chips) */
+  .d-strat__id { display: flex; flex-direction: column; gap: 6px; }
+  .d-strat__name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.04rem;
+    letter-spacing: -0.015em; line-height: 1.15;
+  }
+  .d-strat__by { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .d-strat__by .nm { color: var(--ink-soft); }
+  .d-strat__chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .d-sid {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em;
+    color: var(--slate); border: var(--hairline); border-radius: var(--radius-sm);
+    padding: 1px 7px; background: var(--paper-2);
+  }
+  /* meta column (label over mono value) */
+  .d-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .d-meta__lbl { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
+  .d-meta__val { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.86rem; color: var(--ink); letter-spacing: var(--tracking-mono); }
+  .d-meta__val .at { color: var(--slate); }
+  .d-meta__row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  /* multiplier selector */
+  .d-mult { display: flex; align-items: center; gap: 6px; }
+  /* head-right: status + counter + actions */
+  .d-strat__right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; justify-self: end; text-align: right; }
+  .d-strat__counter { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .d-strat__counter b { color: var(--ink-soft); font-weight: 500; }
+  .d-strat__actions { display: flex; gap: 6px; }
+
+  /* ---- positions table ---- */
+  .d-tablewrap { overflow-x: auto; }
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 11px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:hover { background: color-mix(in oklab, var(--signal) 5%, transparent); }
+  .d-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; font-size: 0.86rem; }
+  .d-table .num.pos { color: var(--positive); }
+  .d-table .num.neg { color: var(--negative); }
+  .d-table .sym { font-family: var(--font-mono); font-size: 0.84rem; letter-spacing: var(--tracking-mono); color: var(--ink); }
+  .d-table .sym .greeks { display: block; font-size: 0.66rem; color: var(--slate); margin-top: 2px; letter-spacing: 0.02em; }
+  .d-table .sym .leg-tag { color: var(--signal); }
+  .d-table tfoot td {
+    border-top: var(--hairline-strong); border-bottom: 0;
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    background: var(--paper-2); padding: 12px 16px;
+  }
+  .d-table tfoot .lbl { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .d-table tfoot .num { font-size: 0.92rem; }
+  .d-table .open-dot { color: var(--signal); }
+
+  /* "view N legs" affordance + collapsed footer */
+  .d-more {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px;
+  }
+  .d-more__totals { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .d-more__totals .grp { display: flex; flex-direction: column; gap: 2px; }
+  .d-more__totals .lbl { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
+  .d-more__totals .val { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 1.0rem; }
+  .d-more__totals .val.pos { color: var(--positive); }
+  .d-more__totals .val.neg { color: var(--negative); }
+  .d-view {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--signal); text-decoration: none; white-space: nowrap;
+    border: var(--hairline); border-radius: var(--radius-sm); padding: 7px 12px;
+    transition: border-color 160ms, color 160ms;
+  }
+  .d-view:hover { border-color: var(--signal); }
+  .d-view::after { content: " \25B8"; }
+
+  /* compact (headline-only) card variant */
+  .d-strat--mini .d-strat__head { border-bottom: 0; }
+
+  /* ---- pagination ---- */
+  .d-pager { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; justify-content: center; margin-top: 6px; }
+  .d-pager a, .d-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .d-pager a:hover { border-color: var(--signal); color: var(--signal); }
+  .d-pager .is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .d-pager .ghost { border: 0; color: var(--slate); }
+
+  @media (max-width: 980px) {
+    .d-kpis { grid-template-columns: 1fr; }
+    .d-kpi { border-right: 0; border-bottom: var(--hairline); }
+    .d-kpi:last-child { border-bottom: 0; }
+    .d-strat__head { grid-template-columns: 1fr 1fr; }
+    .d-strat__right { grid-column: 1 / -1; align-items: flex-start; text-align: left; }
+  }
+  @media (max-width: 1100px) {
+    .d-table { min-width: 640px; }
+  }
+</style>
+</head>
+<body data-screen-label="Deployed Strategies">
+
+<header class="h-nav">
+  <div class="h-container h-nav__inner">
+    <a href="dashboard.html" class="h-brand">
+      <img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron">
+      <img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron">
+    </a>
+    <nav class="h-nav__links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="features.html">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="crypto-trading.html">Markets</a>
+      <a href="faq.html">Learn</a>
+    </nav>
+    <div class="h-nav__right">
+      <div class="h-region" role="group" aria-label="Region"><a href="index.html" class="h-region__opt is-active">IN</a><a href="us.html" class="h-region__opt">US</a></div>
+      <button class="h-toggle" data-theme-toggle aria-label="Toggle theme">
+        <span class="h-toggle__dot"></span>
+        <span data-theme-label>Night</span>
+      </button>
+      <span class="h-chip h-chip--live h-chip--dot" style="margin-right:2px">Live</span>
+      <a href="profile.html" class="h-micro" style="color:var(--ink-soft); margin-right:4px">Algolive</a>
+      <a href="index.html" class="h-btn h-btn--ghost h-btn--sm">Sign out</a>
+    </div>
+  </div>
+</header>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Strategies · logged in as Algolive</span>
+      <h1 class="d-head__title">Deployed <span class="sig">strategies</span>.</h1>
+      <span class="d-head__sub">12 deployed · 43 open positions · capital ₹ 7.58 Cr</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Portfolio Management</a>
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Deploy strategy</a>
+    </div>
+  </div>
+
+  <!-- SUB-TAB ROW -->
+  <nav class="d-subtabs" aria-label="Strategy sections">
+    <a class="d-subtab is-active" href="deployed-strategies.html" aria-current="page">Deployed <span class="ct">12</span></a>
+    <a class="d-subtab" href="my-strategies.html">My Strategies</a>
+    <a class="d-subtab" href="marketplace.html">Marketplace</a>
+    <a class="d-subtab" href="backtest.html">Backtest</a>
+    <div class="d-subtabs__right">
+      <a href="#" class="h-tag" style="text-decoration:none">↺ Summary / Switch to Lite</a>
+      <label class="h-tag" style="display:inline-flex; align-items:center; gap:8px">
+        Range
+        <select class="d-select d-select--mini" aria-label="Date range filter">
+          <option selected>Today</option>
+          <option>Expiry</option>
+          <option>This week</option>
+          <option>All</option>
+        </select>
+      </label>
+    </div>
+  </nav>
+
+  <!-- SUMMARY KPI BAR -->
+  <div class="d-kpis">
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Capital</span>
+      <span class="d-kpi__val">₹ 7.58 Cr</span>
+      <span class="d-kpi__delta">Deployed across 12 strategies</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">P&amp;L</span>
+      <span class="d-kpi__val d-kpi__val--down">▼ ₹ −79.61 k</span>
+      <span class="d-kpi__delta">−0.10% · today, realised + open</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Value (Pos)</span>
+      <span class="d-kpi__val">₹ 2.21 Cr</span>
+      <span class="d-kpi__delta">43 positions</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       STRATEGY 1 — Stocks (full equity positions)
+       ============================================================ -->
+  <section class="d-strat">
+    <div class="d-strat__head">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Stocks</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1284013</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Deployed</span>
+        <span class="d-meta__val">18 Apr 2026</span>
+        <span class="d-meta__lbl" style="margin-top:6px">Capital</span>
+        <span class="d-meta__val">₹ 65.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">IIFL <span class="at">(Symphony)</span></span>
+        <span class="d-meta__lbl" style="margin-top:6px">Execution</span>
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option>
+            <option>2x</option>
+            <option>5x</option>
+            <option>10x</option>
+            <option>25x</option>
+            <option>50x</option>
+            <option>100x</option>
+          </select>
+        </div>
+        <span class="d-meta__lbl" style="margin-top:6px">Counters</span>
+        <span class="d-meta__val">1 <span class="at">· ₹ 11,71,800</span></span>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-strat__counter">9 open <b>|</b> 10 positions</span>
+        <div class="d-strat__actions">
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-pause">Pause</a>
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-exit">Exit</a>
+          <div class="h-menu">
+            <button class="h-menu__btn" data-menu-toggle aria-label="More actions" title="More actions">&#8943;</button>
+            <div class="h-menu__pop">
+              <div class="h-menu__group">Statuses</div>
+              <button class="h-menu__item" data-modal-open="strategy-pause">Pause</button>
+              <button class="h-menu__item h-menu__item--danger" data-modal-open="strategy-exit">Exit</button>
+              <div class="h-menu__group">Strategy data</div>
+              <a class="h-menu__item" href="strategy-statistics.html">Statistics</a>
+              <a class="h-menu__item" href="strategy-payoff.html">Payoff</a>
+              <a class="h-menu__item" href="strategy-intraday-pnl.html">Intraday PNL</a>
+              <a class="h-menu__item" href="strategy-notification-log.html">Notification Log</a>
+              <a class="h-menu__item" href="strategy-runtime-data.html">Runtime Data</a>
+              <a class="h-menu__item" href="strategy-debug.html">Debug</a>
+              <button class="h-menu__item" data-modal-open="strategy-download">Download Data</button>
+              <div class="h-menu__group">Actions</div>
+              <button class="h-menu__item" data-modal-open="strategy-switch-lite">Switch Lite</button>
+              <button class="h-menu__item" data-modal-open="strategy-on-error">On Error Settings</button>
+              <a class="h-menu__item" href="strategy-user-notes.html">User Notes</a>
+              <a class="h-menu__item" href="create-strategy.html">Edit Template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-tablewrap">
+      <table class="d-table">
+        <thead>
+          <tr>
+            <th>Instrument / Symbol</th>
+            <th class="num">Qty</th>
+            <th class="num">LTP ₹</th>
+            <th class="num">Val ₹</th>
+            <th class="num">P&amp;L ₹</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sym">ARE&amp;M</span></td>
+            <td class="num">500</td>
+            <td class="num">820.65</td>
+            <td class="num">4,10,325</td>
+            <td class="num neg">−89,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">ASIANPAINT</span></td>
+            <td class="num">200</td>
+            <td class="num">2,639.80</td>
+            <td class="num">5,27,960</td>
+            <td class="num pos">+2,01,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">DHANBANK</span></td>
+            <td class="num">20,000</td>
+            <td class="num">33.71</td>
+            <td class="num">6,74,200</td>
+            <td class="num pos">+1,43,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">HINDUNILVR</span></td>
+            <td class="num">400</td>
+            <td class="num">2,203.60</td>
+            <td class="num">8,81,440</td>
+            <td class="num neg">−380</td>
+          </tr>
+          <tr>
+            <td><span class="sym">INFRAIETF</span></td>
+            <td class="num">12,000</td>
+            <td class="num">96.38</td>
+            <td class="num">11,56,560</td>
+            <td class="num pos">+1,73,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">METAL</span></td>
+            <td class="num">1,00,000</td>
+            <td class="num">13.36</td>
+            <td class="num">13,36,000</td>
+            <td class="num pos">+4,42,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">SBIN</span></td>
+            <td class="num">0</td>
+            <td class="num">949.20</td>
+            <td class="num">0</td>
+            <td class="num pos">+2,23,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">SMALLCAP</span></td>
+            <td class="num">25,000</td>
+            <td class="num">44.95</td>
+            <td class="num">11,23,750</td>
+            <td class="num pos">+1,09,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">TCS</span></td>
+            <td class="num">300</td>
+            <td class="num">2,317.30</td>
+            <td class="num">6,95,190</td>
+            <td class="num neg">−2,29,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">TITAN</span></td>
+            <td class="num">200</td>
+            <td class="num">4,079.80</td>
+            <td class="num">8,15,960</td>
+            <td class="num pos">+2,00,000</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="lbl">Total · 10 positions</td>
+            <td class="num"></td>
+            <td class="num"></td>
+            <td class="num">76,21,385</td>
+            <td class="num pos">+11.72 L <span style="color:var(--slate)">(+18.03%)</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       STRATEGY 2 — TT UDS Long Op (options book, ~6 of 24 legs)
+       ============================================================ -->
+  <section class="d-strat">
+    <div class="d-strat__head">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">TT UDS Long Op</a></span>
+        <span class="d-strat__by">by <span class="nm">Vikram Bajaj</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1190442</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Deployed</span>
+        <span class="d-meta__val">02 May 2026</span>
+        <span class="d-meta__lbl" style="margin-top:6px">Capital</span>
+        <span class="d-meta__val">₹ 10.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">IIFL <span class="at">(Symphony)</span></span>
+        <span class="d-meta__lbl" style="margin-top:6px">Execution</span>
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option>
+            <option>2x</option>
+            <option>5x</option>
+            <option>10x</option>
+            <option>25x</option>
+            <option>50x</option>
+            <option>100x</option>
+          </select>
+        </div>
+        <span class="d-meta__lbl" style="margin-top:6px">Counters</span>
+        <span class="d-meta__val">16 <span class="at">· all ₹ 19,70,877</span></span>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-strat__counter">1 open <b>|</b> 24 legs · NIFTY 26MAY2026</span>
+        <div class="d-strat__actions">
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-pause">Pause</a>
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm" data-modal-open="strategy-exit">Exit</a>
+          <div class="h-menu">
+            <button class="h-menu__btn" data-menu-toggle aria-label="More actions" title="More actions">&#8943;</button>
+            <div class="h-menu__pop">
+              <div class="h-menu__group">Statuses</div>
+              <button class="h-menu__item" data-modal-open="strategy-pause">Pause</button>
+              <button class="h-menu__item h-menu__item--danger" data-modal-open="strategy-exit">Exit</button>
+              <div class="h-menu__group">Strategy data</div>
+              <a class="h-menu__item" href="strategy-statistics.html">Statistics</a>
+              <a class="h-menu__item" href="strategy-payoff.html">Payoff</a>
+              <a class="h-menu__item" href="strategy-intraday-pnl.html">Intraday PNL</a>
+              <a class="h-menu__item" href="strategy-notification-log.html">Notification Log</a>
+              <a class="h-menu__item" href="strategy-runtime-data.html">Runtime Data</a>
+              <a class="h-menu__item" href="strategy-debug.html">Debug</a>
+              <button class="h-menu__item" data-modal-open="strategy-download">Download Data</button>
+              <div class="h-menu__group">Actions</div>
+              <button class="h-menu__item" data-modal-open="strategy-switch-lite">Switch Lite</button>
+              <button class="h-menu__item" data-modal-open="strategy-on-error">On Error Settings</button>
+              <a class="h-menu__item" href="strategy-user-notes.html">User Notes</a>
+              <a class="h-menu__item" href="create-strategy.html">Edit Template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-tablewrap">
+      <table class="d-table">
+        <thead>
+          <tr>
+            <th>Instrument / Symbol</th>
+            <th class="num">Qty</th>
+            <th class="num">LTP ₹</th>
+            <th class="num">Val ₹</th>
+            <th class="num">P&amp;L ₹</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sym">NIFTY 26MAY2026 <span class="leg-tag">PE 23700</span></span></td>
+            <td class="num">0</td>
+            <td class="num">88.40</td>
+            <td class="num">0</td>
+            <td class="num pos">+98,200</td>
+          </tr>
+          <tr>
+            <td><span class="sym">NIFTY 26MAY2026 <span class="leg-tag">PE 24250</span></span></td>
+            <td class="num">0</td>
+            <td class="num">214.75</td>
+            <td class="num">0</td>
+            <td class="num pos">+2,72,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">NIFTY 26MAY2026 <span class="leg-tag">CE 24000</span></span></td>
+            <td class="num">0</td>
+            <td class="num">131.05</td>
+            <td class="num">0</td>
+            <td class="num pos">+1,10,000</td>
+          </tr>
+          <tr>
+            <td><span class="sym">NIFTY 26MAY2026 <span class="leg-tag">PE 23400</span></span></td>
+            <td class="num">0</td>
+            <td class="num">54.20</td>
+            <td class="num">0</td>
+            <td class="num neg">−16,480</td>
+          </tr>
+          <tr>
+            <td><span class="sym">NIFTY 26MAY2026 <span class="leg-tag">PE 24150</span></span></td>
+            <td class="num">0</td>
+            <td class="num">183.30</td>
+            <td class="num">0</td>
+            <td class="num neg">−71,930</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="sym">
+                NIFTY 26MAY2026 <span class="leg-tag">PE 23750</span> <span class="open-dot">●&nbsp;open</span>
+                <span class="greeks">IV 14% · Δ −182 · Γ 0.45 · Θ −6,698 · V 3,859</span>
+              </span>
+            </td>
+            <td class="num">390</td>
+            <td class="num">125.05</td>
+            <td class="num">48,770</td>
+            <td class="num neg">−46,620</td>
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align:center; color:var(--slate); font-family:var(--font-mono); font-size:0.76rem; letter-spacing:var(--tracking-mono)">+ 18 more legs</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="lbl">Total · 24 legs · book Greeks Δ −182 Γ 0.45 Θ −6,698 V 3,859</td>
+            <td class="num"></td>
+            <td class="num"></td>
+            <td class="num">48,770</td>
+            <td class="num pos">+1.40 L <span style="color:var(--slate)">(+13.97%)</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       STRATEGIES 3–12 — headline-only cards (positions collapsed)
+       ============================================================ -->
+
+  <!-- 3 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">UDS 2.0</a></span>
+        <span class="d-strat__by">by <span class="nm">Vikram Bajaj</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1190511</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 2.50 Cr</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−92.71 k (−0.37%)</span></div>
+      </div>
+      <a class="d-view" href="#">view 54 legs</a>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Nifty Iron Condor Weekly</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1271904</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 76.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−5,899 (−0.08%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Blackswan protection</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1255320</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 10.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">IIFL Capital</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−95.31 k (−9.53%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Bluechip Premium Harvester</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1263118</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 10.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">IIFL Capital</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val pos">+35.05 k (+3.51%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Bluechip Premium Harvester</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1263119</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 90.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">IIFL Capital</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val pos">+2.88 L (+3.20%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">UDS 2.0 Long Ops</a></span>
+        <span class="d-strat__by">by <span class="nm">Vikram Bajaj</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1190644</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 40.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−2.41 L (−6.02%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">24000 weekly Put sell</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1278855</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 15.50 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−81.51 k (−5.26%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Pin The Range</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1280017</span>
+          <span class="h-chip h-chip--paper h-chip--dot">PAPER</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 80.00 k</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">TT Paper Trading</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip">Active · Paper</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val pos">+1,164 (+1.45%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Nifty Iron Condor Daily</a></span>
+        <span class="d-strat__by">by <span class="nm">Vikram Bajaj</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1271955</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 75.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val pos">+30.87 k (+0.41%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="d-strat d-strat--mini">
+    <div class="d-strat__head" style="border-bottom:var(--hairline)">
+      <div class="d-strat__id">
+        <span class="d-strat__name"><a href="strategy-profile.html">Long Condor Monthly</a></span>
+        <span class="d-strat__by">by <span class="nm">Algolive</span></span>
+        <div class="d-strat__chips">
+          <span class="d-sid">SID 1272040</span>
+          <span class="h-chip h-chip--live h-chip--dot">LIVE OFFLINE</span>
+        </div>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Capital</span>
+        <span class="d-meta__val">₹ 1.00 L</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Broker</span>
+        <span class="d-meta__val">Kotakneo V3</span>
+      </div>
+      <div class="d-meta">
+        <span class="d-meta__lbl">Multiplier</span>
+        <div class="d-mult">
+          <select class="d-select d-select--mini" aria-label="Multiplier (1x to 100x)" title="1x – 100x">
+            <option selected>1x</option><option>2x</option><option>5x</option><option>10x</option><option>25x</option><option>50x</option><option>100x</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-strat__right">
+        <span class="d-meta__val"><span class="h-chip h-chip--pos">Live-Entered</span></span>
+      </div>
+    </div>
+    <div class="d-more">
+      <div class="d-more__totals">
+        <div class="grp"><span class="lbl">Total P&amp;L</span><span class="val neg">−1,118 (−1.12%)</span></div>
+      </div>
+      <a class="d-view" href="#">view legs</a>
+    </div>
+  </section>
+
+
+  <!-- PAGINATION -->
+  <div class="d-pager">
+    <span class="ghost">‹</span>
+    <span class="is-active">1</span>
+    <a href="#">›</a>
+  </div>
+
+  <!-- ============ STRATEGY ACTION MODALS (static prototype) ============ -->
+
+  <!-- Pause -->
+  <div class="h-modal" id="strategy-pause" role="dialog" aria-modal="true" aria-labelledby="strategy-pause-title">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 id="strategy-pause-title" class="h-h3" style="margin:0">Pause strategy</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 12px 0">New signals will be ignored while paused. Open positions are unaffected and will continue to run as usual.</p>
+        <p class="h-micro" style="margin:0; color: var(--slate)">You can resume any time from the deployed-strategies list.</p>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm">Pause</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exit -->
+  <div class="h-modal" id="strategy-exit" role="dialog" aria-modal="true" aria-labelledby="strategy-exit-title">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 id="strategy-exit-title" class="h-h3" style="margin:0">Exit strategy</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 12px 0">All <b>open positions will be squared off at market price</b>. The strategy will stop generating new orders and move to <b>Exited</b> state.</p>
+        <label class="h-micro" style="display:flex; gap:8px; align-items:center; color: var(--ink-soft); margin-top:8px">
+          <input type="checkbox"> Also cancel any pending broker orders
+        </label>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm" style="background:var(--negative); border-color:var(--negative)">Exit now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Download Data -->
+  <div class="h-modal" id="strategy-download" role="dialog" aria-modal="true" aria-labelledby="strategy-download-title">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 id="strategy-download-title" class="h-h3" style="margin:0">Download data</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 14px 0">Export this strategy's runtime data and order book.</p>
+        <div style="display:flex; flex-direction:column; gap:10px; font-family: var(--font-mono); font-size:0.86rem">
+          <label style="display:flex; gap:10px; align-items:center"><input type="radio" name="dl-fmt" checked> CSV — all positions + P&amp;L (this session)</label>
+          <label style="display:flex; gap:10px; align-items:center"><input type="radio" name="dl-fmt"> CSV — order book (broker confirmations)</label>
+          <label style="display:flex; gap:10px; align-items:center"><input type="radio" name="dl-fmt"> JSON — runtime variable snapshot</label>
+        </div>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Switch Lite -->
+  <div class="h-modal" id="strategy-switch-lite" role="dialog" aria-modal="true" aria-labelledby="strategy-switch-lite-title">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 id="strategy-switch-lite-title" class="h-h3" style="margin:0">Switch to Lite execution</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <p class="h-body" style="margin:0 0 12px 0"><b>Lite mode</b> evaluates conditions less frequently and skips deep position book sync. Useful for low-frequency strategies — saves compute and reduces broker API hits.</p>
+        <p class="h-micro" style="margin:0; color: var(--slate)">Switching only affects the next iteration onward. Open positions and pending orders stay intact.</p>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm">Switch Lite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- On Error Settings -->
+  <div class="h-modal" id="strategy-on-error" role="dialog" aria-modal="true" aria-labelledby="strategy-on-error-title">
+    <div class="h-modal__card">
+      <div class="h-modal__head">
+        <h3 id="strategy-on-error-title" class="h-h3" style="margin:0">On error execution setting</h3>
+        <button class="h-modal__close" data-modal-close aria-label="Close">×</button>
+      </div>
+      <div class="h-modal__body">
+        <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer">
+          <input type="checkbox" style="margin-top:3px">
+          <span>
+            <span class="h-body" style="display:block">If strategy is in error, exit strategy</span>
+            <span class="h-micro" style="display:block; color: var(--slate); margin-top:4px">When checked, the engine will square off all positions if the strategy enters an error state (e.g. broker rejection, condition evaluator crash).</span>
+          </span>
+        </label>
+      </div>
+      <div class="h-modal__foot">
+        <button class="h-btn h-btn--ghost h-btn--sm" data-modal-close>Cancel</button>
+        <button class="h-btn h-btn--primary h-btn--sm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+
+<footer class="h-footer">
+  <div class="h-container">
+    <div class="h-footer__grid">
+      <div class="h-footer__brand">
+        <span class="h-brand"><img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron"><img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron"></span>
+        <p class="h-body" style="max-width: 30ch; font-size: 0.92rem">A marketplace of trading algorithms, run live in their authors' accounts.</p>
+        <p class="h-micro" style="margin-top: 4px">Funds held by you, in your own brokerage. Tradetron never custodies money.</p>
+      </div>
+      <div class="h-footer__col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="features.html">Build</a></li>
+          <li><a href="backtest.html">Backtest</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="integrations.html">Integrations</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Learn</h5>
+        <ul>
+          <li><a href="faq.html">Manual &amp; FAQ</a></li>
+          <li><a href="tt-uni.html">TT Uni</a></li>
+          <li><a href="qna-forum.html">Q&amp;A Forum</a></li>
+          <li><a href="webinar.html">Webinars</a></li>
+          <li><a href="wall-of-love.html">Wall of Love</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="affiliates.html">Affiliates</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Markets</h5>
+        <ul>
+          <li><a href="us.html">United States</a></li>
+          <li><a href="nri-algo-trading.html">NRI trading</a></li>
+          <li><a href="crypto-trading.html">Crypto</a></li>
+          <li><a href="free-trading-app.html">Free app</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="trademark.html">Trademark</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="h-footer__legal">
+      <span>© 2018–2026 Tradetron Tech Pvt. Ltd.</span>
+      <span>Investments carry risk. Past performance is not indicative of future results.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/theme.js"></script>
+</body>
+</html>

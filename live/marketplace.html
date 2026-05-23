@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Marketplace · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- marketplace-local layout (functional density) ----
+     Built only from tokens.css/system.css/pages.css primitives —
+     hairlines, mono numerics, amber signal. No external app.css.
+     Mirrors dashboard.html's d-* conventions (tabs, pager, panels). */
+
+  .m-wrap { padding-block: clamp(24px, 3.5vw, 38px); }
+
+  /* page header row (matches d-head in dashboard) */
+  .m-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin: 16px 0 18px;
+  }
+  .m-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .m-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .m-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- sub-tab row (shared d-tabs look, but as links) ---- */
+  .d-tabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 2px; margin-bottom: 24px;
+  }
+  .d-tab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 14px 14px; cursor: pointer; white-space: nowrap; text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .d-tab:hover { color: var(--ink); }
+  .d-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- two-column shell: filter rail + grid ---- */
+  .m-shell { display: grid; grid-template-columns: 252px 1fr; gap: 22px; align-items: start; }
+
+  /* ---- filter rail ---- */
+  .m-rail {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 86px;
+  }
+  .m-rail__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: var(--hairline);
+  }
+  .m-rail__head h2 {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.02rem;
+    letter-spacing: -0.015em; margin: 0;
+  }
+  .m-rail__reset {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--signal); padding: 0;
+  }
+  .m-rail__reset:hover { color: var(--ink); }
+
+  .m-group { padding: 14px 16px; border-bottom: var(--hairline); }
+  .m-group:last-child { border-bottom: 0; }
+  .m-group__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate); margin: 0 0 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .m-group__lbl .m-count { color: var(--slate-soft); letter-spacing: 0.04em; }
+
+  /* sort: radio-styled mono rows */
+  .m-radios { display: flex; flex-direction: column; gap: 2px; }
+  .m-radio {
+    display: flex; align-items: center; gap: 9px; cursor: pointer;
+    padding: 6px 8px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft);
+    letter-spacing: var(--tracking-mono); transition: background 140ms, color 140ms;
+  }
+  .m-radio:hover { background: var(--paper-2); color: var(--ink); }
+  .m-radio input { accent-color: var(--signal); width: 14px; height: 14px; margin: 0; }
+  .m-radio.is-active { color: var(--signal); }
+
+  /* chip lists (tags / exchanges) */
+  .m-chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 184px; overflow-y: auto; padding-right: 2px; }
+  .m-chips--ex { max-height: 150px; }
+  .m-fchip {
+    appearance: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 24px; padding: 0 10px;
+    border: 1px solid var(--rule-strong); border-radius: var(--radius-pill);
+    background: var(--surface); color: var(--ink-soft);
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em;
+    transition: border-color 140ms, color 140ms, background 140ms;
+    white-space: nowrap;
+  }
+  .m-fchip:hover { border-color: var(--signal); color: var(--signal); }
+  .m-fchip.is-active {
+    background: var(--signal-tint); color: var(--signal);
+    border-color: color-mix(in oklab, var(--signal) 50%, transparent);
+  }
+
+  /* fixed-fee segmented toggle */
+  .m-seg { display: inline-flex; border: var(--hairline); border-radius: var(--radius-sm); overflow: hidden; }
+  .m-seg button {
+    appearance: none; border: 0; background: var(--surface); cursor: pointer;
+    padding: 7px 14px; font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.04em; color: var(--slate); border-right: var(--hairline);
+    transition: background 140ms, color 140ms;
+  }
+  .m-seg button:last-child { border-right: 0; }
+  .m-seg button:hover { color: var(--ink); }
+  .m-seg button.is-active { background: var(--ink); color: var(--paper); }
+
+  /* scrollbar polish (rail lists) */
+  .m-chips::-webkit-scrollbar { width: 8px; }
+  .m-chips::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 99px; }
+  .m-chips::-webkit-scrollbar-track { background: transparent; }
+
+  /* ---- results header strip ---- */
+  .m-resbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .m-resbar__count { font-family: var(--font-mono); font-size: 0.78rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .m-resbar__count strong { color: var(--ink); font-weight: 500; }
+  .m-sortmini { display: flex; align-items: center; gap: 8px; }
+  .d-select {
+    height: 32px; padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); -webkit-appearance: none; appearance: none;
+    cursor: pointer; transition: border-color 160ms;
+  }
+  .d-select:focus { outline: 0; border-color: var(--signal); }
+
+  /* ---- strategy listing grid ---- */
+  .m-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+  .m-listing {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+    transition: border-color 160ms, box-shadow 160ms;
+  }
+  .m-listing:hover { border-color: var(--rule-strong); box-shadow: var(--shadow-md); }
+
+  .m-listing__meta {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em;
+    color: var(--slate); display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .m-listing__meta .at { color: var(--slate-soft); }
+  .m-listing__meta .live { color: var(--signal); }
+
+  .m-listing__name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.04rem;
+    letter-spacing: -0.015em; line-height: 1.25; margin: 0; color: var(--ink);
+  }
+  .m-listing__more {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--signal);
+    letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .m-listing__more:hover { color: var(--ink); }
+  .m-listing__by { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .m-listing__by b { color: var(--ink-soft); font-weight: 500; }
+
+  .m-badges { display: flex; flex-wrap: wrap; gap: 5px; }
+  .m-badge {
+    display: inline-flex; align-items: center; height: 20px; padding: 0 8px;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--slate); background: var(--paper-2);
+  }
+  .m-badge--ex { color: var(--ink-soft); border-color: var(--rule-strong); background: var(--surface); }
+
+  /* card stat row — built on dashboard's mono-numeric convention */
+  .m-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: var(--hairline); border-bottom: var(--hairline);
+    margin-top: 2px;
+  }
+  .m-stat { padding: 10px 12px 10px 0; border-right: var(--hairline); display: flex; flex-direction: column; gap: 3px; }
+  .m-stat:not(:first-child) { padding-left: 12px; }
+  .m-stat:last-child { border-right: 0; }
+  .m-stat__lbl { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .m-stat__val { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.86rem; letter-spacing: -0.01em; color: var(--ink); }
+  .m-stat__sub { font-family: var(--font-mono); font-size: 0.62rem; color: var(--slate); }
+  .m-stat__val--neg { color: var(--negative); }
+  .m-stat__val--sig { color: var(--signal); }
+
+  .m-listing__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .m-fee { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.82rem; color: var(--ink); }
+  .m-fee small { color: var(--slate); font-size: 0.68rem; }
+
+  /* ---- pagination (shared d-pager) ---- */
+  .m-pagewrap { display: flex; align-items: center; justify-content: center; margin-top: 30px; }
+  .d-pager { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; }
+  .d-pager a, .d-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .d-pager a:hover { border-color: var(--signal); color: var(--signal); }
+  .d-pager .is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .d-pager .gap { border: 0; color: var(--slate); }
+
+  @media (max-width: 1080px) {
+    .m-shell { grid-template-columns: 1fr; }
+    .m-rail { position: static; }
+    .m-chips, .m-chips--ex { max-height: 132px; }
+  }
+  @media (max-width: 720px) {
+    .m-grid { grid-template-columns: 1fr; }
+    .m-stats { grid-template-columns: repeat(2, 1fr); }
+    .m-stat:nth-child(2) { border-right: 0; }
+    .m-stat:nth-child(1), .m-stat:nth-child(2) { border-bottom: var(--hairline); }
+  }
+</style>
+</head>
+<body data-screen-label="Marketplace">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container m-wrap">
+
+  <!-- SUB-TAB ROW -->
+  <nav class="d-tabs" role="tablist" aria-label="Strategies">
+    <a class="d-tab" href="deployed-strategies.html" role="tab">Deployed</a>
+    <a class="d-tab" href="my-strategies.html" role="tab">My Strategies</a>
+    <a class="d-tab is-active" href="marketplace.html" role="tab" aria-selected="true">Marketplace</a>
+    <a class="d-tab" href="backtest.html" role="tab">Backtest</a>
+  </nav>
+
+  <!-- PAGE HEAD -->
+  <div class="m-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Marketplace · logged in as Algolive</span>
+      <h1 class="m-head__title">Strategies, <span class="sig">live</span> in their authors' accounts.</h1>
+      <span class="m-head__sub">Public listings · subscribe to run any one in your own brokerage</span>
+    </div>
+    <div class="m-head__actions">
+      <a href="top-creators.html" class="h-btn h-btn--ghost h-btn--sm">Top creators</a>
+      <a href="features.html" class="h-btn h-btn--primary h-btn--sm">Build your own</a>
+    </div>
+  </div>
+
+  <!-- SHELL: filter rail + grid -->
+  <div class="m-shell">
+
+    <!-- LEFT FILTER RAIL -->
+    <aside class="m-rail" aria-label="Filters">
+      <div class="m-rail__head">
+        <h2>Filters</h2>
+        <button class="m-rail__reset" type="button">Reset</button>
+      </div>
+
+      <!-- Sort by -->
+      <div class="m-group">
+        <p class="m-group__lbl">Sort by</p>
+        <div class="m-radios" role="radiogroup" aria-label="Sort by">
+          <label class="m-radio is-active"><input type="radio" name="sort" checked /> Latest</label>
+          <label class="m-radio"><input type="radio" name="sort" /> Min Fees</label>
+          <label class="m-radio"><input type="radio" name="sort" /> Max Deployment</label>
+          <label class="m-radio"><input type="radio" name="sort" /> Min Capital</label>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="m-group">
+        <p class="m-group__lbl">Tags <span class="m-count">19+</span></p>
+        <div class="m-chips" role="group" aria-label="Tags">
+          <button class="m-fchip" type="button">Arbitrage</button>
+          <button class="m-fchip" type="button">Bearish</button>
+          <button class="m-fchip" type="button">Breakout</button>
+          <button class="m-fchip" type="button">Bullish</button>
+          <button class="m-fchip" type="button">DeltaNeutral</button>
+          <button class="m-fchip is-active" type="button">Directional</button>
+          <button class="m-fchip" type="button">EarnTheta</button>
+          <button class="m-fchip" type="button">Equity</button>
+          <button class="m-fchip" type="button">Expiry Trading</button>
+          <button class="m-fchip" type="button">Intraday</button>
+          <button class="m-fchip" type="button">Momentum</button>
+          <button class="m-fchip" type="button">NonDirectional</button>
+          <button class="m-fchip" type="button">Option Buying</button>
+          <button class="m-fchip" type="button">Option Selling</button>
+          <button class="m-fchip" type="button">Positional</button>
+          <button class="m-fchip" type="button">Range</button>
+          <button class="m-fchip" type="button">Scalping</button>
+          <button class="m-fchip" type="button">TrendFollowing</button>
+          <button class="m-fchip" type="button">Volatility</button>
+        </div>
+      </div>
+
+      <!-- Exchanges -->
+      <div class="m-group">
+        <p class="m-group__lbl">Exchanges <span class="m-count">9+</span></p>
+        <div class="m-chips m-chips--ex" role="group" aria-label="Exchanges">
+          <button class="m-fchip" type="button">NSE</button>
+          <button class="m-fchip is-active" type="button">NFO</button>
+          <button class="m-fchip" type="button">MCX</button>
+          <button class="m-fchip" type="button">NSE_IDX</button>
+          <button class="m-fchip" type="button">NASDAQ-EQ</button>
+          <button class="m-fchip" type="button">Crypto</button>
+          <button class="m-fchip" type="button">BFO</button>
+          <button class="m-fchip" type="button">DELTA</button>
+          <button class="m-fchip" type="button">BINANCE</button>
+        </div>
+      </div>
+
+      <!-- Fixed Fee -->
+      <div class="m-group">
+        <p class="m-group__lbl">Fixed Fee</p>
+        <div class="m-seg" role="group" aria-label="Fixed fee">
+          <button type="button" class="is-active">All</button>
+          <button type="button">Free</button>
+          <button type="button">Paid</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: results -->
+    <section aria-label="Strategy listings">
+
+      <div class="m-resbar">
+        <span class="m-resbar__count"><strong>13</strong> strategies · page 1 of 70</span>
+        <div class="m-sortmini">
+          <span class="h-tag" style="letter-spacing:0.1em">Sort</span>
+          <select class="d-select" aria-label="Sort by">
+            <option selected>Latest</option>
+            <option>Min Fees</option>
+            <option>Max Deployment</option>
+            <option>Min Capital</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="m-grid">
+
+        <!-- 1 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 2 years ago <span class="at">|</span> live deployment: <span class="live">743</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">NIFTY Directional Option Selling With Hedge V1</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Patni Capital PVT LTD</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Directional</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">126</span><span class="m-stat__sub">₹2.5 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹27.9 K</span><span class="m-stat__sub">17%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹160 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹500</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 1 year ago <span class="at">|</span> live deployment: <span class="live">300</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">NIFTY Strategies Basket V2</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Patni Capital PVT LTD</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Pairs</span>
+            <span class="m-badge">Bullish</span>
+            <span class="m-badge">Directional</span>
+            <span class="m-badge">Positional</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">321</span><span class="m-stat__sub">₹6.4 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹47 K</span><span class="m-stat__sub">7%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹700 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹1,100</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 3 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 6 months ago <span class="at">|</span> live deployment: <span class="live">201</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">Market User Nifty Directional PS</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Algo with CA Siddharth</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹71.6 K</span><span class="m-stat__sub">24%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹300 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 10%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 4 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 1 year ago <span class="at">|</span> live deployment: <span class="live">164</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">NIFTY Strategies Basket V3</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Patni Capital PVT LTD</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Directional</span>
+            <span class="m-badge">Positional</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">321</span><span class="m-stat__sub">₹6.4 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹60.7 K</span><span class="m-stat__sub">9%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹700 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹1,000</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 3 months ago <span class="at">|</span> live deployment: <span class="live">96</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">AI powered 5K Capital based Nifty and Sensex Intraday Option Buying</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>AI ONE ALGO</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge m-badge--ex">BFO</span>
+            <span class="m-badge">Momentum</span>
+            <span class="m-badge">Expiry</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹2.2 K</span><span class="m-stat__sub">43%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹5 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 20%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 6 months ago <span class="at">|</span> live deployment: <span class="live">21</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">Crypto BTC Options Selling: Premium Decay Strategy</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Algo Pro Universe</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">DELTAINDIA</span>
+            <span class="m-badge">Expiry</span>
+            <span class="m-badge">NonDirectional</span>
+            <span class="m-badge">Option Selling</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">$71.7</span><span class="m-stat__sub">72%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">$100</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 9%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 7 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 1 month ago <span class="at">|</span> live deployment: <span class="live">20</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">AI powered 10K capital Nifty Sensex Index Option Buying</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>AI ONE ALGO</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge m-badge--ex">BFO</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹2.4 K</span><span class="m-stat__sub">24%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹10 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹999 + 15%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 8 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 6 months ago <span class="at">|</span> live deployment: <span class="live">15</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">NIFTYBANK OPTION360</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>MAX ALGOS</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Directional</span>
+            <span class="m-badge">NonDirectional</span>
+            <span class="m-badge">Option Selling</span>
+            <span class="m-badge">Volatility</span>
+            <span class="m-badge">+more</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">394</span><span class="m-stat__sub">₹7.9 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹8.8 K</span><span class="m-stat__sub">29%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹30 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 12%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 9 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 7 months ago <span class="at">|</span> live deployment: <span class="live">4</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">Mid Select Nano SuperScalp DE Xtrategy</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>SHRAWAN KUMAR</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Scalping</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹512.5</span><span class="m-stat__sub">5%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹10 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 10%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 10 (subscribed) -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 9 months ago <span class="at">|</span> live deployment: <span class="live">2</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">Dr Algo 5 in 1 Multi Index Option Buy Strategy</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Doctor Algo</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge m-badge--ex">BFO</span>
+            <span class="m-badge">Option Buying</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹7.7 K</span><span class="m-stat__sub">9%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹85 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 15%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <span class="h-chip h-chip--pos h-chip--dot">Subscribed</span>
+          </div>
+        </article>
+
+        <!-- 11 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 2 months ago <span class="at">|</span> live deployment: <span class="live">37</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">FB1 MINTO NIFTY BUYER</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>Flatbot</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge">Momentum</span>
+            <span class="m-badge">Scalping</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹4 K</span><span class="m-stat__sub">8%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹50 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹2,500 + 12%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 12 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 7 months ago <span class="at">|</span> live deployment: <span class="live">52</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">Master Of Ace</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>BCAMS Algorithms</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">NFO</span>
+            <span class="m-badge m-badge--ex">BFO</span>
+            <span class="m-badge">Volatility</span>
+            <span class="m-badge">NonDirectional</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹22.4 K</span><span class="m-stat__sub">2%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹900 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">Free + 9%</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+        <!-- 13 -->
+        <article class="m-listing">
+          <div class="m-listing__meta">created : 1 month ago <span class="at">|</span> live deployment: <span class="live">41</span></div>
+          <div class="h-card__head" style="align-items:flex-start">
+            <h3 class="m-listing__name"><a href="strategy-profile.html">P SENSEX PYTHON SELLING THU DTE 0</a></h3>
+            <a href="strategy-profile.html" class="m-listing__more">Read More…</a>
+          </div>
+          <div class="m-listing__by">by: <b>CA Mohit Goyal SEBI RA</b></div>
+          <div class="m-badges">
+            <span class="m-badge m-badge--ex">BFO</span>
+          </div>
+          <div class="m-stats">
+            <div class="m-stat"><span class="m-stat__lbl">Trades / ~Costs</span><span class="m-stat__val">—</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Drawdown</span><span class="m-stat__val m-stat__val--neg">₹543</span><span class="m-stat__sub">1%</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Min Capital</span><span class="m-stat__val">₹66.5 K</span></div>
+            <div class="m-stat"><span class="m-stat__lbl">Monthly Fee</span><span class="m-stat__val m-stat__val--sig">₹100</span></div>
+          </div>
+          <div class="m-listing__foot">
+            <span class="h-micro">Live track record · author's account</span>
+            <a href="strategy-profile.html" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="m-pagewrap">
+        <div class="d-pager">
+          <a href="#" aria-label="Previous">‹</a>
+          <span class="is-active">1</span>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <a href="#">4</a>
+          <a href="#">5</a>
+          <a href="#">6</a>
+          <a href="#">7</a>
+          <a href="#">8</a>
+          <span class="gap">…</span>
+          <a href="#">69</a>
+          <a href="#">70</a>
+          <a href="#" aria-label="Next">›</a>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

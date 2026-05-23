@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Webinars — live, free, weekly · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* webinar card list */
+  .h-webList{display:flex;flex-direction:column;gap:14px}
+  .h-web{display:grid;grid-template-columns:160px 1fr auto;gap:24px;align-items:center;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);padding:20px 24px;transition:border-color .15s}
+  .h-web:hover{border-color:var(--signal)}
+  .h-web__date{display:flex;flex-direction:column;gap:4px}
+  .h-web__day{font:600 1.6rem/1 var(--font-display);color:var(--ink);letter-spacing:-0.02em}
+  .h-web__mon{font:500 .76rem/1 var(--font-mono);color:var(--slate);letter-spacing:.08em;text-transform:uppercase}
+  .h-web__time{font:400 .76rem/1.3 var(--font-mono);color:var(--slate);margin-top:4px}
+  .h-web__body{display:flex;flex-direction:column;gap:6px}
+  .h-web__title{font:600 1.05rem/1.3 var(--font-display);color:var(--ink);letter-spacing:-0.01em}
+  .h-web__meta{font:400 .82rem/1.5 var(--font-body);color:var(--ink-soft)}
+  .h-web__tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .h-web__tag{font-family:var(--font-mono);font-size:.66rem;color:var(--ink-soft);padding:3px 9px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--paper-2);letter-spacing:.04em}
+  .h-web__cta{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .h-web__lbl{font:500 .62rem/1 var(--font-mono);color:var(--slate-soft);letter-spacing:.08em;text-transform:uppercase}
+
+  /* subscribe band */
+  .h-subscribe{background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);padding:clamp(24px,3vw,36px);display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center}
+  .h-subscribe form{display:flex;gap:10px;flex-wrap:wrap}
+  .h-subscribe input{flex:1;min-width:200px;height:44px;padding:0 14px;border:var(--hairline);border-radius:var(--radius-sm);background:var(--field);color:var(--ink);font-family:var(--font-body);font-size:.94rem}
+  .h-subscribe input:focus{outline:0;border-color:var(--signal)}
+
+  @media(max-width:860px){
+    .h-web{grid-template-columns:1fr;gap:14px;padding:18px}
+    .h-web__cta{align-items:flex-start}
+    .h-subscribe{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-screen-label="Webinars — live, free, weekly">
+
+<div data-include="_header.html"></div>
+
+
+<!-- HERO -->
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Learn · live webinars</div>
+    <h1>Live webinars. Free, weekly.<br /><span class="sig">From building your first algo to running ten.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">A working session every week — no sales pitch, no theory dump. We build a real strategy live, answer questions, and walk you through one feature in depth. Topics rotate through the five things that matter most: trust, alerts, audit, true PnL, and the marketplace.</p>
+    <div class="h-pagehero__cta">
+      <a href="#upcoming" class="h-btn h-btn--primary">See upcoming sessions →</a>
+      <a href="#subscribe" class="h-btn h-btn--ghost">Get weekly invites</a>
+    </div>
+    <div class="h-truststrip" style="margin-top:18px">
+      <span>Free to attend</span><span>~60 min per session</span><span>Replays for everyone</span><span>Live Q&amp;A</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- UPCOMING -->
+<section class="h-container h-section" id="upcoming">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:24px">
+    <div>
+      <span class="h-eyebrow">Upcoming</span>
+      <h2 class="h-h2" style="margin-top:14px">Register to attend live.</h2>
+    </div>
+    <span class="h-micro" style="max-width:32ch;text-align:right">all listings sample · pending content review · check tradetron.tech for confirmed sessions</span>
+  </div>
+
+  <div class="h-webList">
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">06</span>
+        <span class="h-web__mon">Jun · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 60 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">Reading Your Trust Score: when green isn't really green</span>
+        <span class="h-web__meta">Speaker: Mohan Allamappa · How to interpret the live health score on your dashboard, what each amber state actually means, and what to fix before the next session.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Trust &amp; alerts</span><span class="h-web__tag">Going live</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">13</span>
+        <span class="h-web__mon">Jun · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 60 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">Setting Up WhatsApp Risk Alerts (without getting spammed)</span>
+        <span class="h-web__meta">Speaker: Mahesh Wadhwani · Which alerts deserve a phone buzz, which belong in the daily digest, and how to wire the threshold so you only hear from Tradetron when it matters.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Trust &amp; alerts</span><span class="h-web__tag">Operate</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">20</span>
+        <span class="h-web__mon">Jun · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 75 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">AI Strategy Audit walkthrough — catch bugs before Go-Live unlocks</span>
+        <span class="h-web__meta">Speaker: Mohan Allamappa · We feed a deliberately broken short-strangle into the audit and watch it flag the missing SL on the short leg. Then we fix it and ship.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Verify</span><span class="h-web__tag">Advanced Builder</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">27</span>
+        <span class="h-web__mon">Jun · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 60 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">True-Net PnL: where 28% of your gross actually goes</span>
+        <span class="h-web__meta">Speaker: Mahesh Wadhwani · Brokerage, STT, slippage, GST — we strip a live strategy's PnL back to true-net and show the cost-burn chart most traders never see.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Operate</span><span class="h-web__tag">Costs</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">04</span>
+        <span class="h-web__mon">Jul · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 75 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">Marketplace as a Creator — listing your first algo end-to-end</span>
+        <span class="h-web__meta">Speaker: Mohan Allamappa · From a strategy you've been trading for 3 months to a listed marketplace product with the Verified Live badge. Pricing, descriptions, what subscribers see.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Marketplace</span><span class="h-web__tag">Creator</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+    <div class="h-web">
+      <div class="h-web__date">
+        <span class="h-web__day">11</span>
+        <span class="h-web__mon">Jul · Fri</span>
+        <span class="h-web__time">4:00 PM IST · 90 min</span>
+      </div>
+      <div class="h-web__body">
+        <span class="h-web__title">Multi-leg options on Tradetron — straddles, condors, calendars</span>
+        <span class="h-web__meta">Speaker: Mahesh Wadhwani · Hands-on session: we build a NIFTY short straddle with hedges and an iron condor in the Options Wizard, backtest both, paper-trade one.</span>
+        <div class="h-web__tags"><span class="h-web__tag">Advanced Builder</span><span class="h-web__tag">Options</span></div>
+      </div>
+      <div class="h-web__cta">
+        <span class="h-web__lbl">upcoming · register to attend</span>
+        <a href="register.html" class="h-btn h-btn--primary">Register free →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- PAST WEBINARS -->
+<section class="h-band">
+  <div class="h-container h-section">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:24px">
+      <div>
+        <span class="h-eyebrow">Replays</span>
+        <h2 class="h-h2" style="margin-top:14px">Past sessions. Watch the replay.</h2>
+      </div>
+      <span class="h-micro" style="max-width:32ch;text-align:right">all replays sample · pending content review · live channel at youtube.com/tradetron</span>
+    </div>
+
+    <div class="h-webList">
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">30</span>
+          <span class="h-web__mon">May · Fri</span>
+          <span class="h-web__time">recorded · 62 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Plain-English Trade Replay — why every order fired (or didn't)</span>
+          <span class="h-web__meta">Speaker: Mohan Allamappa · A walkthrough of the trade-replay panel: hover any fill, read why it fired, find the entry condition that actually triggered.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Operate</span><span class="h-web__tag">Getting started</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">23</span>
+          <span class="h-web__mon">May · Fri</span>
+          <span class="h-web__time">recorded · 71 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Day Journal — end-of-day review in 60 seconds</span>
+          <span class="h-web__meta">Speaker: Mahesh Wadhwani · How the Day Journal logs every fired and almost-fired trade, alert, and reconcile event — and what to look at before tomorrow opens.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Operate</span><span class="h-web__tag">Review</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">16</span>
+          <span class="h-web__mon">May · Fri</span>
+          <span class="h-web__time">recorded · 58 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Daily Broker Reconciliation — surprises caught within the hour</span>
+          <span class="h-web__meta">Speaker: Mohan Allamappa · How the auto-diff between your broker statement and Tradetron's trade log catches missed fills and silent rejections before they bite.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Trust &amp; alerts</span><span class="h-web__tag">Operate</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">09</span>
+          <span class="h-web__mon">May · Fri</span>
+          <span class="h-web__time">recorded · 88 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Build a NIFTY Pin Range strategy from scratch (no code)</span>
+          <span class="h-web__meta">Speaker: Mahesh Wadhwani · Zero to deployed in 90 minutes. We use the Advanced Builder canvas, paper-trade the result, and explain every decision.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Getting started</span><span class="h-web__tag">Advanced Builder</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">02</span>
+          <span class="h-web__mon">May · Fri</span>
+          <span class="h-web__time">recorded · 64 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Backtest realism flags — what to fix before you trust the curve</span>
+          <span class="h-web__meta">Speaker: Mohan Allamappa · Over-fit, look-ahead bias, unrealistic slippage — the four flags Tradetron raises on every backtest, and what each one really means.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Verify</span><span class="h-web__tag">Backtest</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">25</span>
+          <span class="h-web__mon">Apr · Fri</span>
+          <span class="h-web__time">recorded · 70 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Subscribing to a marketplace algo — what to read on the card</span>
+          <span class="h-web__meta">Speaker: Mahesh Wadhwani · The 10-second card scan: live deploys, verified period, author's own PnL, monthly cost. Why the Verified Live badge changes everything.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Marketplace</span><span class="h-web__tag">Subscriber</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">18</span>
+          <span class="h-web__mon">Apr · Fri</span>
+          <span class="h-web__time">recorded · 56 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Connecting Zerodha, Upstox and Angel One — broker OAuth in 3 minutes</span>
+          <span class="h-web__meta">Speaker: Mohan Allamappa · The honest broker-by-broker walkthrough — what each one's OAuth flow looks like, and what tokens to refresh weekly vs daily.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Getting started</span><span class="h-web__tag">Brokers</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">11</span>
+          <span class="h-web__mon">Apr · Fri</span>
+          <span class="h-web__time">recorded · 82 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">Building with AI — describe it in plain English, ship in 20 minutes</span>
+          <span class="h-web__meta">Speaker: Mahesh Wadhwani · Live demo using Claude and the Tradetron connector — we describe a short-CE breakout-failure strategy and watch it built in the user's account.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Compose</span><span class="h-web__tag">AI</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+      <div class="h-web">
+        <div class="h-web__date">
+          <span class="h-web__day">04</span>
+          <span class="h-web__mon">Apr · Fri</span>
+          <span class="h-web__time">recorded · 68 min</span>
+        </div>
+        <div class="h-web__body">
+          <span class="h-web__title">From paper to live — the 5-minute pre-deploy checklist</span>
+          <span class="h-web__meta">Speaker: Mohan Allamappa · The seven things to look at on your paper strategy before you flip it live. AI audit results, realism flags, drawdown profile, sizing.</span>
+          <div class="h-web__tags"><span class="h-web__tag">Going live</span><span class="h-web__tag">Verify</span></div>
+        </div>
+        <div class="h-web__cta">
+          <span class="h-web__lbl">watch the replay</span>
+          <a href="videos.html" class="h-btn h-btn--text">Watch →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- SUBSCRIBE BAND -->
+<section class="h-container h-section" id="subscribe">
+  <div class="h-subscribe">
+    <div>
+      <span class="h-eyebrow">Subscribe for weekly invites</span>
+      <h2 class="h-h2" style="margin-top:14px;max-width:18ch">One email. <span class="sig">Friday's session.</span> That's it.</h2>
+      <p class="h-body" style="margin-top:12px;max-width:42ch">No drip campaigns. No promo. Just the week's topic, speaker, and registration link — delivered Monday morning so you can plan around it.</p>
+    </div>
+    <form onsubmit="return false">
+      <input type="email" placeholder="you@email.com" aria-label="Your email" />
+      <button class="h-btn h-btn--primary">Subscribe →</button>
+      <p class="h-micro" style="width:100%;margin-top:6px">We send one email a week. Unsubscribe in one click — funds never leave your broker, your inbox is the same deal.</p>
+    </form>
+  </div>
+</section>
+
+
+<!-- CLOSING CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size:clamp(2.4rem,4.5vw,4rem);text-align:center;max-width:24ch">The seat is free.<br />So is <span class="sig">paper trading.</span></h2>
+  <p class="h-cta__sub">Register for this week's session, then build and paper-trade your own strategy — no code, no card. Go live in your own broker account only when you're ready.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="#subscribe" class="h-btn h-btn--ghost">Subscribe for weekly invites →</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

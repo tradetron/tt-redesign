@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Broker &amp; Exchanges · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area shell (built only from tokens) ---- */
+  .a-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  .a-shell {
+    display: grid; grid-template-columns: 248px 1fr; gap: 28px;
+    align-items: start;
+  }
+
+  /* ---- left account sidebar (clean vertical nav) ---- */
+  .a-side {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 92px;
+  }
+  .a-side__head {
+    padding: 16px 18px; border-bottom: var(--hairline);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .a-side__avatar {
+    width: 34px; height: 34px; border-radius: 2px; flex-shrink: 0;
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.92rem;
+  }
+  .a-side__id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .a-side__id strong {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.95rem;
+    letter-spacing: -0.01em;
+  }
+  .a-side__id span {
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .a-side__cap {
+    padding: 14px 18px 8px;
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--slate-soft);
+  }
+  .a-side__nav { display: flex; flex-direction: column; padding-bottom: 8px; }
+  .a-side__link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 18px;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); color: var(--ink-soft);
+    border-left: 2px solid transparent;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .a-side__link:hover { background: var(--paper-2); color: var(--ink); }
+  .a-side__link.is-active {
+    color: var(--signal); background: var(--signal-tint);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .a-side__link .a-side__caret { color: var(--slate-soft); }
+  .a-side__link.is-active .a-side__caret { color: var(--signal); }
+
+  /* ---- content panel ---- */
+  .a-content { min-width: 0; }
+  .a-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .a-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .a-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .a-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- broker cards ---- */
+  .b-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .b-card {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .b-card__top { display: flex; align-items: flex-start; gap: 14px; }
+  .b-mono {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    background: var(--paper-2);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+    color: var(--ink); letter-spacing: -0.02em;
+  }
+  .b-id { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 1; }
+  .b-name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem;
+    letter-spacing: -0.015em; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .b-exch { display: flex; flex-wrap: wrap; gap: 5px; }
+  .b-exch span {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    padding: 2px 7px; border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--slate); letter-spacing: 0.04em; background: var(--paper);
+  }
+  .b-meta {
+    display: flex; flex-direction: column; gap: 7px;
+    padding-top: 12px; border-top: var(--hairline);
+  }
+  .b-row {
+    display: flex; align-items: baseline; gap: 10px;
+    font-family: var(--font-mono); font-size: 0.76rem;
+    letter-spacing: var(--tracking-mono);
+  }
+  .b-row__k {
+    color: var(--slate); min-width: 92px; flex-shrink: 0;
+    text-transform: uppercase; font-size: 0.64rem; letter-spacing: 0.1em;
+    padding-top: 1px;
+  }
+  .b-row__v { color: var(--ink-soft); font-feature-settings: "tnum" 1; }
+  .b-note {
+    font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.5;
+    color: var(--slate); letter-spacing: var(--tracking-mono);
+    padding: 9px 11px; border-radius: var(--radius-sm);
+    background: var(--signal-tint);
+    border-left: 2px solid color-mix(in oklab, var(--signal) 50%, transparent);
+  }
+  .b-plans { display: flex; flex-wrap: wrap; gap: 6px; }
+  .b-plans span {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 4px 9px; border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink-soft); background: var(--paper); letter-spacing: var(--tracking-mono);
+  }
+  .b-plans span b { color: var(--ink); font-weight: 500; }
+  .b-card__foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+
+  @media (max-width: 1024px) {
+    .a-shell { grid-template-columns: 1fr; }
+    .a-side { position: static; }
+    .a-side__nav { flex-direction: row; flex-wrap: wrap; padding: 8px; gap: 4px; }
+    .a-side__cap { display: none; }
+    .a-side__link { border-left: 0; border-radius: var(--radius-sm); }
+    .a-side__link.is-active { border-left: 0; }
+    .a-side__link .a-side__caret { display: none; }
+  }
+  @media (max-width: 720px) {
+    .b-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Broker &amp; Exchanges">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container a-wrap">
+  <div class="a-shell">
+
+    <!-- LEFT ACCOUNT SIDEBAR -->
+    <aside class="a-side" aria-label="Account menu">
+      <div class="a-side__head">
+        <span class="a-side__avatar">A</span>
+        <span class="a-side__id">
+          <strong>Algolive</strong>
+          <span>Account</span>
+        </span>
+      </div>
+      <div class="a-side__cap">Account</div>
+      <nav class="a-side__nav">
+        <a href="profile.html" class="a-side__link">Profile <span class="a-side__caret">›</span></a>
+        <a href="subscriptions.html" class="a-side__link">Subscriptions <span class="a-side__caret">›</span></a>
+        <a href="brokers.html" class="a-side__link is-active" aria-current="page">Broker &amp; Exchanges <span class="a-side__caret">›</span></a>
+        <a href="coupons.html" class="a-side__link">Coupons <span class="a-side__caret">›</span></a>
+        <a href="notifications.html" class="a-side__link">Notifications <span class="a-side__caret">›</span></a>
+        <a href="telegram.html" class="a-side__link">Telegram <span class="a-side__caret">›</span></a>
+        <a href="broadcasts.html" class="a-side__link">Broadcast Messages <span class="a-side__caret">›</span></a>
+        <a href="manage-access.html" class="a-side__link">Manage Shared Codes <span class="a-side__caret">›</span></a>
+        <a href="invoices.html" class="a-side__link">Invoices <span class="a-side__caret">›</span></a>
+        <a href="invoice-template.html" class="a-side__link">Invoice Template <span class="a-side__caret">›</span></a>
+        <a href="change-password.html" class="a-side__link">Change Password <span class="a-side__caret">›</span></a>
+        <a href="recent-activities.html" class="a-side__link">Recent Activities <span class="a-side__caret">›</span></a>
+        <a href="region-settings.html" class="a-side__link">Region Settings <span class="a-side__caret">›</span></a>
+        <a href="ledger.html" class="a-side__link">Wallet <span class="a-side__caret">›</span></a>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section class="a-content">
+
+      <div class="a-head">
+        <div>
+          <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · Broker &amp; Exchanges</span>
+          <h1 class="a-head__title">Brokers <span class="sig">(7)</span></h1>
+          <span class="a-head__sub">Your live order pipes — every broker your strategies trade through</span>
+        </div>
+        <div class="a-head__actions">
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">Export CSV</a>
+          <a href="#" class="h-btn h-btn--primary h-btn--sm">+ Add Broker</a>
+        </div>
+      </div>
+
+      <div class="b-grid">
+
+        <!-- 1 · TT Paper Trading -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">TT</span>
+            <div class="b-id">
+              <span class="b-name">TT Paper Trading <span class="h-chip h-chip--paper">Paper</span></span>
+              <div class="b-exch">
+                <span>NSE</span><span>CDS</span><span>NFO</span><span>MCX</span>
+                <span>NSE_IDX</span><span>NASDAQ-EQ</span><span>Crypto</span><span>FX</span>
+              </div>
+            </div>
+          </div>
+          <p class="b-note">Simulated execution venue. No real orders are placed — use for forward-testing strategies risk-free.</p>
+        </article>
+
+        <!-- 2 · Zerodha -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">Z</span>
+            <div class="b-id">
+              <span class="b-name">Zerodha</span>
+              <div class="b-exch"><span>MCX</span><span>NFO</span><span>NSE</span></div>
+            </div>
+          </div>
+          <div class="b-meta">
+            <div class="b-row"><span class="b-row__k">Active IP</span><span class="b-row__v">163.128.64.5</span></div>
+            <div class="b-row"><span class="b-row__k">Expires</span><span class="b-row__v">2026-05-19</span></div>
+            <div class="b-row"><span class="b-row__k">Last Updated</span><span class="b-row__v">Mar 19 06:07</span></div>
+          </div>
+          <p class="b-note">Zerodha requires daily login to renew the API token or trades get rejected.</p>
+          <div class="b-card__foot">
+            <a href="#" class="h-btn h-btn--ghost h-btn--sm">Renew</a>
+          </div>
+        </article>
+
+        <!-- 3 · Tradeswift -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">Ts</span>
+            <div class="b-id">
+              <span class="b-name">Tradeswift</span>
+              <div class="b-exch"><span>MCX</span><span>NFO</span><span>NSE</span></div>
+            </div>
+          </div>
+          <div class="b-meta">
+            <div class="b-row">
+              <span class="b-row__k">Static IP</span>
+              <span class="b-row__v">
+                <span class="b-plans">
+                  <span>1 Month <b>₹100</b></span>
+                  <span>3 Month <b>₹250</b></span>
+                  <span>1 Year <b>₹1000</b></span>
+                </span>
+              </span>
+            </div>
+            <div class="b-row"><span class="b-row__k">Last Updated</span><span class="b-row__v">Nov 17 06:45</span></div>
+          </div>
+          <div class="b-card__foot">
+            <a href="#" class="h-btn h-btn--ghost h-btn--sm">Buy Static IP</a>
+          </div>
+        </article>
+
+        <!-- 4 · IIFL Capital -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">IF</span>
+            <div class="b-id">
+              <span class="b-name">IIFL Capital</span>
+              <div class="b-exch"><span>MCX</span><span>NFO</span><span>NSE</span></div>
+            </div>
+          </div>
+          <div class="b-meta">
+            <div class="b-row"><span class="b-row__k">Last Updated</span><span class="b-row__v">May 22 08:58</span></div>
+          </div>
+          <p class="b-note">IIFL requires daily login to renew the API token.</p>
+          <div class="b-card__foot">
+            <a href="#" class="h-btn h-btn--ghost h-btn--sm">Generate Token</a>
+          </div>
+        </article>
+
+        <!-- 5 · Delta Exchange India -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">Δ</span>
+            <div class="b-id">
+              <span class="b-name">Delta Exchange India</span>
+              <div class="b-exch"><span>DELTA</span></div>
+            </div>
+          </div>
+          <p class="b-note">Cross/Portfolio margin preferred for multi-leg options.</p>
+        </article>
+
+        <!-- 6 · Kotakneo V3 -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">K3</span>
+            <div class="b-id">
+              <span class="b-name">Kotakneo V3</span>
+              <div class="b-exch"><span>MCX</span><span>NFO</span><span>NSE</span></div>
+            </div>
+          </div>
+          <div class="b-meta">
+            <div class="b-row"><span class="b-row__k">Active IP</span><span class="b-row__v">163.128.64.21</span></div>
+            <div class="b-row"><span class="b-row__k">Expires</span><span class="b-row__v">2027-04-18</span></div>
+            <div class="b-row"><span class="b-row__k">Last Updated</span><span class="b-row__v">May 22 08:58</span></div>
+          </div>
+          <div class="b-card__foot">
+            <a href="#" class="h-btn h-btn--ghost h-btn--sm">Renew</a>
+          </div>
+        </article>
+
+        <!-- 7 · Kotakneo-yotta-test V3 -->
+        <article class="b-card">
+          <div class="b-card__top">
+            <span class="b-mono">Ky</span>
+            <div class="b-id">
+              <span class="b-name">Kotakneo-yotta-test V3</span>
+              <div class="b-exch"><span>MCX</span><span>NFO</span><span>NSE</span></div>
+            </div>
+          </div>
+          <div class="b-meta">
+            <div class="b-row"><span class="b-row__k">Last Updated</span><span class="b-row__v">May 14 08:34</span></div>
+          </div>
+        </article>
+
+      </div>
+
+    </section>
+  </div>
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tradetron API — the engine, programmatically · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Code sample — Helix tokens, scoped to this page */
+  .h-code {
+    background: var(--surface);
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .h-code__bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate);
+  }
+  .h-code__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); }
+  .h-code pre {
+    margin: 0; padding: 20px 18px; overflow-x: auto;
+    font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .h-code .c-key { color: var(--signal); }
+  .h-code .c-str { color: var(--positive); }
+  .h-code .c-com { color: var(--slate-soft); }
+  /* Endpoint rows */
+  .h-endpoints { border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
+  .h-endpoint {
+    display: grid; grid-template-columns: 84px 1fr 1.6fr; gap: 18px; align-items: center;
+    padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .h-endpoint:last-child { border-bottom: 0; }
+  .h-endpoint__verb {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.06em; padding: 3px 8px; border-radius: var(--radius-sm);
+    border: 1px solid var(--rule-strong); text-align: center; color: var(--ink-soft);
+  }
+  .h-endpoint__verb.get { color: var(--info); border-color: color-mix(in oklab, var(--info) 50%, transparent); }
+  .h-endpoint__verb.post { color: var(--signal); border-color: color-mix(in oklab, var(--signal) 50%, transparent); }
+  .h-endpoint__path { font-family: var(--font-mono); font-size: 0.86rem; color: var(--ink); }
+  .h-endpoint__desc { color: var(--slate); font-size: 0.86rem; }
+  @media (max-width: 720px) {
+    .h-endpoint { grid-template-columns: 70px 1fr; }
+    .h-endpoint__desc { grid-column: 1 / -1; }
+  }
+  /* Tier / rate-limit table */
+  .h-tiers {
+    width: 100%;
+    border-collapse: collapse;
+    border: var(--hairline);
+    background: var(--surface);
+  }
+  .h-tiers th, .h-tiers td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: var(--hairline);
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+  }
+  .h-tiers thead th {
+    font: 500 0.72rem/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    background: var(--paper-2);
+  }
+  .h-tiers td.num { font-family: var(--font-mono); color: var(--ink); }
+  .h-tiers tr:last-child td { border-bottom: 0; }
+  /* Auth model card */
+  .h-auth {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .h-auth__card {
+    padding: 18px;
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .h-auth__lbl {
+    font: 500 0.66rem/1 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  .h-auth__title {
+    font: 500 1.02rem/1.3 var(--font-display);
+    color: var(--ink);
+    margin-top: 8px;
+  }
+  .h-auth__body {
+    font-size: 0.86rem; line-height: 1.55;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+  @media (max-width: 720px) { .h-auth { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-screen-label="Tradetron API — the engine, programmatically">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Developers · API</div>
+    <h1>Tradetron's engine, <span class="sig">programmatically.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Build the trading layer of your app on top of ours. Fire signals from a Python script, a TradingView alert, an Excel sheet or your own platform — and let the engine that already runs ~175k live trades a day route every order into your user's broker. You send intent; we handle execution, position-keeping, risk and reconciliation over a clean REST API.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Get your API key →</a>
+      <a href="https://api.tradetron.tech/docs" target="_blank" rel="noopener" class="h-btn h-btn--ghost">Read the docs →</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>REST · JSON</span><span>API key + OAuth</span><span>Webhooks in &amp; out</span><span>Rate-limited, documented</span>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--lg">
+  <div class="h-twocol">
+    <div>
+      <span class="h-eyebrow">Quick auth</span>
+      <h2 class="h-h2" style="margin-top: 16px; max-width: 18ch">Three lines and you're authenticated.</h2>
+      <p class="h-body" style="margin-top: 18px; max-width: 40ch">Mint a key in Settings → API, drop it in an env var, and call any endpoint. Bearer-token auth over HTTPS, exactly like every other modern API. OAuth 2.0 for user-scoped flows when you're building for someone else.</p>
+      <div class="h-method__pills" style="margin-top: 20px">
+        <span>Python / JS / cURL</span><span>TradingView webhooks</span><span>Excel / Sheets</span><span>Your platform</span>
+      </div>
+    </div>
+    <div class="h-code">
+      <div class="h-code__bar">
+        <span style="display:inline-flex; align-items:center; gap:8px"><span class="h-code__dot"></span> Quick auth · cURL</span>
+        <span>example</span>
+      </div>
+<pre><span class="c-com"># 1 · Set your key (mint at Settings → API)</span>
+export TT_API_KEY=<span class="c-str">"tt_live_..."</span>
+
+<span class="c-com"># 2 · Authenticate every request with a Bearer token</span>
+curl https://api.tradetron.tech/v1/strategies \
+  -H <span class="c-str">"Authorization: Bearer $TT_API_KEY"</span>
+
+<span class="c-com"># → 200 OK · { "strategies": [...] }</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="h-band">
+  <div class="h-container h-section--md" id="endpoints">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px">
+      <div>
+        <span class="h-eyebrow">Endpoints</span>
+        <h2 class="h-h2" style="margin-top: 16px">A small, sharp surface.</h2>
+      </div>
+      <span class="h-micro">Base · https://api.tradetron.tech/v1</span>
+    </div>
+    <div class="h-endpoints">
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/strategies</span>
+        <span class="h-endpoint__desc">Build a strategy programmatically. Same schema the no-code canvas uses — multi-leg options, conditions, sets.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/strategies/{id}/backtest</span>
+        <span class="h-endpoint__desc">Run a backtest over years of historical data. Worst-case slippage, walk-forward, realism flags returned in the response.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/strategies/{id}/deploy</span>
+        <span class="h-endpoint__desc">Deploy or pause a strategy against a connected broker. Paper, Live-Offline or Live-Auto.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/strategies/{id}/audit</span>
+        <span class="h-endpoint__desc"><strong>AI Strategy Audit.</strong> Same audit that gates the Go-Live button in the UI — invoke it from your own deploy pipeline before you ship a strategy live.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/signals</span>
+        <span class="h-endpoint__desc">Fire an entry / exit signal into a deployed strategy. The executor routes the order into your user's broker.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb get">GET</span>
+        <span class="h-endpoint__path">/strategies/{id}/positions</span>
+        <span class="h-endpoint__desc">Read open positions, fills and live PnL — broker-confirmed, the same numbers the dashboard shows.</span>
+      </div>
+      <div class="h-endpoint">
+        <span class="h-endpoint__verb post">POST</span>
+        <span class="h-endpoint__path">/webhooks</span>
+        <span class="h-endpoint__desc">Register outbound webhooks for fills, broker disconnects, drawdown breaches and Universal Exit events.</span>
+      </div>
+    </div>
+    <p class="placeholder" style="margin-top: 20px">Full OpenAPI reference, schemas and per-endpoint examples live at <a href="https://api.tradetron.tech/docs" target="_blank" rel="noopener">api.tradetron.tech/docs</a>.</p>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 24px">
+    <div>
+      <span class="h-eyebrow">Rate limits &amp; tiers</span>
+      <h2 class="h-h2" style="margin-top: 14px">Honest about throughput.</h2>
+    </div>
+    <p class="h-body" style="max-width: 38ch">Every key has a tier. Tiers rate-limit reads, writes and signal-fires independently. Headers (<code class="h-mono">X-RateLimit-Remaining</code>) tell you exactly where you stand. Burst, then back off.</p>
+  </div>
+  <table class="h-tiers">
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th class="num">Reads / min</th>
+        <th class="num">Writes / min</th>
+        <th class="num">Signals / min</th>
+        <th>Webhooks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Free</td>
+        <td class="num">60</td>
+        <td class="num">10</td>
+        <td class="num">20</td>
+        <td>1 outbound</td>
+      </tr>
+      <tr>
+        <td>Trader</td>
+        <td class="num">300</td>
+        <td class="num">60</td>
+        <td class="num">120</td>
+        <td>5 outbound</td>
+      </tr>
+      <tr>
+        <td>Creator</td>
+        <td class="num">600</td>
+        <td class="num">120</td>
+        <td class="num">300</td>
+        <td>20 outbound</td>
+      </tr>
+      <tr>
+        <td>Business</td>
+        <td class="num">3,000</td>
+        <td class="num">600</td>
+        <td class="num">1,200</td>
+        <td>Unlimited</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="h-micro" style="margin-top: 14px">Sample · pending review. Final tier limits publish with the OpenAPI reference. 429 responses include <code class="h-mono">Retry-After</code> seconds.</p>
+</section>
+
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 20px">
+      <div>
+        <span class="h-eyebrow">Auth model</span>
+        <h2 class="h-h2" style="margin-top: 14px">Two ways in. Pick the one that fits.</h2>
+      </div>
+      <p class="h-body" style="max-width: 38ch">Build for yourself with a static API key. Build for someone else — and have their funds stay in their broker, not yours — with OAuth.</p>
+    </div>
+    <div class="h-auth">
+      <div class="h-auth__card">
+        <span class="h-auth__lbl">For your own account</span>
+        <div class="h-auth__title">API key (Bearer token)</div>
+        <p class="h-auth__body">Mint in Settings → API. Scope to read-only or full trading. Rotate or revoke any time. Best for personal scripts, TradingView webhooks, in-house dashboards.</p>
+      </div>
+      <div class="h-auth__card">
+        <span class="h-auth__lbl">For your users' accounts</span>
+        <div class="h-auth__title">OAuth 2.0 (user-scoped)</div>
+        <p class="h-auth__body">Standard authorization-code flow. Your user logs in to Tradetron, grants scopes, and you get a token bound to their account. Their funds never leave their broker — Tradetron never custodies a paisa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="margin-bottom: 28px"><span class="h-eyebrow">Getting started</span></div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Generate a key</div>
+      <div class="h-feature__body">Open an account, go to Settings → API, mint a token. Scope it to read-only or full trading; rotate or revoke any time.</div>
+      <a href="register.html" class="h-btn h-btn--text" style="margin-top: auto">Get your API key →</a>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Wire your signals</div>
+      <div class="h-feature__body">Point your model, your TradingView alert, or your script at <code class="h-mono">/v1/signals</code>. Authenticate with a Bearer token over HTTPS.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Let us route &amp; risk</div>
+      <div class="h-feature__body">Tradetron places the order in your broker, keeps positions, and applies the strategy's stops and limits. You watch the dashboard — or read positions over the API.</div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 22ch">Your model. Our <span class="sig">pipes.</span></h2>
+  <p class="h-cta__sub">Free to mint a key. Plug into the platform 405k+ traders already trust — you only pay Tradetron when a strategy goes live. Your money. Your broker. Your control.</p>
+  <div class="h-hero__cta" style="margin-top: 8px">
+    <a href="register.html" class="h-btn h-btn--primary">Get your API key →</a>
+    <a href="contact.html" class="h-btn h-btn--ghost">Talk to a human</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

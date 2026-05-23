@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Manage Shared Codes · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Shared .acct-* sidebar + token-built form kit (.f-*)
+     + the .d-table/.d-empty table chrome from notifications.html. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+  .acct { display: grid; grid-template-columns: 248px 1fr; gap: 26px; align-items: start; }
+
+  .acct-nav { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 86px; }
+  .acct-nav__head { padding: 14px 16px; border-bottom: var(--hairline); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft); text-decoration: none; transition: background 140ms, color 140ms; border-left: 2px solid transparent; }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active { background: var(--signal-tint); color: var(--signal); border-left-color: var(--signal); font-weight: 500; }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+
+  .d-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+  .d-head__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; margin: 8px 0 0; }
+  .d-head__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); margin-top: 4px; display: block; }
+
+  .d-panel { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden; }
+  .d-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline); }
+  .d-panel__title { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__body { padding: 20px; }
+  .d-panel__foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-top: var(--hairline); background: var(--paper-2); }
+
+  /* form kit */
+  .f-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  .f-field { display: flex; flex-direction: column; gap: 7px; }
+  .f-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .f-input, .f-select {
+    width: 100%; height: 42px; padding: 0 13px; background: var(--field); color: var(--ink);
+    border: 1px solid var(--rule-strong); border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 0.92rem; transition: border-color 140ms, box-shadow 140ms;
+  }
+  .f-select { padding-right: 34px; appearance: none; -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--slate) 50%), linear-gradient(135deg, var(--slate) 50%, transparent 50%);
+    background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
+    background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  .f-input:focus, .f-select:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-tint); }
+  .f-input::placeholder { color: var(--slate-soft); }
+  .f-row .h-btn { height: 42px; }
+
+  /* table */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td { text-align: left; padding: 13px 16px; border-bottom: var(--hairline); vertical-align: middle; }
+  .d-table thead th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); font-weight: 500; background: var(--paper-2); }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+
+  .d-empty td { padding: 0; }
+  .d-empty__inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 56px 20px; }
+  .d-empty__mark { width: 34px; height: 34px; border: var(--hairline); border-radius: 50%; display: grid; place-items: center; color: var(--slate-soft); font-family: var(--font-mono); font-size: 0.9rem; }
+  .d-empty__title { font-family: var(--font-display); font-weight: 500; font-size: 1rem; letter-spacing: -0.015em; color: var(--ink); }
+  .d-empty__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); max-width: 44ch; }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+  @media (max-width: 760px) { .f-row { grid-template-columns: 1fr; } .f-row .h-btn { justify-self: start; } }
+  @media (max-width: 1100px) { .d-tablewrap { overflow-x: auto; } .d-table { min-width: 560px; } }
+</style>
+</head>
+<body data-screen-label="Manage Shared Codes">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Manage Shared Codes</h1>
+      <span class="d-head__sub">Grant trusted users access to your strategies, brokers and templates — and pull it back anytime</span>
+    </div>
+  </div>
+
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item is-active" href="manage-access.html" aria-current="page"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+
+      <!-- ADD-BY-EMAIL FORM -->
+      <form class="d-panel" onsubmit="return false">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Share access</span><span class="d-panel__sub">grant another Tradetron user access to one of your items</span></span>
+        </div>
+        <div class="d-panel__body">
+          <div class="f-row">
+            <div class="f-field">
+              <label class="f-label" for="sa-user">User email or username</label>
+              <input class="f-input" id="sa-user" type="email" placeholder="name@example.com" />
+            </div>
+            <div class="f-field">
+              <label class="f-label" for="sa-item">Shared item</label>
+              <select class="f-select" id="sa-item">
+                <option value="" selected disabled>Select…</option>
+                <optgroup label="Strategy">
+                  <option>Nifty Iron Condor Weekly</option>
+                  <option>Bluechip Premium Harvester</option>
+                </optgroup>
+                <optgroup label="Broker">
+                  <option>Zerodha</option>
+                  <option>Kotakneo V3</option>
+                </optgroup>
+                <option>Template</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label class="f-label" for="sa-access">Access</label>
+              <select class="f-select" id="sa-access">
+                <option selected>View only</option>
+                <option>Use / deploy</option>
+                <option>Edit</option>
+              </select>
+            </div>
+            <button type="submit" class="h-btn h-btn--primary">Share</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- SHARED-WITH TABLE (empty) -->
+      <div class="d-panel">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Shared with</span><span class="d-panel__sub">0 active grants</span></span>
+        </div>
+        <div class="d-tablewrap">
+          <table class="d-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Shared item</th>
+                <th>Access</th>
+                <th style="text-align:right">Revoke</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="d-empty">
+                <td colspan="4">
+                  <div class="d-empty__inner">
+                    <span class="d-empty__mark" aria-hidden="true">+</span>
+                    <span class="d-empty__title">Nothing shared yet</span>
+                    <span class="d-empty__sub">Grant access above and the people you share with will appear here.</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

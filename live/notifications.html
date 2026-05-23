@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notifications · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. Mirrors dashboard.html chrome.
+     The .acct-* sidebar is shared verbatim with profile.html
+     (and the future brokers.html). */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* ---- two-column account shell: sidebar + content ---- */
+  .acct {
+    display: grid; grid-template-columns: 248px 1fr; gap: 26px;
+    align-items: start;
+  }
+
+  /* ---- account vertical nav ---- */
+  .acct-nav {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 86px;
+  }
+  .acct-nav__head {
+    padding: 14px 16px; border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate);
+  }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 11px; border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft);
+    text-decoration: none; transition: background 140ms, color 140ms;
+    border-left: 2px solid transparent;
+  }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active {
+    background: var(--signal-tint); color: var(--signal);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--slate-soft); flex: none;
+  }
+
+  /* ---- page header row ---- */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- generic panel (matches card chrome) ---- */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .d-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .d-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-top: var(--hairline);
+  }
+
+  /* ---- table ---- */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 13px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+
+  /* ---- empty state (no notifications) ---- */
+  .d-empty td { padding: 0; }
+  .d-empty__inner {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center; padding: 56px 20px;
+  }
+  .d-empty__mark {
+    width: 34px; height: 34px; border: var(--hairline); border-radius: 50%;
+    display: grid; place-items: center; color: var(--slate-soft);
+    font-family: var(--font-mono); font-size: 0.9rem;
+  }
+  .d-empty__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1rem;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
+  .d-empty__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); max-width: 44ch;
+  }
+
+  /* ---- pagination (inert) ---- */
+  .d-pager { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; }
+  .d-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 9px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--slate);
+  }
+  .d-pager .is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+  @media (max-width: 1100px) {
+    .d-tablewrap { overflow-x: auto; }
+    .d-table { min-width: 560px; }
+  }
+</style>
+</head>
+<body data-screen-label="Notifications">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Notifications</h1>
+      <span class="d-head__sub">Every deployment event, alert and account update — in one place</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Mark all read</a>
+    </div>
+  </div>
+
+  <!-- ACCOUNT SHELL: sidebar + content -->
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item is-active" href="notifications.html" aria-current="page"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+      <div class="d-panel">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">All Notifications</span><span class="d-panel__sub">0 entries</span></span>
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">Filter</a>
+        </div>
+        <div class="d-tablewrap">
+          <table class="d-table">
+            <thead>
+              <tr>
+                <th>Notification</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="d-empty">
+                <td colspan="4">
+                  <div class="d-empty__inner">
+                    <span class="d-empty__mark" aria-hidden="true">!</span>
+                    <span class="d-empty__title">You're all caught up</span>
+                    <span class="d-empty__sub">Nothing needs your attention. New alerts and account messages will land here.</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-panel__foot">
+          <span class="h-micro">Showing 0 to 0 of 0 entries</span>
+          <div class="d-pager">
+            <span class="is-disabled" aria-disabled="true">‹ Previous</span>
+            <span class="is-disabled" aria-disabled="true">Next ›</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

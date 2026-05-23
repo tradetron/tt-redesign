@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TT Uni — learn algo trading · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Course card meta — scoped to this page */
+  .h-course__meta {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px; border-top: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+  }
+  .h-progress { height: 4px; background: var(--paper-3); border-radius: 2px; overflow: hidden; }
+  .h-progress > i { display: block; height: 100%; background: var(--signal); border-radius: 2px; }
+  .h-level {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 2px 7px; border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+  }
+  /* Cohort card */
+  .h-cohort {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 18px;
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .h-cohort__date {
+    font: 500 0.72rem/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--signal);
+    text-transform: uppercase;
+  }
+  .h-cohort__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.05rem; line-height: 1.3;
+    color: var(--ink);
+  }
+  .h-cohort__meta {
+    display: flex; justify-content: space-between;
+    padding-top: 10px;
+    border-top: var(--hairline);
+    font: 500 0.72rem/1.2 var(--font-mono);
+    color: var(--slate);
+  }
+  .h-cohort__meta span:last-child { color: var(--ink); }
+</style>
+</head>
+<body data-screen-label="TT Uni — learn algo trading">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Learn · TT Uni</div>
+    <h1>Learn algo trading. <span class="sig">From your first strategy to your first deployed edge.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Free, hands-on tracks taught inside the actual Tradetron canvas — not slideware. Build your first strategy, learn to backtest honestly, understand your Trust Score, and go live in your own broker. The same engine 405k+ traders already use, taught one lesson at a time.</p>
+    <div class="h-pagehero__cta">
+      <a href="https://learn.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open TT Uni →</a>
+      <a href="qna-forum.html" class="h-btn h-btn--ghost">Ask the community</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>Free, always</span><span>Self-paced</span><span>Hands-on in-platform</span><span>Live cohorts too</span>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px">
+    <div>
+      <span class="h-eyebrow">Course tracks</span>
+      <h2 class="h-h2" style="margin-top: 16px">Pick a track. Start where you are.</h2>
+    </div>
+    <span class="h-micro" style="max-width: 36ch; text-align: right">Sample · pending review. Lesson counts and run-times are illustrative — curriculum publishes progressively.</span>
+  </div>
+
+  <div class="h-features cols-3">
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 01 ]</span><span class="h-level">Beginner</span></div>
+      <div class="h-feature__title">Getting Started</div>
+      <div class="h-feature__body">Your first hour on Tradetron — account setup, dashboard tour, paper trading, and deploying a ready-made sample strategy in your own account.</div>
+      <div class="h-course__meta"><span>6 lessons · 45 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 02 ]</span><span class="h-level">Beginner</span></div>
+      <div class="h-feature__title">Building Your First Strategy</div>
+      <div class="h-feature__body">The canvas in depth — conditions, indicators, order types and the plain-English readback. Build a working momentum strategy end to end, no code.</div>
+      <div class="h-course__meta"><span>9 lessons · 70 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 03 ]</span><span class="h-level">Intermediate</span></div>
+      <div class="h-feature__title">Backtesting Honestly</div>
+      <div class="h-feature__body">Walk-forward, realistic slippage, overfitting flags, sample-size honesty. Read a backtest like an adult — and learn when to trust one.</div>
+      <div class="h-course__meta"><span>7 lessons · 55 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 04 ]</span><span class="h-level">Intermediate</span></div>
+      <div class="h-feature__title">Going Live Safely</div>
+      <div class="h-feature__body">Connect a broker over OAuth, move from paper to live without panic, size your first real trade, and rehearse the AI Strategy Audit before Go-Live activates.</div>
+      <div class="h-course__meta"><span>7 lessons · 50 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 05 ]</span><span class="h-level">Intermediate</span></div>
+      <div class="h-feature__title">Reading Your Trust Score</div>
+      <div class="h-feature__body">What green / amber / red actually mean. Drawdown breach, broker disconnect, reconciliation drift — and what to do in the first 30 seconds when something fires.</div>
+      <div class="h-course__meta"><span>5 lessons · 35 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+    <div class="h-feature">
+      <div style="display: flex; align-items: center; justify-content: space-between"><span class="h-feature__num">[ 06 ]</span><span class="h-level">Advanced</span></div>
+      <div class="h-feature__title">Marketplace as a Creator</div>
+      <div class="h-feature__body">List your strategy. Earn the Verified Live badge. Set a price, build a subscriber base, and run your strategy in their accounts — the transparency standards every published strategy must meet.</div>
+      <div class="h-course__meta"><span>5 lessons · 40 min</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Start track →</a></div>
+    </div>
+
+  </div>
+</section>
+
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px">
+      <div>
+        <span class="h-eyebrow">Featured lesson</span>
+        <h2 class="h-h2" style="margin-top: 16px">Start here if you're new.</h2>
+      </div>
+    </div>
+    <div class="h-twocol">
+      <div class="h-card" style="gap: 18px">
+        <div class="h-tag">Getting Started · Lesson 1</div>
+        <div class="h-card__title" style="font-size: 1.4rem">Deploy your first strategy in 10 minutes</div>
+        <p class="h-body" style="font-size: 0.92rem">Watch a sample momentum strategy go from the marketplace to paper trading in your own dashboard — no code, no risk, no setup fee. By the end of the video, you'll have something running.</p>
+        <div class="h-progress"><i style="width: 0%"></i></div>
+        <div class="h-course__meta" style="border-top: 0; padding-top: 0"><span>Video · 9:42 · Beginner</span><a href="https://learn.tradetron.tech" target="_blank" rel="noopener" style="color: var(--signal)">Watch free →</a></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <span class="h-eyebrow ink">Up next in this track</span>
+        <div class="h-mono" style="font-size: 0.84rem; color: var(--slate); display: flex; flex-direction: column; gap: 0">
+          <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: var(--hairline)"><span style="color: var(--ink)">02 · Reading the dashboard</span><span>6:10</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: var(--hairline)"><span style="color: var(--ink)">03 · Paper vs live</span><span>7:25</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: var(--hairline)"><span style="color: var(--ink)">04 · Your first edit on the canvas</span><span>11:08</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: var(--hairline)"><span style="color: var(--ink)">05 · Setting a stop-loss</span><span>8:33</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 0"><span style="color: var(--ink)">06 · Connecting a broker</span><span>9:50</span></div>
+        </div>
+        <p class="placeholder">Lesson videos &amp; interactive walkthroughs embed inside TT Uni at learn.tradetron.tech.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 24px">
+    <div>
+      <span class="h-eyebrow">Live cohorts</span>
+      <h2 class="h-h2" style="margin-top: 14px">Or learn with a group.</h2>
+    </div>
+    <p class="h-body" style="max-width: 38ch">Same tracks, but you go through them with a cohort, a weekly live session, and an instructor who answers your questions. Limited seats; free for your first cohort.</p>
+  </div>
+  <div class="h-features cols-3">
+
+    <div class="h-cohort">
+      <span class="h-cohort__date">Starts · 02 Jun 2026</span>
+      <div class="h-cohort__title">Cohort 12 · Getting Started + First Strategy</div>
+      <p class="h-body" style="font-size: 0.88rem; line-height: 1.55">For complete beginners. Four weeks, two live sessions a week, build one paper-trading strategy by the end.</p>
+      <div class="h-cohort__meta"><span>4 weeks · Beginner</span><span>43 / 60 seats</span></div>
+      <a href="https://learn.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--text" style="margin-top: auto">Reserve a seat →</a>
+    </div>
+
+    <div class="h-cohort">
+      <span class="h-cohort__date">Starts · 16 Jun 2026</span>
+      <div class="h-cohort__title">Cohort 13 · Backtesting Honestly</div>
+      <p class="h-body" style="font-size: 0.88rem; line-height: 1.55">For builders who already have a strategy. Walk-forward, slippage modelling, overfitting flags — applied to your own strategy.</p>
+      <div class="h-cohort__meta"><span>3 weeks · Intermediate</span><span>18 / 40 seats</span></div>
+      <a href="https://learn.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--text" style="margin-top: auto">Reserve a seat →</a>
+    </div>
+
+    <div class="h-cohort">
+      <span class="h-cohort__date">Starts · 07 Jul 2026</span>
+      <div class="h-cohort__title">Cohort 14 · Marketplace as a Creator</div>
+      <p class="h-body" style="font-size: 0.88rem; line-height: 1.55">For traders ready to publish. List a strategy, earn the Verified Live badge, set pricing, and onboard your first subscribers.</p>
+      <div class="h-cohort__meta"><span>5 weeks · Advanced</span><span>9 / 25 seats</span></div>
+      <a href="https://learn.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--text" style="margin-top: auto">Reserve a seat →</a>
+    </div>
+
+  </div>
+  <p class="h-micro" style="text-align: center; margin-top: 24px">Sample cohort dates · pending review. Seat counts illustrative.</p>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 22ch">Learn it free. <span class="sig">Trade it</span> for real.</h2>
+  <p class="h-cta__sub">Every TT Uni track is free, and so is paper trading on Tradetron. Learn by doing on the live canvas — you only pay Tradetron when a strategy goes live.</p>
+  <div class="h-hero__cta" style="margin-top: 8px">
+    <a href="https://learn.tradetron.tech" target="_blank" rel="noopener" class="h-btn h-btn--primary">Open TT Uni →</a>
+    <a href="faq.html" class="h-btn h-btn--ghost">Read the manual</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

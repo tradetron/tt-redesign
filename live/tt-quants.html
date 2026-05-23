@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TT Quants — deep analytics on every strategy you run · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  .h-pnl{border:var(--hairline);border-radius:var(--radius-lg);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:14px}
+  .h-pnl__row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:var(--hairline)}
+  .h-pnl__row:last-child{border-bottom:0;padding-top:14px;margin-top:4px;border-top:2px solid var(--ink)}
+  .h-pnl__lbl{font:500 .88rem/1.2 var(--font-body);color:var(--ink-soft)}
+  .h-pnl__val{font:500 1rem/1 var(--font-mono);font-feature-settings:"tnum" 1;color:var(--ink)}
+  .h-pnl__val--neg{color:var(--negative)}
+  .h-pnl__val--net{color:var(--positive);font-size:1.15rem;font-weight:600}
+  .h-pnl__cap{font:500 .68rem/1.4 var(--font-mono);color:var(--slate);letter-spacing:.06em;text-align:right}
+</style>
+</head>
+<body data-screen-label="TT Quants — deep analytics on every strategy you run">
+
+<div data-include="_header.html"></div>
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Service · TT Quants · Analytics-as-a-service</div>
+    <h1>Deep analytics on <span class="sig">every strategy you run.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">TT Quants is the analytics layer for serious users — funds, prop desks, and traders managing real capital across many deployments. Per-strategy attribution, drawdown decomposition, regime-conditional performance, and True-Net PnL after every cost the broker took. The numbers behind the trades, not just the curve.</p>
+    <div class="h-pagehero__cta">
+      <a href="contact.html" class="h-btn h-btn--primary">Book a Quants demo →</a>
+      <a href="#what" class="h-btn h-btn--ghost">What you get</a>
+    </div>
+    <div class="h-truststrip" style="margin-top:18px">
+      <span>Per-strategy attribution</span><span>Broker-confirmed PnL</span><span>Slippage analysis</span><span>Custom dashboards</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 01 · WHAT YOU GET -->
+<section class="h-container h-section--lg" id="what">
+  <div style="display:flex;align-items:end;justify-content:space-between;margin-bottom:28px;gap:24px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">01 · What you get</span>
+      <h2 class="h-h2" style="margin-top:16px">The numbers behind the trades.</h2>
+    </div>
+    <p class="h-body" style="max-width:38ch">A standard Tradetron dashboard shows you a PnL line. TT Quants shows you <em>why</em> that line moves — which leg, which time of day, which regime, which broker fill cost you. Per-strategy. Per-instrument. Per-month.</p>
+  </div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Per-strategy attribution</div>
+      <div class="h-feature__body">Break every rupee of PnL down by strategy, leg, instrument and day of week. The one strategy that's actually carrying the book — and the three that look fine but quietly bleed — both surface here.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Drawdown decomposition</div>
+      <div class="h-feature__body">When the book draws down, which positions caused it? Was it correlated drawdown across legs, a single anomaly fill, or a regime shift? Drawdowns get a post-mortem, not a shrug.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">True-Net PnL</div>
+      <div class="h-feature__body">Gross PnL minus brokerage, STT, exchange fees, GST, SEBI charges, stamp duty and measured slippage. The number your broker statement reconciles to — not the optimistic backtest number.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Regime-conditional performance</div>
+      <div class="h-feature__body">"Strategy X earns ₹0.8 Sharpe in trending-up regimes, -0.2 in mean-reverting ones." Performance sliced by VIX bucket, trend strength, and realised-vs-implied vol — so you know which environments to scale up and which to dial back.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 05 ]</span>
+      <div class="h-feature__title">Slippage analysis</div>
+      <div class="h-feature__body">Difference between signal price, expected fill and actual fill — per broker, per time of day, per instrument. Catches the broker / time-of-day combinations where slippage quietly eats your edge.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 06 ]</span>
+      <div class="h-feature__title">Custom dashboards &amp; exports</div>
+      <div class="h-feature__body">Pull whatever cut you need — by underlying, by author, by execution mode, by broker (Zerodha vs Upstox vs Angel One). Export to PDF or Excel for the LP, the auditor, or the monthly review.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 02 · TRUE-NET BREAKDOWN -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center">
+      <div>
+        <span class="h-eyebrow">02 · True-Net PnL</span>
+        <h2 class="h-h2" style="margin-top:14px">We show you what your <span class="sig">broker won't.</span></h2>
+        <p class="h-body" style="margin-top:14px;max-width:42ch">Most platforms quote gross PnL and stop. Brokers tell you their charges line-by-line but won't sum it back against strategy performance. TT Quants does the join — every charge, every slippage rupee, against the strategy that incurred it.</p>
+        <p class="h-body" style="margin-top:14px;max-width:42ch">Across a year of trading, the gap between "what the chart shows" and "what hit your bank account" is usually bigger than anyone admits. We make it visible.</p>
+      </div>
+      <div class="h-pnl" aria-hidden="true">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span class="h-eyebrow ink" style="font-size:.7rem">NIFTY Iron Condor · May 2026</span>
+          <span class="h-pnl__cap">sample</span>
+        </div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl">Gross PnL</span><span class="h-pnl__val">+ ₹1,42,800</span></div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl">Brokerage</span><span class="h-pnl__val h-pnl__val--neg">− ₹4,200</span></div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl">STT + exchange + SEBI + stamp</span><span class="h-pnl__val h-pnl__val--neg">− ₹18,640</span></div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl">GST</span><span class="h-pnl__val h-pnl__val--neg">− ₹820</span></div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl">Measured slippage</span><span class="h-pnl__val h-pnl__val--neg">− ₹6,310</span></div>
+        <div class="h-pnl__row"><span class="h-pnl__lbl"><strong>True-Net PnL</strong></span><span class="h-pnl__val h-pnl__val--net">+ ₹1,12,830</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 · WHO IT'S FOR -->
+<section class="h-container h-section--lg">
+  <div style="display:flex;align-items:end;justify-content:space-between;margin-bottom:28px;gap:24px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">03 · Who it's for</span>
+      <h2 class="h-h2" style="margin-top:16px">If you can't justify it to an LP, <span class="sig">you can't scale it.</span></h2>
+    </div>
+    <p class="h-body" style="max-width:38ch">Retail traders get a clean PnL chart in the standard dashboard. TT Quants is for the next tier — running enough strategies, enough capital and enough scrutiny that "the chart looks fine" stops being a sufficient answer.</p>
+  </div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Funds &amp; prop desks</div>
+      <div class="h-feature__body">LPs and risk committees want attribution, drawdown post-mortems, and regime exposure — not screenshots. TT Quants outputs the artefacts they expect.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Multi-strategy traders</div>
+      <div class="h-feature__body">Running 10+ strategies across NIFTY, BANKNIFTY, FINNIFTY and equity baskets? You need to know which ones earn the book and which ones quietly cost.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Strategy authors on the marketplace</div>
+      <div class="h-feature__body">If you sell strategies, regime-conditional performance + slippage analysis is the difference between "looks good in a backtest" and a credible live track record.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 04 · ROADMAP TIE-IN -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display:grid;grid-template-columns:0.9fr 1.1fr;gap:32px;align-items:center">
+      <div>
+        <span class="h-eyebrow">04 · Coming next</span>
+        <h2 class="h-h2" style="margin-top:14px">Market-regime <span class="sig">advisory.</span></h2>
+        <p class="h-body" style="margin-top:14px;max-width:42ch">In active development for TT Quants subscribers: a non-prescriptive regime detector that flags when your strategies are running into environments where they've historically underperformed. Evidence-based, no astrology.</p>
+        <p class="h-micro" style="margin-top:10px">sample · pending review</p>
+      </div>
+      <div>
+        <a href="contact.html" class="h-btn h-btn--primary">Book a Quants demo →</a>
+        <a href="features.html#operate" class="h-btn h-btn--ghost" style="margin-left:10px">See Operate features</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.2rem, 4vw, 3.4rem); text-align: center; max-width: 26ch">Stop guessing what's <span class="sig">actually working.</span></h2>
+  <p class="h-cta__sub">A 30-minute Quants demo on your own deployments. We'll show you three things your current dashboard is hiding.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="contact.html" class="h-btn h-btn--primary">Book a Quants demo →</a>
+    <a href="features.html" class="h-btn h-btn--ghost">Platform features</a>
+  </div>
+</section>
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

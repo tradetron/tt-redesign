@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Profile · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. Mirrors dashboard.html chrome.
+     The .acct-* sidebar is shared verbatim with notifications.html
+     (and the future brokers.html).
+     NOTE: the live profile is a JS-only SPA we couldn't scrape, so
+     this is a REPRESENTATIVE creator profile. Clearly-invented copy
+     carries a subtle ".is-sample" badge. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* ---- two-column account shell: sidebar + content ---- */
+  .acct {
+    display: grid; grid-template-columns: 248px 1fr; gap: 26px;
+    align-items: start;
+  }
+
+  /* ---- account vertical nav ---- */
+  .acct-nav {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 86px;
+  }
+  .acct-nav__head {
+    padding: 14px 16px; border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate);
+  }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 11px; border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft);
+    text-decoration: none; transition: background 140ms, color 140ms;
+    border-left: 2px solid transparent;
+  }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active {
+    background: var(--signal-tint); color: var(--signal);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--slate-soft); flex: none;
+  }
+
+  /* ---- page header row ---- */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+
+  /* ---- generic panel ---- */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .d-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .d-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__body { padding: 20px; }
+
+  /* ---- "sample" treatment for invented copy ---- */
+  .is-sample { position: relative; }
+  .sample-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--slate-soft);
+    border: 1px dashed var(--rule-strong); border-radius: var(--radius-sm);
+    padding: 1px 6px; vertical-align: middle; margin-left: 8px;
+  }
+  .sample-badge::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--slate-soft);
+  }
+
+  /* ---- creator header ---- */
+  .pf-head {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 22px;
+    align-items: center; padding: 24px;
+  }
+  .pf-avatar {
+    width: 76px; height: 76px; border-radius: var(--radius-md);
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 2.1rem;
+    letter-spacing: -0.02em; flex: none;
+    border: 2px solid var(--signal);
+  }
+  .pf-id { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+  .pf-name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pf-name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.6rem;
+    letter-spacing: -0.025em; line-height: 1;
+  }
+  .pf-meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .pf-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .pf-meta .dot { color: var(--rule-strong); }
+
+  /* ---- bio ---- */
+  .pf-bio {
+    padding: 0 24px 24px; border-top: var(--hairline); margin-top: 0;
+  }
+  .pf-bio p {
+    max-width: 64ch; margin: 18px 0 0; color: var(--ink-soft);
+    font-size: 0.98rem; line-height: 1.6;
+  }
+
+  /* ---- stats strip ---- */
+  .pf-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 26px;
+  }
+  .pf-stat {
+    padding: 18px 20px; border-right: var(--hairline);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .pf-stat:last-child { border-right: 0; }
+  .pf-stat__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .pf-stat__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .pf-stat__val--sig { color: var(--signal); }
+
+  /* ---- created-strategies showcase grid ---- */
+  .pf-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    padding: 20px;
+  }
+  .pf-strat {
+    display: flex; flex-direction: column; gap: 14px; justify-content: space-between;
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); padding: 16px;
+    transition: border-color 160ms;
+  }
+  .pf-strat:hover { border-color: var(--rule-strong); }
+  .pf-strat__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .pf-strat__name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1rem;
+    letter-spacing: -0.015em; line-height: 1.25;
+  }
+  .pf-strat__rank {
+    font-family: var(--font-mono); font-size: 0.66rem; color: var(--slate-soft);
+    letter-spacing: 0.04em; flex: none; padding-top: 2px;
+  }
+  .pf-strat__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding-top: 12px; border-top: var(--hairline);
+  }
+  .pf-strat__subs {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft);
+    letter-spacing: var(--tracking-mono);
+  }
+  .pf-strat__subs strong {
+    font-feature-settings: "tnum" 1; color: var(--ink); font-weight: 500;
+  }
+  .pf-strat__view {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--signal);
+    letter-spacing: 0.04em;
+  }
+  .pf-strat__view::after { content: " →"; }
+  .pf-strat__view:hover { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+    .pf-head { grid-template-columns: auto 1fr; }
+    .pf-head .h-btn { grid-column: 1 / -1; justify-self: start; }
+    .pf-stats { grid-template-columns: 1fr; }
+    .pf-stat { border-right: 0; border-bottom: var(--hairline); }
+    .pf-stat:last-child { border-bottom: 0; }
+    .pf-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 1180px) and (min-width: 901px) {
+    .pf-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body data-screen-label="Profile">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Your creator profile</h1>
+      <span class="d-head__sub">How subscribers see you on the marketplace — make it count</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap">
+      <a href="marketplace.html" class="h-btn h-btn--primary h-btn--sm">View public profile</a>
+    </div>
+  </div>
+
+  <!-- ACCOUNT SHELL: sidebar + content -->
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item is-active" href="profile.html" aria-current="page"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+
+      <!-- CREATOR HEADER -->
+      <div class="d-panel">
+        <div class="pf-head">
+          <div class="pf-avatar" aria-hidden="true">A</div>
+          <div class="pf-id">
+            <div class="pf-name-row">
+              <span class="pf-name">Algolive</span>
+              <span class="h-chip h-chip--live">Creator+</span>
+            </div>
+            <div class="pf-meta">
+              <span>@algolive <span class="sample-badge">sample</span></span>
+              <span class="dot">·</span>
+              <span>Mumbai, IN <span class="sample-badge">sample</span></span>
+              <span class="dot">·</span>
+              <span>6 strategies</span>
+            </div>
+          </div>
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">Edit profile</a>
+        </div>
+        <div class="pf-bio is-sample">
+          <p>Systematic options &amp; equity strategies — iron condors, premium harvesting, and directional bets, deployed live.
+            <span class="sample-badge">sample bio</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- STATS STRIP -->
+      <div class="pf-stats">
+        <div class="pf-stat">
+          <span class="pf-stat__lbl">Strategies created</span>
+          <span class="pf-stat__val">6</span>
+        </div>
+        <div class="pf-stat">
+          <span class="pf-stat__lbl">Subscribers</span>
+          <span class="pf-stat__val pf-stat__val--sig">29</span>
+        </div>
+        <div class="pf-stat">
+          <span class="pf-stat__lbl">Member since <span class="sample-badge">sample</span></span>
+          <span class="pf-stat__val">2024</span>
+        </div>
+      </div>
+
+      <!-- CREATED STRATEGIES SHOWCASE -->
+      <section class="d-panel">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Created strategies</span><span class="d-panel__sub">6 published</span></span>
+          <a href="marketplace.html" class="h-btn h-btn--ghost h-btn--sm">View on marketplace</a>
+        </div>
+        <div class="pf-grid">
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">Bluechip Premium Harvester</span>
+              <span class="pf-strat__rank">01</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>9</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">Nifty Iron Condor Weekly</span>
+              <span class="pf-strat__rank">02</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>20</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">Pin The Range</span>
+              <span class="pf-strat__rank">03</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>0</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">Long Condor Monthly</span>
+              <span class="pf-strat__rank">04</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>0</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">24000 weekly Put sell</span>
+              <span class="pf-strat__rank">05</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>0</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+          <article class="pf-strat">
+            <div class="pf-strat__top">
+              <span class="pf-strat__name">Blackswan protection</span>
+              <span class="pf-strat__rank">06</span>
+            </div>
+            <div class="pf-strat__foot">
+              <span class="pf-strat__subs"><strong>0</strong> subscribers</span>
+              <a href="#" class="pf-strat__view">View</a>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

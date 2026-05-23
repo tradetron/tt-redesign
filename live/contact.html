@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Office card */
+  .h-officecard {
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .h-officecard__col { display: flex; flex-direction: column; gap: 6px; }
+  .h-officecard__lbl {
+    font: 500 0.66rem/1 var(--font-mono);
+    color: var(--slate);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .h-officecard__val {
+    font: 500 0.98rem/1.45 var(--font-display);
+    color: var(--ink);
+  }
+  .h-officecard__sub {
+    font: 400 0.82rem/1.45 var(--font-body);
+    color: var(--slate);
+  }
+  @media (max-width: 720px) {
+    .h-officecard { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Contact">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Company · Contact</div>
+    <h1>Talk to a human. <span class="sig">Mon–Sat, real people.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Question about a strategy, a broker integration, billing, or a partnership? Call us, message us on WhatsApp, or write — we usually reply in minutes during working hours, within two business days otherwise. No ticket queues.</p>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>Real people</span><span>Mon–Sat, 9am–7pm IST</span><span>No mailing list</span>
+    </div>
+  </div>
+</section>
+
+<!-- HELP BAND (lifted from home page) -->
+<section class="h-container h-section">
+  <div class="h-help" style="border: var(--hairline); border-radius: var(--radius-md); padding: clamp(24px, 3vw, 36px); background: var(--surface)">
+    <div class="h-help__intro">
+      <span class="h-eyebrow ink">We're always here to help</span>
+      <p class="h-body" style="margin-top: 8px; max-width: 34ch">Real humans, Mon–Sat. Call us, write to us, or message us on WhatsApp — we usually reply in minutes.</p>
+    </div>
+    <a href="tel:08047189100" class="h-help__card">
+      <span class="h-help__lbl">Call us</span>
+      <span class="h-help__val">080 4718 9100</span>
+    </a>
+    <a href="mailto:contact@tradetron.tech" class="h-help__card">
+      <span class="h-help__lbl">Mail us</span>
+      <span class="h-help__val">contact@tradetron.tech</span>
+    </a>
+    <a href="https://wa.me/16464807754" target="_blank" rel="noopener" class="h-help__card">
+      <span class="h-help__lbl">WhatsApp us</span>
+      <span class="h-help__val">+1 646 480 7754</span>
+    </a>
+  </div>
+</section>
+
+<!-- OFFICE + HOURS -->
+<section class="h-container h-section--md">
+  <div class="h-officecard">
+    <div class="h-officecard__col">
+      <span class="h-officecard__lbl">Primary office</span>
+      <span class="h-officecard__val">Tradetron Tech Pvt. Ltd.</span>
+      <span class="h-officecard__sub">3rd Floor, HM Geneva House,<br />Cunningham Road, Bengaluru 560 052,<br />Karnataka, India</span>
+      <span class="h-officecard__sub placeholder" style="margin-top: 6px">Representative address — final registered address publishes here.</span>
+    </div>
+    <div class="h-officecard__col">
+      <span class="h-officecard__lbl">Support hours</span>
+      <span class="h-officecard__val">Mon – Sat · 9:00 – 19:00 IST</span>
+      <span class="h-officecard__sub">Phone &amp; WhatsApp answered live during these hours. Email replies within two business days. Closed Sundays and Indian national holidays.</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE CAN HELP WITH -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="margin-bottom: 28px">
+      <span class="h-eyebrow">What we can help with</span>
+      <h2 class="h-h2" style="margin-top: 14px">Pick the closest match — <span class="sig">we'll route it.</span></h2>
+    </div>
+    <div class="h-features cols-4">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Onboarding</div>
+        <div class="h-feature__body">First strategy, first broker connect, first deployment. Stuck on the wizard or the paper-to-live handoff? Start here — we'll walk you through.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Pricing &amp; plans</div>
+        <div class="h-feature__body">Which plan fits your strategy count, how upgrades and downgrades work, refund and proration questions. <a href="pricing.html">Pricing page →</a></div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Brokers &amp; integrations</div>
+        <div class="h-feature__body">Connection issues with Zerodha, Upstox, Fyers, Alpaca and the rest. OAuth tokens, order rejections, reconciliation gaps.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">Bugs &amp; feature requests</div>
+        <div class="h-feature__body">Found something broken or have an idea? Both go to engineering. We read every note and reply with what we can or can't do.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="h-container h-section--md">
+  <div class="h-twocol">
+    <div class="sticky">
+      <span class="h-eyebrow">Or send a note</span>
+      <h2 class="h-h2" style="margin-top: 16px">Drop us a message.</h2>
+      <p class="h-body" style="margin-top: 18px; max-width: 34ch">Reply within two business days. We don't add you to any mailing list. For account-specific issues, mention the email you registered with so we can find your account fast.</p>
+      <p class="h-micro" style="margin-top: 16px">Funds never leave your broker. We don't need API keys or passwords for support — and we'll never ask for them.</p>
+    </div>
+    <form class="h-form" style="max-width: 560px" action="#" method="post" onsubmit="event.preventDefault(); return false">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+        <div class="h-field"><label class="h-label">Name</label><input class="h-input" placeholder="Your name" /></div>
+        <div class="h-field"><label class="h-label">Email</label><input class="h-input" type="email" placeholder="you@email.com" /></div>
+      </div>
+      <div class="h-field">
+        <label class="h-label">What's this about</label>
+        <select class="h-select">
+          <option>Onboarding — getting started</option>
+          <option>Pricing &amp; plans</option>
+          <option>Brokers &amp; integrations</option>
+          <option>Bug report</option>
+          <option>Feature request</option>
+          <option>Marketplace / creators</option>
+          <option>Press &amp; partnerships</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="h-field"><label class="h-label">Message</label><textarea class="h-textarea" placeholder="Tell us what you need. The more detail, the faster we can help."></textarea></div>
+      <button class="h-btn h-btn--primary" type="submit">Send →</button>
+      <p class="h-hint">Reply within two business days. Don't include broker passwords or API keys — we don't need them for support.</p>
+    </form>
+  </div>
+</section>
+
+<!-- PRESS & PARTNERSHIPS -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start">
+      <div>
+        <span class="h-eyebrow">Press &amp; partnerships</span>
+        <h2 class="h-h2" style="margin-top: 14px">Media, brokers, integrations.</h2>
+        <p class="h-body" style="margin-top: 16px; max-width: 38ch">Writing about Tradetron, building a broker integration, or exploring a white-label partnership? Skip the general inbox — those go straight to the team that handles them.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 18px">
+        <a href="mailto:partners@tradetron.tech" class="h-help__card">
+          <span class="h-help__lbl">Partnerships</span>
+          <span class="h-help__val">partners@tradetron.tech</span>
+        </a>
+        <a href="mailto:press@tradetron.tech" class="h-help__card">
+          <span class="h-help__lbl">Press &amp; media</span>
+          <span class="h-help__val">press@tradetron.tech</span>
+        </a>
+        <a href="services.html" class="h-btn h-btn--ghost" style="align-self: start">White-label &amp; custom builds →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 24ch">Or just <span class="sig">start free.</span><br />The product answers most of it.</h2>
+  <p class="h-cta__sub">Free paper trading for life. Your money. Your broker. Your control.</p>
+  <div class="h-hero__cta" style="margin-top: 8px; justify-content: center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="faq.html" class="h-btn h-btn--ghost">Read the FAQ</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

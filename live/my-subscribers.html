@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Manage Subscribers · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- my-subscribers local layout ----
+     Built only from tokens / system.css chrome — same vocabulary as
+     dashboard.html: hairlines, mono numerics, amber signal, oxblood
+     negatives, deep-forest positives, small-caps headers. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row */
+  .d-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .d-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- primary page tabs (Manage / Broadcast / Invoices / Adjustment) ---- */
+  .d-ptabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; margin-bottom: 24px;
+  }
+  .d-ptab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 13px 16px; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.04em;
+    color: var(--slate); text-decoration: none;
+    transition: color 160ms, border-color 160ms;
+  }
+  .d-ptab:hover { color: var(--ink); }
+  .d-ptab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- compact select / input ---- */
+  .d-select {
+    height: 32px; padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); -webkit-appearance: none; appearance: none;
+    cursor: pointer; transition: border-color 160ms;
+  }
+  .d-select:focus { outline: 0; border-color: var(--signal); }
+  .d-text {
+    height: 32px; padding: 0 12px;
+    background: var(--field); border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); min-width: 200px;
+    transition: border-color 160ms;
+  }
+  .d-text:focus { outline: 0; border-color: var(--signal); }
+  .d-text::placeholder { color: var(--slate-soft); }
+
+  /* a small inline field label */
+  .d-fieldlbl {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--slate);
+  }
+
+  /* ---- KPI strip — 6-up, wraps on narrow ---- */
+  .d-kpis {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 26px;
+  }
+  .d-kpi { padding: 16px 18px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+  .d-kpi:last-child { border-right: 0; }
+  .d-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate); min-height: 2.2em;
+  }
+  .d-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.18rem; letter-spacing: -0.01em; line-height: 1.05; color: var(--ink);
+  }
+  .d-kpi__val--up   { color: var(--positive); }
+  .d-kpi__val--down { color: var(--negative); }
+  .d-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+
+  /* ---- generic panel ---- */
+  .d-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .d-panel__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-top: var(--hairline);
+  }
+
+  /* ---- sub-tabs (Active / Inactive / Blocked / Cancelled) ---- */
+  .d-subtabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 8px;
+  }
+  .d-subtab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 13px 14px; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); text-decoration: none;
+    transition: color 160ms, border-color 160ms;
+  }
+  .d-subtab:hover { color: var(--ink); }
+  .d-subtab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- filter row ---- */
+  .d-filters {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px 20px; border-bottom: var(--hairline); background: var(--paper-2);
+  }
+  .d-filters__spacer { flex: 1 1 auto; }
+
+  /* ---- tables ---- */
+  .d-table { width: 100%; border-collapse: collapse; }
+  .d-table th, .d-table td {
+    text-align: left; padding: 13px 16px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .d-table thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .d-table tbody tr:last-child td { border-bottom: 0; }
+  .d-table tbody tr:hover { background: color-mix(in oklab, var(--signal) 5%, transparent); }
+  .d-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; }
+  .d-table .num.pos { color: var(--positive); }
+  .d-table .num.neg { color: var(--negative); }
+  .d-table .col-sel { width: 38px; text-align: center; padding-left: 18px; padding-right: 6px; }
+
+  .d-check {
+    appearance: none; -webkit-appearance: none;
+    width: 15px; height: 15px; margin: 0; cursor: pointer;
+    border: var(--hairline-strong); border-radius: 2px; background: var(--field);
+    display: inline-grid; place-content: center; transition: border-color 140ms, background 140ms;
+  }
+  .d-check:hover { border-color: var(--signal); }
+  .d-check:checked { background: var(--signal); border-color: var(--signal); }
+  .d-check:checked::after {
+    content: ""; width: 4px; height: 8px; margin-top: -2px;
+    border: solid var(--surface); border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  .d-check:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; }
+
+  .d-name { display: flex; flex-direction: column; gap: 3px; }
+  .d-name strong { font-family: var(--font-display); font-weight: 500; font-size: 0.98rem; letter-spacing: -0.01em; }
+  .d-name span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+
+  /* ---- pagination ---- */
+  .d-pager { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; }
+  .d-pager a, .d-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .d-pager a:hover { border-color: var(--signal); color: var(--signal); }
+  .d-pager .is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* ---- bulk-action footer ---- */
+  .d-bulk {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px 20px; border-top: var(--hairline); background: var(--paper-2);
+  }
+  .d-bulk__count {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .d-bulk__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+
+  @media (max-width: 1100px) {
+    .d-kpis { grid-template-columns: repeat(3, 1fr); }
+    .d-kpi:nth-child(3n) { border-right: 0; }
+    .d-kpi:nth-child(-n+3) { border-bottom: var(--hairline); }
+    .d-tablewrap { overflow-x: auto; }
+    .d-table { min-width: 720px; }
+  }
+  @media (max-width: 640px) {
+    .d-kpis { grid-template-columns: 1fr 1fr; }
+    .d-kpi { border-right: var(--hairline); border-bottom: var(--hairline); }
+    .d-kpi:nth-child(2n) { border-right: 0; }
+    .d-bulk__actions { margin-left: 0; }
+  }
+</style>
+</head>
+<body data-screen-label="Manage Subscribers">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Creator console · logged in as Algolive</span>
+      <h1 class="d-head__title">Manage <span class="sig">Subscribers</span>.</h1>
+      <span class="d-head__sub">13 unique active subscribers · 8 live deployments</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="my-strategies.html" class="h-btn h-btn--ghost h-btn--sm">My Strategies</a>
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Export CSV</a>
+    </div>
+  </div>
+
+  <!-- PRIMARY TABS -->
+  <nav class="d-ptabs" role="tablist" aria-label="Subscriber sections">
+    <a class="d-ptab is-active" href="my-subscribers.html" role="tab" aria-selected="true" aria-current="page">Manage Subscribers</a>
+    <a class="d-ptab" href="#" role="tab" aria-selected="false">Broadcast Message</a>
+    <a class="d-ptab" href="#" role="tab" aria-selected="false">Invoices</a>
+    <a class="d-ptab" href="#" role="tab" aria-selected="false">Adjustment Requests</a>
+  </nav>
+
+  <!-- KPI STRIP -->
+  <div class="d-kpis">
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">P&amp;L Generated</span>
+      <span class="d-kpi__val d-kpi__val--down">▼ ₹ −1,41,114.59</span>
+      <span class="d-kpi__delta">Across all subscribers</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Total Subscription Amount</span>
+      <span class="d-kpi__val">₹ 0.00</span>
+      <span class="d-kpi__delta">Billed to date</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">P&amp;L Fees Invoiced</span>
+      <span class="d-kpi__val">₹ 0.00</span>
+      <span class="d-kpi__delta">Profit-share raised</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">P&amp;L Pending Fees</span>
+      <span class="d-kpi__val">₹ 0.00</span>
+      <span class="d-kpi__delta">Invoiceable, not raised</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Unique Active Subscribers</span>
+      <span class="d-kpi__val">13</span>
+      <span class="d-kpi__delta">Currently subscribed</span>
+    </div>
+    <div class="d-kpi">
+      <span class="d-kpi__lbl">Live Deployments</span>
+      <span class="d-kpi__val">8</span>
+      <span class="d-kpi__delta">Running for subscribers</span>
+    </div>
+  </div>
+
+  <!-- SUBSCRIBERS PANEL -->
+  <section class="d-panel">
+
+    <!-- SUB-TABS -->
+    <div class="d-subtabs" role="tablist" aria-label="Subscriber state">
+      <button class="d-subtab is-active" role="tab" aria-selected="true">Active Subscribers</button>
+      <button class="d-subtab" role="tab" aria-selected="false">Inactive Subscribers</button>
+      <button class="d-subtab" role="tab" aria-selected="false">Blocked Users</button>
+      <button class="d-subtab" role="tab" aria-selected="false">Cancelled / Expired</button>
+    </div>
+
+    <!-- FILTER ROW -->
+    <div class="d-filters">
+      <label class="d-fieldlbl">
+        Filter
+        <select class="d-select" aria-label="Filter">
+          <option selected>All</option>
+          <option>Live Deployments</option>
+          <option>Live Offline</option>
+          <option>Invoiceable</option>
+        </select>
+      </label>
+      <label class="d-fieldlbl">
+        Group By
+        <select class="d-select" aria-label="Group by">
+          <option selected>Subscriber</option>
+          <option>Strategy</option>
+          <option>Deployment</option>
+        </select>
+      </label>
+      <label class="d-fieldlbl">
+        Show
+        <select class="d-select" aria-label="Entries per page">
+          <option selected>10</option>
+          <option>25</option>
+          <option>50</option>
+          <option>100</option>
+        </select>
+        entries
+      </label>
+      <div class="d-filters__spacer"></div>
+      <label class="d-fieldlbl">
+        Search
+        <input class="d-text" type="search" placeholder="Name or email…" aria-label="Search subscribers" />
+      </label>
+    </div>
+
+    <!-- SUBSCRIBERS TABLE -->
+    <div class="d-tablewrap">
+      <table class="d-table">
+        <thead>
+          <tr>
+            <th class="col-sel">
+              <input class="d-check" type="checkbox" aria-label="Select all subscribers" />
+            </th>
+            <th>Subscriber</th>
+            <th class="num">P&amp;L</th>
+            <th class="num">Invoiced</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Rangaswamyreddy" /></td>
+            <td><div class="d-name"><strong>Rangaswamyreddy</strong><span>Active subscriber</span></div></td>
+            <td class="num pos">▲ ₹ 58,499.99</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Sweta Chhabria" /></td>
+            <td><div class="d-name"><strong>Sweta Chhabria</strong><span>Active subscriber</span></div></td>
+            <td class="num pos">▲ ₹ 27,873.75</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Vikram Bajaj" /></td>
+            <td><div class="d-name"><strong>Vikram Bajaj</strong><span>Active subscriber</span></div></td>
+            <td class="num pos">▲ ₹ 6,850.72</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Mukesh Tejwani" /></td>
+            <td><div class="d-name"><strong>Mukesh Tejwani</strong><span>Active subscriber</span></div></td>
+            <td class="num pos">▲ ₹ 0.03</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select yash bhargava" /></td>
+            <td><div class="d-name"><strong>yash bhargava</strong><span>Active subscriber</span></div></td>
+            <td class="num">₹ 0.00</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Mahabir" /></td>
+            <td><div class="d-name"><strong>Mahabir</strong><span>Active subscriber</span></div></td>
+            <td class="num">₹ 0.00</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Ramesh Hegde" /></td>
+            <td><div class="d-name"><strong>Ramesh Hegde</strong><span>Active subscriber</span></div></td>
+            <td class="num neg">▼ ₹ −867.75</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+          <tr>
+            <td class="col-sel"><input class="d-check" type="checkbox" aria-label="Select Algolive" /></td>
+            <td><div class="d-name"><strong>Algolive</strong><span>Active subscriber</span></div></td>
+            <td class="num neg">▼ ₹ −1,72,361.60</td>
+            <td class="num">₹ 0.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TABLE FOOTER: count + pager -->
+    <div class="d-panel__foot">
+      <span class="h-micro">Showing 1 to 8 of 8 entries</span>
+      <div class="d-pager">
+        <span style="border:0; color:var(--slate)">‹ Previous</span>
+        <span class="is-active">1</span>
+        <a href="#">Next ›</a>
+      </div>
+    </div>
+
+    <!-- BULK-ACTION FOOTER -->
+    <div class="d-bulk">
+      <span class="d-bulk__count">0 selected</span>
+      <div class="d-bulk__actions">
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Invoice</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Unsubscribe</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Block (and Unsubscribe)</a>
+        <a href="#" class="h-btn h-btn--primary h-btn--sm">Submit</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script>
+  /* Bulk-select wiring — live "N selected" count + select-all.
+     Pure prototype glue; no network, no app.js. */
+  (function () {
+    var table = document.querySelector('.d-table');
+    if (!table) return;
+    var selectAll = table.querySelector('thead .d-check');
+    var rowChecks = Array.prototype.slice.call(table.querySelectorAll('tbody .d-check'));
+    var counter = document.querySelector('.d-bulk__count');
+
+    function refresh() {
+      var n = rowChecks.filter(function (c) { return c.checked; }).length;
+      if (counter) counter.textContent = n + ' selected';
+      if (selectAll) {
+        selectAll.checked = n > 0 && n === rowChecks.length;
+        selectAll.indeterminate = n > 0 && n < rowChecks.length;
+      }
+    }
+    if (selectAll) {
+      selectAll.addEventListener('change', function () {
+        rowChecks.forEach(function (c) { c.checked = selectAll.checked; });
+        refresh();
+      });
+    }
+    rowChecks.forEach(function (c) { c.addEventListener('change', refresh); });
+    refresh();
+  })();
+</script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

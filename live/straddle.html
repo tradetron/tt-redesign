@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Straddle strategies — automated, audited, hands-free · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- pain-point grid ---- */
+  .h-pain{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .h-pain__card{display:flex;flex-direction:column;gap:8px;padding:22px 22px 20px;background:var(--surface);border:var(--hairline);border-left:3px solid var(--negative);border-radius:var(--radius-md)}
+  .h-pain__lbl{font:500 .68rem/1 var(--font-mono);color:var(--negative);letter-spacing:.08em;text-transform:uppercase}
+  .h-pain__h{font:600 1.05rem/1.35 var(--font-display);color:var(--ink)}
+  .h-pain__body{font:400 .92rem/1.55 var(--font-body);color:var(--ink-soft);margin:0}
+
+  /* ---- audit showcase ---- */
+  .h-audit{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+  .h-audit__panel{background:var(--paper);border:var(--hairline);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-md);font-family:var(--font-mono);font-size:.82rem;line-height:1.6}
+  .h-audit__row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:var(--hairline)}
+  .h-audit__row:last-child{border-bottom:0}
+  .h-audit__mark{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:.78rem;color:#fff;margin-top:1px}
+  .h-audit__mark--ok{background:var(--positive)}
+  .h-audit__mark--warn{background:var(--signal)}
+  .h-audit__mark--miss{background:var(--negative)}
+  .h-audit__field{color:var(--slate);letter-spacing:.04em;font-size:.72rem;text-transform:uppercase}
+  .h-audit__val{color:var(--ink);font-family:var(--font-body);font-size:.92rem;line-height:1.45}
+  .h-audit__val em{color:var(--slate);font-style:normal}
+  .h-audit__head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:var(--hairline);margin-bottom:8px}
+  .h-audit__badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--signal-tint);border:1px solid var(--signal);border-radius:var(--radius-pill);font:500 .66rem/1 var(--font-mono);color:var(--signal);letter-spacing:.08em;text-transform:uppercase}
+
+  @media(max-width:960px){
+    .h-pain{grid-template-columns:1fr}
+    .h-audit{grid-template-columns:1fr;gap:24px}
+  }
+</style>
+</head>
+<body data-screen-label="Straddle strategies">
+
+<div data-include="_header.html"></div>
+
+
+<!-- 01 · HERO -->
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Strategies · Straddle · explainer</div>
+    <h1>Run your straddle <span class="sig">hands-free</span> — legs, stops and all.</h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">A straddle lives or dies on precise timing and disciplined exits — exactly where manual trading falls apart. Build a fully automated short straddle on Tradetron in minutes, wire trailing stop-loss and exit rules into every leg, and let our <strong>AI Strategy Audit</strong> match the wired strategy against what you described — before the Go-Live button activates. No silent drops. No code.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="marketplace.html?cat=straddle" class="h-btn h-btn--ghost">Top straddle strategies</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>405k+ traders</span><span>~60k algos</span><span>Free paper trading</span><span>No code</span><span>Funds never leave your broker</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- 02 · WHY MANUAL STRADDLES FAIL -->
+<section class="h-container h-section">
+  <div style="display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">Why manual straddles fail</span>
+      <h2 class="h-h2" style="margin-top:14px">Four failure modes. <span class="sig">Every straddle trader knows them.</span></h2>
+    </div>
+    <p class="h-body" style="max-width:38ch">Multi-leg, premium-driven, time-sensitive — the short straddle punishes hesitation. These are the four mistakes that quietly bleed an otherwise sound edge.</p>
+  </div>
+  <div class="h-pain">
+    <div class="h-pain__card">
+      <span class="h-pain__lbl">[ 01 ] Slow entries</span>
+      <span class="h-pain__h">You miss the IV crush window.</span>
+      <p class="h-pain__body">You wait for the 9:20 candle, manually pull up two option chains, eyeball the ATM, place the call leg, then the put leg. By the time both are filled, IV has already begun bleeding off — and you've left meaningful premium on the table.</p>
+    </div>
+    <div class="h-pain__card">
+      <span class="h-pain__lbl">[ 02 ] Legging risk</span>
+      <span class="h-pain__h">Legs fill at different times — and prices.</span>
+      <p class="h-pain__body">Call fills at 9:21:14, put fills at 9:21:48. In those 34 seconds the index moved 15 points. You meant to be delta-neutral; you opened the day with unintended directional bias.</p>
+    </div>
+    <div class="h-pain__card">
+      <span class="h-pain__lbl">[ 03 ] Emotional exits</span>
+      <span class="h-pain__h">A screaming move turns you into a discretionary trader.</span>
+      <p class="h-pain__body">The short call doubles in twelve minutes. Your stop-loss rule said "exit at 1.5x premium." Your gut says "it'll come back." It usually doesn't. The backtest you trusted was someone who followed the rule.</p>
+    </div>
+    <div class="h-pain__card">
+      <span class="h-pain__lbl">[ 04 ] Mis-configuration</span>
+      <span class="h-pain__h">Multi-leg means many ways to get it wrong.</span>
+      <p class="h-pain__body">Wrong strike offset. Hedge leg on the wrong expiry. Stop-loss wired to one leg, not the other. Universal Exit forgotten. A short straddle has a dozen surfaces to mis-configure — and you only find out when real money's on the line.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- 03 · HOW IT WORKS — 4-STEP METHOD -->
+<section class="h-container h-section h-method" style="padding-top:0">
+  <div>
+    <span class="h-eyebrow">How it works</span>
+    <h2 class="h-h2" style="margin-top:18px">Four steps.<br />Then the straddle <span class="sig">runs itself.</span></h2>
+    <p class="h-body" style="margin-top:18px;max-width:36ch">From payoff sketch to live broker — same pipeline every Tradetron strategy follows. Wired in minutes, not weekends.</p>
+  </div>
+  <ol class="h-method__list" style="list-style:none;padding:0;margin:0">
+    <li class="h-method__step">
+      <span class="h-method__num">[ 01 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Pick the payoff</span>
+        <h3 class="h-h3">Short straddle. Long straddle. Strangle. Iron condor.</h3>
+        <p class="h-body">Open the <a href="option-wizard.html" style="color:var(--signal)">Options Wizard</a>, pick the payoff you want. The wizard composes the multi-leg order book for you — call leg and put leg at the same strike, same expiry, lot count balanced.</p>
+        <div class="h-method__pills"><span>Short straddle</span><span>Long straddle</span><span>Strangle</span><span>Custom strikes</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 02 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Set strikes, expiries, hedges</span>
+        <h3 class="h-h3">ATM or offset. Weekly or monthly. With or without wings.</h3>
+        <p class="h-body">Choose ATM, ATM±100, or a delta-anchored strike. Pick the expiry — current weekly, next weekly, or monthly. Add hedge legs (an OTM call buy + OTM put buy) to cap tail risk and reduce margin. The wizard wires it all into one strategy.</p>
+        <div class="h-method__pills"><span>ATM / offset / delta-anchored</span><span>Weekly &amp; monthly expiries</span><span>Optional hedge wings</span><span>Lot multiplier</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 03 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Wire the exits — per leg</span>
+        <h3 class="h-h3">Trailing SL. Target. Time-based. Universal Exit.</h3>
+        <p class="h-body">Per-leg trailing stop-loss in premium terms. Profit target as % of credit collected. Time-based exit at 15:20 to avoid the close-of-day decay trap. Universal Exit so a runaway on one leg pulls the whole position. Every rule lives in the strategy — not in your head.</p>
+        <div class="h-method__pills"><span>Trailing SL per leg</span><span>% target on credit</span><span>Time-based exit</span><span>Universal Exit</span></div>
+      </div>
+    </li>
+    <li class="h-method__step">
+      <span class="h-method__num">[ 04 ]</span>
+      <div class="h-method__body">
+        <span class="h-eyebrow ink">Backtest, then go live</span>
+        <h3 class="h-h3"><a href="backtest.html" style="color:inherit">Replay years. Then run it in your own broker.</a></h3>
+        <p class="h-body">Backtest the straddle across years of real F&amp;O data — IV, HV, expiry days, results events, holidays all accounted for. Watch the drawdowns, the worst day, the months that lost money. Tune. Then deploy to Zerodha, Angel One, Upstox or Fyers. Tradetron never custodies your funds.</p>
+        <div class="h-method__pills"><span>Years of F&amp;O history</span><span>Realistic costs</span><span>Free paper trade</span><span>Live in your broker</span></div>
+      </div>
+    </li>
+  </ol>
+</section>
+
+
+<!-- 04 · AI STRATEGY AUDIT (FEATURED) -->
+<section class="h-band">
+  <div class="h-container h-section">
+    <div style="display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:32px;flex-wrap:wrap">
+      <div>
+        <span class="h-eyebrow ink">The straddle-saving feature</span>
+        <h2 class="h-h2" style="margin-top:14px">AI Strategy Audit — <span class="sig">before the Go-Live button activates.</span></h2>
+        <p class="h-body" style="margin-top:16px;max-width:54ch">Multi-leg straddles are where silent drops hurt most. A missing SL on the short call. The hedge leg on last month's expiry. A strike offset off by one. The AI Audit reads your wired strategy and matches it, field by field, against what you originally described in plain English — and tells you exactly what's missing, what changed, and what's fine. Catch it here. Not after a 3-sigma move.</p>
+      </div>
+    </div>
+    <div class="h-audit">
+      <div>
+        <span class="h-eyebrow ink">What the audit covers</span>
+        <h3 class="h-h3" style="margin-top:14px">Field-by-field. Plain English. Honest.</h3>
+        <ul class="h-body" style="margin-top:16px;padding-left:18px;display:flex;flex-direction:column;gap:10px">
+          <li><strong>You said:</strong> "Short ATM straddle on NIFTY weekly, 1.5x SL on each leg, exit 15:20." <strong>The strategy does:</strong> Confirms each clause, or flags the gap.</li>
+          <li><strong>Catches silent drops.</strong> Did the AI quietly skip the time-based exit? The audit shows it as a red row before you commit money.</li>
+          <li><strong>Catches mis-wirings.</strong> SL wired to entry price instead of premium. Hedge leg on the wrong expiry. The audit names the field and the mismatch.</li>
+          <li><strong>Catches hidden assumptions.</strong> Default lot size that didn't match your account. Strike resolution that picked an illiquid strike. Surfaced before, not after.</li>
+          <li><strong>Always advisory.</strong> The audit shows you what it sees — you decide whether to fix or override. No black-box gating.</li>
+        </ul>
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+          <a href="features.html#backtest" class="h-btn h-btn--primary">See the full audit flow →</a>
+          <a href="register.html" class="h-btn h-btn--ghost">Try it free</a>
+        </div>
+      </div>
+      <div class="h-audit__panel" aria-hidden="true">
+        <div class="h-audit__head">
+          <div>
+            <div class="h-audit__field">Pre-deploy audit · NIFTY short straddle</div>
+            <div style="font-family:var(--font-display);font-weight:600;font-size:1rem;color:var(--ink);margin-top:4px">12 of 13 clauses match</div>
+          </div>
+          <span class="h-audit__badge">★ AI Audit</span>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--ok">✓</span>
+          <div>
+            <div class="h-audit__field">Underlying</div>
+            <div class="h-audit__val">NIFTY weekly · current expiry <em>(matches)</em></div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--ok">✓</span>
+          <div>
+            <div class="h-audit__field">Legs</div>
+            <div class="h-audit__val">Sell 1× ATM CE + Sell 1× ATM PE <em>(matches)</em></div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--ok">✓</span>
+          <div>
+            <div class="h-audit__field">Entry time</div>
+            <div class="h-audit__val">09:20 IST <em>(matches)</em></div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--ok">✓</span>
+          <div>
+            <div class="h-audit__field">Per-leg SL</div>
+            <div class="h-audit__val">Trailing SL at 1.5× premium · both legs <em>(matches)</em></div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--miss">!</span>
+          <div>
+            <div class="h-audit__field">Time exit</div>
+            <div class="h-audit__val" style="color:var(--negative)">You said: "square off at 15:20."<br />Strategy: <em>no time-based exit wired.</em> Fix before live.</div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--warn">~</span>
+          <div>
+            <div class="h-audit__field">Universal Exit</div>
+            <div class="h-audit__val">Not configured. Optional, but recommended for paired-leg straddles. <em>Override or add.</em></div>
+          </div>
+        </div>
+        <div class="h-audit__row">
+          <span class="h-audit__mark h-audit__mark--ok">✓</span>
+          <div>
+            <div class="h-audit__field">Lot size</div>
+            <div class="h-audit__val">1 lot (75) · matches your account default</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:var(--hairline);font-family:var(--font-mono);font-size:.7rem;color:var(--slate);letter-spacing:.04em">[ illustrative · actual audit output varies per strategy ]</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 05 · BUILT-IN SAFEGUARDS -->
+<section class="h-container h-section">
+  <div style="display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:30px;flex-wrap:wrap">
+    <div>
+      <span class="h-eyebrow">Built-in safeguards</span>
+      <h2 class="h-h2" style="margin-top:14px">Every guardrail a straddle needs, <span class="sig">wired in.</span></h2>
+    </div>
+    <p class="h-body" style="max-width:38ch">The audit catches the big mistakes before deploy. These guardrails handle everything that can go wrong after.</p>
+  </div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Trailing SL per leg</div>
+      <div class="h-feature__body">Independent trailing stop on the call leg and the put leg, in premium points or percentage. When one leg runs, the other stays anchored.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Hedge legs &amp; wings</div>
+      <div class="h-feature__body">Add OTM call-buy and put-buy wings to convert the naked straddle into an iron fly or condor. Caps tail risk, reduces margin, lets you scale the lot count up.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Expiry-day adjustments</div>
+      <div class="h-feature__body">Tighter SL on expiry day. Earlier time-based exit. Skip-entry rules for results-day expiries. Wire any day-of-week or day-to-expiry condition into the strategy.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Universal Exit</div>
+      <div class="h-feature__body">When one leg's SL fires, the other leg's risk profile changes — it's no longer a hedged short, it's a naked option. Universal Exit closes both legs together. Optional, never forced.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 05 ]</span>
+      <div class="h-feature__title">Drawdown circuit-breaker</div>
+      <div class="h-feature__body">Day-level loss limit. If realised plus open PnL crosses your floor, the strategy exits everything and stays out for the day. No revenge trades, no averaging down.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 06 ]</span>
+      <div class="h-feature__title">Broker-disconnect alert</div>
+      <div class="h-feature__body">If your broker's API stops responding mid-trade — token expiry, rate limit, exchange maintenance — you get a WhatsApp ping inside seconds. Not at 15:30 when you check the dashboard.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 06 · BROKERS STRIP -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div>
+        <span class="h-eyebrow ink">Brokers for F&amp;O</span>
+        <h3 class="h-h3" style="margin-top:10px">Live in <em>your</em> broker. Never ours.</h3>
+        <p class="h-body" style="margin-top:10px;max-width:54ch">Connect Zerodha, Angel One, Upstox, Fyers, Dhan and 100+ more. Orders execute in your own broker — NSE, BSE, NFO and MCX. Your money. Your broker. Your control.</p>
+      </div>
+      <div class="h-tilegrid" style="flex:1;min-width:280px;max-width:520px">
+        <div>Zerodha <span class="h-mono">IN</span></div>
+        <div>Angel One <span class="h-mono">IN</span></div>
+        <div>Upstox <span class="h-mono">IN</span></div>
+        <div>Fyers <span class="h-mono">IN</span></div>
+        <div>Dhan <span class="h-mono">IN</span></div>
+        <a href="integrations.html">+95 more <span class="h-mono">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 07 · BEGIN CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size:clamp(2.4rem,4.5vw,4rem);text-align:center;max-width:26ch">Run your first straddle, hands-free, <span class="sig">by this evening.</span></h2>
+  <p class="h-cta__sub">Free paper trade to prove the wiring. AI Audit before Go-Live so what deploys is what you meant. A subscription only when you take it live in your own broker.</p>
+  <div class="h-hero__cta" style="margin-top: 8px;justify-content:center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="#" class="h-btn h-btn--ghost" data-modal-open="demoModal">Book a demo</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

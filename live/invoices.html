@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Invoices · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area shell (built only from tokens) ---- */
+  .a-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  .a-shell {
+    display: grid; grid-template-columns: 248px 1fr; gap: 28px;
+    align-items: start;
+  }
+
+  /* ---- left account sidebar (clean vertical nav) ---- */
+  .a-side {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 92px;
+  }
+  .a-side__head {
+    padding: 16px 18px; border-bottom: var(--hairline);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .a-side__avatar {
+    width: 34px; height: 34px; border-radius: 2px; flex-shrink: 0;
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.92rem;
+  }
+  .a-side__id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .a-side__id strong {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.95rem;
+    letter-spacing: -0.01em;
+  }
+  .a-side__id span {
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .a-side__cap {
+    padding: 14px 18px 8px;
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--slate-soft);
+  }
+  .a-side__nav { display: flex; flex-direction: column; padding-bottom: 8px; }
+  .a-side__link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 18px;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); color: var(--ink-soft);
+    border-left: 2px solid transparent;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .a-side__link:hover { background: var(--paper-2); color: var(--ink); }
+  .a-side__link.is-active {
+    color: var(--signal); background: var(--signal-tint);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .a-side__link .a-side__caret { color: var(--slate-soft); }
+  .a-side__link.is-active .a-side__caret { color: var(--signal); }
+
+  /* ---- content panel ---- */
+  .a-content { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .a-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap;
+  }
+  .a-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .a-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .a-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- panel ---- */
+  .a-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+  }
+
+  /* ---- account data table ---- */
+  .a-tbl-wrap { overflow-x: auto; }
+  .a-tbl { width: 100%; border-collapse: collapse; }
+  .a-tbl th, .a-tbl td {
+    padding: 13px 18px; text-align: left;
+    border-bottom: var(--hairline); vertical-align: middle;
+    white-space: nowrap;
+  }
+  .a-tbl thead th {
+    background: var(--paper-2);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate);
+    font-weight: 500;
+  }
+  .a-tbl tbody td {
+    font-family: var(--font-body); font-size: 0.92rem; color: var(--ink-soft);
+  }
+  .a-tbl tbody tr:hover td { background: var(--paper-2); }
+  .a-tbl .num {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    letter-spacing: var(--tracking-mono); text-align: right;
+    color: var(--ink); white-space: nowrap;
+  }
+  .a-tbl th.num { text-align: right; }
+  .a-tbl .strong { color: var(--ink); font-weight: 500; }
+  .a-tbl .muted { color: var(--slate-soft); }
+  .a-tbl .date { font-family: var(--font-mono); font-size: 0.84rem; letter-spacing: var(--tracking-mono); }
+
+  /* PDF cell links */
+  .a-pdf { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: var(--tracking-mono); }
+  .a-pdf a { color: var(--signal); }
+  .a-pdf a:hover { color: var(--ink); }
+  .a-pdf .sep { color: var(--rule-strong); }
+  .a-pdf .none { color: var(--slate-soft); }
+
+  /* status chip — paid / cancelled */
+  .a-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .a-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .a-status--paid { color: var(--positive); }
+  .a-status--cancelled { color: var(--negative); }
+
+  /* "+N more" + pagination footer */
+  .a-more td {
+    padding: 16px 18px; text-align: center;
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+    border-bottom: var(--hairline);
+  }
+  .a-more td a { color: var(--signal); }
+  .a-more td a:hover { color: var(--ink); }
+
+  .a-pager {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap;
+    padding: 14px 18px;
+  }
+  .a-pager__count { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .a-pager__nav { display: flex; gap: 4px; }
+  .a-pager__btn {
+    display: inline-grid; place-items: center;
+    min-width: 32px; height: 32px; padding: 0 9px;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft);
+    background: var(--surface); letter-spacing: var(--tracking-mono);
+    transition: border-color 140ms, color 140ms, background 140ms;
+  }
+  .a-pager__btn:hover { border-color: var(--ink); color: var(--ink); }
+  .a-pager__btn.is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .a-pager__btn.is-disabled { color: var(--slate-soft); pointer-events: none; }
+
+  @media (max-width: 1024px) {
+    .a-shell { grid-template-columns: 1fr; }
+    .a-side { position: static; }
+    .a-side__nav { flex-direction: row; flex-wrap: wrap; padding: 8px; gap: 4px; }
+    .a-side__cap { display: none; }
+    .a-side__link { border-left: 0; border-radius: var(--radius-sm); }
+    .a-side__link.is-active { border-left: 0; }
+    .a-side__link .a-side__caret { display: none; }
+  }
+</style>
+</head>
+<body data-screen-label="Invoices">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container a-wrap">
+  <div class="a-shell">
+
+    <!-- LEFT ACCOUNT SIDEBAR -->
+    <aside class="a-side" aria-label="Account menu">
+      <div class="a-side__head">
+        <span class="a-side__avatar">A</span>
+        <span class="a-side__id">
+          <strong>Algolive</strong>
+          <span>Account</span>
+        </span>
+      </div>
+      <div class="a-side__cap">Account</div>
+      <nav class="a-side__nav">
+        <a href="profile.html" class="a-side__link">Profile <span class="a-side__caret">›</span></a>
+        <a href="subscriptions.html" class="a-side__link">Subscriptions <span class="a-side__caret">›</span></a>
+        <a href="brokers.html" class="a-side__link">Broker &amp; Exchanges <span class="a-side__caret">›</span></a>
+        <a href="coupons.html" class="a-side__link">Coupons <span class="a-side__caret">›</span></a>
+        <a href="notifications.html" class="a-side__link">Notifications <span class="a-side__caret">›</span></a>
+        <a href="telegram.html" class="a-side__link">Telegram <span class="a-side__caret">›</span></a>
+        <a href="broadcasts.html" class="a-side__link">Broadcast Messages <span class="a-side__caret">›</span></a>
+        <a href="manage-access.html" class="a-side__link">Manage Shared Codes <span class="a-side__caret">›</span></a>
+        <a href="invoices.html" class="a-side__link is-active" aria-current="page">Invoices <span class="a-side__caret">›</span></a>
+        <a href="invoice-template.html" class="a-side__link">Invoice Template <span class="a-side__caret">›</span></a>
+        <a href="change-password.html" class="a-side__link">Change Password <span class="a-side__caret">›</span></a>
+        <a href="recent-activities.html" class="a-side__link">Recent Activities <span class="a-side__caret">›</span></a>
+        <a href="region-settings.html" class="a-side__link">Region Settings <span class="a-side__caret">›</span></a>
+        <a href="ledger.html" class="a-side__link">Wallet <span class="a-side__caret">›</span></a>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section class="a-content">
+
+      <div class="a-head">
+        <div>
+          <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · Invoices</span>
+          <h1 class="a-head__title">Invoices</h1>
+          <span class="a-head__sub">Your complete billing trail — platform plans and strategy subscriptions</span>
+        </div>
+        <div class="a-head__actions">
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">Export CSV</a>
+        </div>
+      </div>
+
+      <div class="a-panel">
+        <div class="a-tbl-wrap">
+          <table class="a-tbl">
+            <thead>
+              <tr>
+                <th>Creator Name</th>
+                <th>Strategy Name</th>
+                <th>Invoice Date</th>
+                <th class="num">Invoice Amount (₹)</th>
+                <th>PDF</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="strong">Tradetron</td>
+                <td class="muted">—</td>
+                <td class="date">Mar 19 2026</td>
+                <td class="num">118</td>
+                <td><span class="a-pdf"><a href="#">View</a></span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Patni Capital PVT LTD</td>
+                <td class="muted">—</td>
+                <td class="date">Feb 28 2026</td>
+                <td class="num">28,001</td>
+                <td><span class="a-pdf"><a href="#">View</a><span class="sep">|</span><a href="#">Breakdown</a></span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Patni Capital PVT LTD</td>
+                <td>NIFTY Strategies Basket V2</td>
+                <td class="date">Jan 01 2026</td>
+                <td class="num">693</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Manish Dagar</td>
+                <td>Shivanidhi</td>
+                <td class="date">Dec 03 2025</td>
+                <td class="num">11,733</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Patni Capital PVT LTD</td>
+                <td>NIFTY Strategies Basket V2</td>
+                <td class="date">Nov 29 2025</td>
+                <td class="num">11,257</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Patni Capital PVT LTD</td>
+                <td>NIFTY Strategies Basket V2</td>
+                <td class="date">Nov 01 2025</td>
+                <td class="num">3,202</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Patni Capital PVT LTD</td>
+                <td>NIFTY Strategies Basket V2</td>
+                <td class="date">Oct 01 2025</td>
+                <td class="num">6,659</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Market Star</td>
+                <td>Index Premium Eater (old)</td>
+                <td class="date">Aug 06 2025</td>
+                <td class="num">2,950</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">StrategyOne</td>
+                <td>CND Crude and Natural Gas Directional</td>
+                <td class="date">Oct 13 2023</td>
+                <td class="num">2,360</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">QCALPHA</td>
+                <td>QCAlpha TEN</td>
+                <td class="date">May 31 2023</td>
+                <td class="num">21,212</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Algo Edge Capital</td>
+                <td>Theta Earner</td>
+                <td class="date">Jun 30 2023</td>
+                <td class="num">17,046</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--cancelled">Cancelled</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Algo Edge Capital</td>
+                <td>Passive Income Earner</td>
+                <td class="date">Jun 30 2023</td>
+                <td class="num">13,380</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--cancelled">Cancelled</span></td>
+              </tr>
+              <tr>
+                <td class="strong">Tradetron</td>
+                <td class="muted">—</td>
+                <td class="date">May 18 2020</td>
+                <td class="num">59</td>
+                <td><span class="a-pdf none">—</span></td>
+                <td><span class="a-status a-status--paid">Paid</span></td>
+              </tr>
+              <tr class="a-more">
+                <td colspan="6"><a href="#">+ 35 more invoices</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="a-pager">
+          <span class="a-pager__count">Showing 1–13 of 48</span>
+          <nav class="a-pager__nav" aria-label="Invoice pages">
+            <a href="#" class="a-pager__btn is-disabled" aria-disabled="true">‹</a>
+            <a href="#" class="a-pager__btn is-active" aria-current="page">1</a>
+            <a href="#" class="a-pager__btn">2</a>
+            <a href="#" class="a-pager__btn">3</a>
+            <a href="#" class="a-pager__btn">4</a>
+            <a href="#" class="a-pager__btn">›</a>
+          </nav>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

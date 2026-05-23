@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Features — Build, Backtest, Deploy, Operate · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- verified marketplace callout ---- */
+  .h-verified {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 40px;
+    align-items: center;
+    border: var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: clamp(28px, 4vw, 48px);
+    background: var(--surface);
+  }
+  .h-verified__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--signal-tint);
+    border: 1px solid var(--signal);
+    border-radius: var(--radius-pill);
+    font: 500 0.72rem/1 var(--font-mono);
+    color: var(--signal);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .h-verified__rules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 24px;
+    margin-top: 14px;
+  }
+  .h-verified__rule { display: flex; flex-direction: column; gap: 4px; }
+  .h-verified__rule__lbl {
+    font: 500 0.66rem/1 var(--font-mono);
+    color: var(--slate);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .h-verified__rule__val {
+    font: 600 0.95rem/1.3 var(--font-display);
+    color: var(--ink);
+  }
+  @media (max-width: 1020px) {
+    .h-verified { grid-template-columns: 1fr; gap: 28px; }
+  }
+</style>
+</head>
+<body data-screen-label="Features — Build, Backtest, Deploy, Operate">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Product · Build · Backtest · Deploy · Operate</div>
+    <h1>Build any strategy you can imagine. <span class="sig">No code. No limits.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Drag, drop, deploy. 100+ ready-made keywords, multi-leg options and custom math — no coding required. Backtest against deep historical data, run live in your own broker, and let a Trust Score on your dashboard tell you everything's healthy at a glance. The same engine powers ~175k live trades a day.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="marketplace.html" class="h-btn h-btn--ghost">See it in the wild</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>Free paper trading</span><span>No code</span><span>₹0 setup</span><span>Funds held by you</span>
+    </div>
+  </div>
+</section>
+
+<!-- 01 · COMPOSE -->
+<section class="h-container h-section--lg" id="build">
+  <div style="display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; gap: 24px; flex-wrap: wrap">
+    <div>
+      <span class="h-eyebrow">01 · Compose</span>
+      <h2 class="h-h2" style="margin-top: 16px">Strategy Building Wizard.</h2>
+    </div>
+    <p class="h-body" style="max-width: 38ch">Build a wide gamut of strategies and algorithms without ever writing code — and sell what you build to other traders and investors. 100% cloud-based: no downloads, no data stream, just access to your portfolio from anywhere in the world.</p>
+  </div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">100+ keywords</div>
+      <div class="h-feature__body">Keywords are the building blocks of algo trading — price data, date/time, events, technicals. Combine them into conditions from simple (a=1 and b=2) to multi-layered, without coding the keywords yourself.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Drag-and-drop builder</div>
+      <div class="h-feature__body">A powerful web-based drag-and-drop interface to build complex conditions in a jiffy — without writing a single line of code.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Multi-leg options</div>
+      <div class="h-feature__body">Build strategies from combinations of instruments — strangles, butterflies and any other complex set you can imagine — across stocks, futures, options, currencies and commodities.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Order management &amp; tranching</div>
+      <div class="h-feature__body">Split multi-lot, multi-leg orders into tranches to get the best price with the least slippage. Set price execution, trailing stop and re-activate frequency per strategy.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 05 ]</span>
+      <div class="h-feature__title">Custom Python (advanced)</div>
+      <div class="h-feature__body">When you want your own logic or data source, incorporate Python code within the strategy builder. Read and write your variables with the GetVar and SetVar custom functions.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 06 ]</span>
+      <div class="h-feature__title">Strategies for everyone</div>
+      <div class="h-feature__body">From buy-and-hold and portfolio building, to quant, pair-trading and volatility strategies, to event-based strategies on corporate results and policy events — built from the same blocks.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · VERIFY -->
+<section class="h-band">
+  <div class="h-container h-section--md" id="backtest">
+    <div style="display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; gap: 24px; flex-wrap: wrap">
+      <div>
+        <span class="h-eyebrow">02 · Verify</span>
+        <h2 class="h-h2" style="margin-top: 16px">Prove it works — before you risk a rupee.</h2>
+      </div>
+      <p class="h-body" style="max-width: 38ch">Backtest on years of historical data. Paper-trade on live markets. And before the Go-Live button activates, our AI audits the strategy against what you originally described — so what deploys is what you actually meant.</p>
+    </div>
+    <div class="h-features cols-3">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Deep historical data</div>
+        <div class="h-feature__body">IV, HV, corporate events, and price data of all Futures and Options instruments — essentially everything you need to test your conditions against the past.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Slippage safeguard</div>
+        <div class="h-feature__body">Backtest assuming the best price, the worst price, or the average of the bid and ask. If the strategy still works at worst-case execution, that's the strategy you want.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">AI Strategy Audit (pre-deploy)</div>
+        <div class="h-feature__body">Built it with the wizard or with Claude? Before the "Go Live" button activates, Tradetron runs a plain-English audit: "you said X, the strategy does Y, here are the field-by-field matches and gaps." No more silent drops.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">Reporting module</div>
+        <div class="h-feature__body">For a single position, results are easy to judge. Across many positions you need deeper reports — our backtesting reporting module shows clearly what the strategy was doing on each day of the period.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 05 ]</span>
+        <div class="h-feature__title">Free paper trading</div>
+        <div class="h-feature__body">A paper trade is simulated trading that lets you buy and sell securities without risking real money — refine a strategy before any capital is on the line.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 06 ]</span>
+        <div class="h-feature__title">Realism flags</div>
+        <div class="h-feature__body">We surface overfitting risk before you trust a backtest — too many parameters, too few trades, a suspicious Sharpe. Honest signals, even when they're not what you want to hear.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · DEPLOY -->
+<section class="h-container h-section--lg" id="deploy">
+  <div style="display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; gap: 24px; flex-wrap: wrap">
+    <div>
+      <span class="h-eyebrow">03 · Deploy</span>
+      <h2 class="h-h2" style="margin-top: 16px">Live in <em style="font-style:italic">your</em> broker. Not ours.</h2>
+    </div>
+    <p class="h-body" style="max-width: 38ch">You set the conditions; we do the rest. Our trading engine checks them on every new price tick and, once your Entry, Repair or Exit conditions are satisfied, takes the trades — through your own broker account. We never custody funds.</p>
+  </div>
+  <div class="h-features cols-3">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">100+ broker APIs</div>
+      <div class="h-feature__body">Connect your account across India, the US and crypto exchanges. We're a layer on top of your broker — the brokerage, government charges, margin and risk management all stay exactly as they are.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Trading engine</div>
+      <div class="h-feature__body">A distributed, cloud-hosted architecture gives every strategy a dedicated bot. It scales servers automatically with load, so whether the system runs 1 strategy or a million, your strategy faces no latency issues.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Funds held by you</div>
+      <div class="h-feature__body">Funds stay in your own brokerage account, in your own name. Your broker bills the trades and holds the money; Tradetron holds only the strategy.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Flexible execution modes</div>
+      <div class="h-feature__body">Paper Trading for simulation, Live-Offline (we notify you to place the order yourself), and Live Auto / one-click for fully automated execution where you stay in control.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 05 ]</span>
+      <div class="h-feature__title">Social trading</div>
+      <div class="h-feature__body">Sift through hundreds of strategies, see key statistics, and subscribe to the ones that suit your style. Anything the author does is automatically replicated in real time in your own broker account.</div>
+    </div><div class="h-feature">
+      <span class="h-feature__num">[ 06 ]</span>
+      <div class="h-feature__title">Reports</div>
+      <div class="h-feature__body">A single interface with unlimited, easy-to-understand reports. Filter and group by broker, underlying, strategy, creator or execution type, then save to PDF or Excel.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · OPERATE -->
+<section class="h-band">
+  <div class="h-container h-section--md" id="operate">
+    <div style="display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px; gap: 24px; flex-wrap: wrap">
+      <div>
+        <span class="h-eyebrow">04 · Operate</span>
+        <h2 class="h-h2" style="margin-top: 16px">Sleep well. The desk runs itself.</h2>
+      </div>
+      <p class="h-body" style="max-width: 38ch">The part most platforms skip: what happens after you go live. A live health score, alerts that find you on WhatsApp, honest cost breakdowns and plain-English replays — so you can trade for real without staring at a screen.</p>
+    </div>
+    <div class="h-features cols-3">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Trust Score</div>
+        <div class="h-feature__body">One-glance health across every live strategy. Green / amber / red, with a plain-English line beneath: "Today: 2 strategies fired 4 trades, no issues, broker reconciled at 15:30." If something's off, you know in a second.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Risk alerts on WhatsApp &amp; Telegram</div>
+        <div class="h-feature__body">Drawdown breach, broker disconnect, order rejection, anomaly detected — straight to your phone. You decide what counts as "wake me up." Default-on for the things that hurt; opt-in for the rest.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">True-Net PnL</div>
+        <div class="h-feature__body">Gross PnL minus brokerage, STT, slippage and platform fees. A monthly cost-burn chart shows what your strategy actually netted you after the broker took its cut. We show you what your broker won't.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">Plain-English trade replay</div>
+        <div class="h-feature__body">Click any trade in your log and Tradetron explains why it fired: "Entry at 10:14:32 — RSI(14) on NIFTY 5-min crossed below 30 with VIX &lt; 17. Exit at 11:22:08 — trailing SL hit at +1.2%." No more guessing.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 05 ]</span>
+        <div class="h-feature__title">Live broker reconciliation</div>
+        <div class="h-feature__body">Daily auto-diff between your broker statement and Tradetron trade log. Missed fills, partial fills, silent rejections — flagged within the hour, so you never find a surprise three weeks later.</div>
+      </div><div class="h-feature">
+        <span class="h-feature__num">[ 06 ]</span>
+        <div class="h-feature__title">Day Journal</div>
+        <div class="h-feature__body">Every trade, every alert, every reconcile event, in one searchable timeline. End-of-day review in 60 seconds — what fired, what almost fired, what didn't quite work.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VERIFIED MARKETPLACE CALLOUT -->
+<section class="h-container h-section">
+  <div class="h-verified">
+    <div>
+      <span class="h-verified__badge">★ Verified live</span>
+      <h2 class="h-h2" style="margin-top: 18px">Marketplace strategies, <span class="sig">running with real money</span>.</h2>
+      <p class="h-body" style="margin-top: 16px; max-width: 38ch">Backtest screenshots are easy to fake. Live performance isn't. Only strategies with months of real forward performance in their author's own account earn a Verified Live badge — and you see the same live PnL the author sees.</p>
+      <div style="margin-top: 20px">
+        <a href="marketplace.html" class="h-btn h-btn--primary">Browse verified strategies →</a>
+      </div>
+    </div>
+    <div>
+      <span class="h-eyebrow">How verification works</span>
+      <div class="h-verified__rules">
+        <div class="h-verified__rule">
+          <span class="h-verified__rule__lbl">Minimum live period</span>
+          <span class="h-verified__rule__val">3 months in author's account</span>
+        </div>
+        <div class="h-verified__rule">
+          <span class="h-verified__rule__lbl">Minimum live trades</span>
+          <span class="h-verified__rule__val">25+ executed trades</span>
+        </div>
+        <div class="h-verified__rule">
+          <span class="h-verified__rule__lbl">PnL source</span>
+          <span class="h-verified__rule__val">Broker-confirmed only</span>
+        </div>
+        <div class="h-verified__rule">
+          <span class="h-verified__rule__lbl">Review cadence</span>
+          <span class="h-verified__rule__val">Re-checked monthly</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 24ch">Your first algorithm,<br />by <span class="sig">this evening.</span></h2>
+  <p class="h-cta__sub">Free for Life for paper trading — a small subscription only when you go live. Join 405k+ traders running ~60k algos across 100+ broker APIs.</p>
+  <div class="h-hero__cta" style="margin-top: 8px">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="#" class="h-btn h-btn--ghost">Book a demo</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

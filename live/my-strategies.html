@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My Strategies · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- my-strategies-local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. No external app.css. */
+
+  .s-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row (mirrors dashboard .d-head) */
+  .s-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .s-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .s-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .s-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* compact select + input, themed like dashboard d-select */
+  .s-select, .s-input {
+    height: 32px; border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); background: var(--field);
+    transition: border-color 160ms;
+  }
+  .s-select {
+    padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    -webkit-appearance: none; appearance: none; cursor: pointer;
+  }
+  .s-input { padding: 0 12px; min-width: 180px; }
+  .s-input::placeholder { color: var(--slate-soft); }
+  .s-select:focus, .s-input:focus { outline: 0; border-color: var(--signal); }
+
+  /* ---- sub-tab row ---- */
+  .s-subtabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; margin-bottom: 22px;
+  }
+  .s-subtab {
+    text-decoration: none; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    padding: 14px 16px;
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .s-subtab:hover { color: var(--ink); }
+  .s-subtab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- count + filter bar ---- */
+  .s-filterbar {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .s-counts {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0;
+    border-bottom: var(--hairline);
+  }
+  .s-count {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 13px 18px; border-right: var(--hairline);
+  }
+  .s-count:last-child { border-right: 0; }
+  .s-count__lbl {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .s-count__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.15rem; line-height: 1; color: var(--ink);
+  }
+  .s-count--total .s-count__val { color: var(--signal); }
+
+  .s-filters {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    padding: 14px 18px;
+  }
+  .s-field { display: inline-flex; align-items: center; gap: 8px; }
+  .s-field__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .s-filters__spacer { margin-left: auto; }
+
+  /* ---- strategy card grid ---- */
+  .s-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 28px;
+  }
+  .s-card {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md);
+    display: flex; flex-direction: column;
+    transition: border-color 160ms, box-shadow 160ms;
+  }
+  .s-card:hover { border-color: var(--rule-strong); box-shadow: var(--shadow-md); }
+
+  .s-card__meta {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; flex-wrap: wrap;
+    padding: 12px 16px; border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: var(--tracking-mono); color: var(--slate);
+  }
+  .s-card__meta .at { color: var(--slate-soft); }
+
+  .s-card__body { padding: 16px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .s-card__name {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.04rem;
+    letter-spacing: -0.015em; line-height: 1.25; color: var(--ink);
+  }
+  .s-card__subs { color: var(--signal); font-size: 0.85rem; font-weight: 500; }
+  .s-card__by {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 2px;
+  }
+
+  .s-card__stats {
+    display: flex; gap: 0; margin-top: 14px;
+    border-top: var(--hairline); padding-top: 12px;
+  }
+  .s-card__stat {
+    display: flex; flex-direction: column; gap: 2px;
+    padding-right: 14px; border-right: var(--hairline);
+  }
+  .s-card__stat:last-child { border-right: 0; padding-right: 0; }
+  .s-card__stat:not(:first-child) { padding-left: 14px; }
+  .s-card__stat__lbl {
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .s-card__stat__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 0.95rem; color: var(--ink); white-space: nowrap;
+  }
+  .s-card__stat__val--sig { color: var(--signal); }
+  .s-card__stat__sub { font-family: var(--font-mono); font-size: 0.62rem; color: var(--slate); }
+
+  .s-card__actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 12px 16px; border-top: var(--hairline);
+  }
+
+  /* "+N more" placeholder card */
+  .s-card--more {
+    align-items: center; justify-content: center; text-align: center;
+    min-height: 180px; gap: 6px; cursor: pointer;
+    background:
+      repeating-linear-gradient(135deg,
+        transparent 0 8px,
+        color-mix(in oklab, var(--ink) 4%, transparent) 8px 9px),
+      var(--surface);
+    border-style: dashed; border-color: var(--rule-strong);
+  }
+  .s-card--more:hover { border-color: var(--signal); box-shadow: none; }
+  .s-card--more__n {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; color: var(--signal);
+  }
+  .s-card--more__lbl {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+
+  /* ---- pagination (mirrors dashboard d-pager) ---- */
+  .s-pager { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; }
+  .s-pager a, .s-pager span {
+    display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px;
+    border: var(--hairline); border-radius: var(--radius-sm); color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .s-pager a:hover { border-color: var(--signal); color: var(--signal); }
+  .s-pager .is-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .s-pager .nav { border: 0; color: var(--slate); }
+  .s-pager .nav:hover { color: var(--signal); }
+
+  @media (max-width: 1100px) {
+    .s-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .s-grid { grid-template-columns: 1fr; }
+    .s-count { flex: 1 1 33%; border-bottom: var(--hairline); }
+    .s-filters__spacer { margin-left: 0; }
+  }
+</style>
+</head>
+<body data-screen-label="My Strategies">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container s-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="s-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Strategies · logged in as Algolive</span>
+      <h1 class="s-head__title">My <span class="sig">strategies</span>.</h1>
+      <span class="s-head__sub">56 strategies · everything you've built and subscribed to, ready to deploy</span>
+    </div>
+    <div class="s-head__actions">
+      <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">New strategy</a>
+      <a href="marketplace.html" class="h-btn h-btn--primary h-btn--sm">Browse Marketplace</a>
+    </div>
+  </div>
+
+  <!-- SUB-TABS -->
+  <nav class="s-subtabs" role="tablist" aria-label="Strategy views">
+    <a class="s-subtab" href="deployed-strategies.html">Deployed</a>
+    <a class="s-subtab is-active" href="my-strategies.html" aria-current="page">My Strategies</a>
+    <a class="s-subtab" href="marketplace.html">Marketplace</a>
+    <a class="s-subtab" href="backtest.html">Backtest</a>
+  </nav>
+
+  <!-- COUNT + FILTER BAR -->
+  <section class="s-filterbar">
+    <div class="s-counts">
+      <div class="s-count s-count--total">
+        <span class="s-count__lbl">Total</span>
+        <span class="s-count__val">56</span>
+      </div>
+      <div class="s-count">
+        <span class="s-count__lbl">Private</span>
+        <span class="s-count__val">6</span>
+      </div>
+      <div class="s-count">
+        <span class="s-count__lbl">Private Link</span>
+        <span class="s-count__val">2</span>
+      </div>
+      <div class="s-count">
+        <span class="s-count__lbl">Marketplace</span>
+        <span class="s-count__val">3</span>
+      </div>
+      <div class="s-count">
+        <span class="s-count__lbl">Option Wizard</span>
+        <span class="s-count__val">43</span>
+      </div>
+      <div class="s-count">
+        <span class="s-count__lbl">Subscribed</span>
+        <span class="s-count__val">43</span>
+      </div>
+    </div>
+    <div class="s-filters">
+      <div class="s-field">
+        <input class="s-input" type="search" placeholder="Search strategies…" aria-label="Search strategies" />
+      </div>
+      <label class="s-field">
+        <span class="s-field__lbl">Type</span>
+        <select class="s-select" aria-label="Type filter">
+          <option selected>All</option>
+          <option>Subscribed</option>
+          <option>Created</option>
+          <option>Option Wizard</option>
+          <option>Stock Bag</option>
+        </select>
+      </label>
+      <label class="s-field">
+        <span class="s-field__lbl">View Type</span>
+        <select class="s-select" aria-label="View type filter">
+          <option selected>All</option>
+          <option>Private</option>
+          <option>On Marketplace</option>
+          <option>Private Link</option>
+        </select>
+      </label>
+      <span class="s-filters__spacer"></span>
+      <a href="my-strategies.html" class="h-btn h-btn--ghost h-btn--sm">Reset</a>
+    </div>
+  </section>
+
+  <!-- STRATEGY CARD GRID -->
+  <section class="s-grid">
+
+    <!-- 1 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 4 days ago <span class="at">|</span> live deployment: 0</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">reliance 1 min exit test v2</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 5,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 4 days ago <span class="at">|</span> live deployment: 0</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">reliance 1 min exit test</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 5,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 3 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 4 days ago <span class="at">|</span> live deployment: 0</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">claude_85_min_sets</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 35,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 4 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>subscribed : 1 week ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--live">Private Link</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Rolling monthly Long IC Nifty <span class="s-card__subs">(1 subscriber)</span></a></div>
+        <div class="s-card__by">by: Vikram Bajaj</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 76,000</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Monthly Fee</span><span class="s-card__stat__val s-card__stat__val--sig">Free</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Unsubscribe</a>
+      </div>
+    </article>
+
+    <!-- 5 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 1 week ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">IDFC</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 1,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 6 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 1 week ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Long Condor Monthly</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 1,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 7 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>subscribed : 1 week ago <span class="at">|</span> live deployment: 0</span>
+        <span class="h-chip h-chip--live">Private Link</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Nifty Iron Condor Daily <span class="s-card__subs">(1 subscriber)</span></a></div>
+        <div class="s-card__by">by: Vikram Bajaj</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val s-card__stat__val--sig">Free</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 3,75,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Unsubscribe</a>
+      </div>
+    </article>
+
+    <!-- 8 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 1 week ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Pin The Range</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 80,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 9 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 2 weeks ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">24000 weekly Put sell</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 15,50,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 10 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>subscribed : 2 weeks ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--live">Private Link</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">UDS 2.0 Long Ops <span class="s-card__subs">(1 subscriber)</span></a></div>
+        <div class="s-card__by">by: Vikram Bajaj</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val s-card__stat__val--sig">Free</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 20,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Unsubscribe</a>
+      </div>
+    </article>
+
+    <!-- 11 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 2 weeks ago <span class="at">|</span> live deployment: 0</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Yotta setup test</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 1,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 12 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 3 weeks ago <span class="at">|</span> live deployment: 3</span>
+        <span class="h-chip h-chip--live h-chip--dot">On Marketplace</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Bluechip Premium Harvester <span class="s-card__subs">(9 subscribers)</span></a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 0</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 10,00,000</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Monthly Fee</span><span class="s-card__stat__val s-card__stat__val--sig">Free + 5.00%</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 13 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 3 weeks ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--paper">Private</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Blackswan protection</a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 1,00,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 14 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>created : 1 month ago <span class="at">|</span> live deployment: 3</span>
+        <span class="h-chip h-chip--live h-chip--dot">On Marketplace</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Nifty Iron Condor Weekly <span class="s-card__subs">(20 subscribers)</span></a></div>
+        <div class="s-card__by">by: Algolive</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val">₹ 2.3 K</span><span class="s-card__stat__sub">(3%)</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 76,000</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Monthly Fee</span><span class="s-card__stat__val s-card__stat__val--sig">Free + 5.00%</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="create-strategy.html" class="h-btn h-btn--ghost h-btn--sm">Edit</a>
+        <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">BackTest</a>
+      </div>
+    </article>
+
+    <!-- 15 -->
+    <article class="s-card">
+      <div class="s-card__meta">
+        <span>subscribed : 1 month ago <span class="at">|</span> live deployment: 1</span>
+        <span class="h-chip h-chip--live">Private Link</span>
+      </div>
+      <div class="s-card__body">
+        <div class="s-card__name"><a href="strategy-profile.html">Mean reversion ic <span class="s-card__subs">(1 subscriber)</span></a></div>
+        <div class="s-card__by">by: Vikram Bajaj</div>
+        <div class="s-card__stats">
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Drawdown</span><span class="s-card__stat__val s-card__stat__val--sig">Free</span></div>
+          <div class="s-card__stat"><span class="s-card__stat__lbl">Min Capital</span><span class="s-card__stat__val">₹ 75,000</span></div>
+        </div>
+      </div>
+      <div class="s-card__actions">
+        <a href="dashboard.html" class="h-btn h-btn--primary h-btn--sm">Deploy</a>
+        <a href="#" class="h-btn h-btn--ghost h-btn--sm">Unsubscribe</a>
+      </div>
+    </article>
+
+    <!-- + more placeholder -->
+    <a class="s-card s-card--more" href="#" aria-label="Show 41 more strategies">
+      <span class="s-card--more__n">+ 41</span>
+      <span class="s-card--more__lbl">more strategies</span>
+    </a>
+
+  </section>
+
+  <!-- PAGINATION -->
+  <nav class="s-pager" aria-label="Pagination">
+    <a class="nav" href="#" aria-label="Previous page">‹</a>
+    <span class="is-active">1</span>
+    <a href="#">2</a>
+    <a href="#">3</a>
+    <a href="#">4</a>
+    <a class="nav" href="#" aria-label="Next page">›</a>
+  </nav>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

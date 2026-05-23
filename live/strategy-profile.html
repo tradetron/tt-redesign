@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nifty Iron Condor Weekly · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- strategy-profile-local layout (functional density) ----
+     Built only from tokens.css/system.css/pages.css primitives —
+     hairlines, mono numerics, amber signal. No external app.css.
+     Reuses dashboard d-* (panels, tables) + marketplace m-*
+     (badges, listing meta) conventions. */
+
+  .sp-wrap { padding-block: clamp(22px, 3.2vw, 34px); }
+
+  /* breadcrumb / back row */
+  .sp-crumb {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: var(--tracking-mono); color: var(--slate);
+    margin-bottom: 16px;
+  }
+  .sp-crumb a { color: var(--slate); }
+  .sp-crumb a:hover { color: var(--signal); }
+  .sp-crumb .sep { color: var(--slate-soft); }
+  .sp-crumb .here { color: var(--ink-soft); }
+
+  /* ---- HEADER block ---- */
+  .sp-header {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden; margin-bottom: 24px;
+  }
+  .sp-header__main {
+    display: grid; grid-template-columns: 1fr auto; gap: 28px;
+    align-items: start; padding: 24px 24px 22px;
+  }
+  .sp-header__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.6rem, 3vw, 2.15rem); letter-spacing: -0.025em;
+    line-height: 1.1; margin: 8px 0 0;
+  }
+  .sp-header__by {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 8px; display: block;
+  }
+  .sp-header__by a { color: var(--signal); }
+  .sp-header__by a:hover { color: var(--ink); }
+  .sp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .sp-tag {
+    display: inline-flex; align-items: center; height: 22px; padding: 0 9px;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--slate); background: var(--paper-2);
+  }
+  .sp-tag--ex { color: var(--ink-soft); border-color: var(--rule-strong); background: var(--surface); }
+
+  /* right-side CTA stack in header */
+  .sp-cta {
+    display: flex; flex-direction: column; gap: 10px; align-items: stretch;
+    min-width: 220px;
+  }
+  .sp-cta .h-btn { justify-content: center; }
+  .sp-fee {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 0.92rem; color: var(--ink); text-align: center;
+  }
+  .sp-fee small { color: var(--slate); font-size: 0.7rem; display: block; margin-top: 2px; }
+  .sp-cta__links { display: flex; gap: 14px; justify-content: center; margin-top: 2px; }
+  .sp-cta__links a {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--signal);
+    letter-spacing: 0.02em;
+  }
+  .sp-cta__links a:hover { color: var(--ink); }
+
+  /* header meta strip (subscribers / created / live) */
+  .sp-header__meta {
+    display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center;
+    padding: 12px 24px; border-top: var(--hairline); background: var(--paper-2);
+    font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: var(--tracking-mono); color: var(--slate);
+  }
+  .sp-header__meta b { color: var(--ink-soft); font-weight: 500; }
+  .sp-header__meta .live { color: var(--signal); }
+
+  /* ---- KEY STATS strip (functional cards, dashboard d-kpi feel) ---- */
+  .sp-stats {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 24px;
+  }
+  .sp-stat { padding: 16px 18px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+  .sp-stat:last-child { border-right: 0; }
+  .sp-stat__lbl {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .sp-stat__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.18rem; letter-spacing: -0.01em; line-height: 1.05; color: var(--ink);
+  }
+  .sp-stat__val--sig { color: var(--signal); }
+  .sp-stat__val--neg { color: var(--negative); }
+  .sp-stat__sub { font-family: var(--font-mono); font-size: 0.66rem; color: var(--slate); }
+
+  /* ---- two-column body shell ---- */
+  .sp-shell { display: grid; grid-template-columns: 1fr 320px; gap: 22px; align-items: start; }
+  .sp-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .sp-side { display: flex; flex-direction: column; gap: 22px; position: sticky; top: 86px; }
+
+  /* ---- generic panel (matches dashboard d-panel chrome) ---- */
+  .sp-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+  }
+  .sp-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 14px 18px; border-bottom: var(--hairline);
+  }
+  .sp-panel__title { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.015em; }
+  .sp-panel__sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); margin-left: 8px; letter-spacing: var(--tracking-mono); }
+  .sp-panel__body { padding: 18px; }
+
+  /* sample / illustrative marker chip */
+  .sp-sample {
+    display: inline-flex; align-items: center; gap: 6px; height: 20px; padding: 0 8px;
+    border: 1px dashed var(--rule-strong); border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); background: transparent;
+  }
+  .sp-sample::before { content: ""; width: 5px; height: 5px; border-radius: 1px; background: var(--slate-soft); }
+
+  /* ---- performance: equity-curve placeholder ---- */
+  .sp-chart {
+    position: relative; height: 240px; margin: 0;
+    border: 1px dashed var(--rule-strong); border-radius: var(--radius-sm);
+    background:
+      repeating-linear-gradient(135deg,
+        transparent 0 8px,
+        color-mix(in oklab, var(--ink) 5%, transparent) 8px 9px),
+      linear-gradient(to top, var(--rule-grid) 1px, transparent 1px) 0 0 / 100% 48px;
+    display: grid; place-items: center;
+  }
+  .sp-chart__label {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); text-align: center; line-height: 1.7;
+  }
+  .sp-chart__corner {
+    position: absolute; top: 8px; right: 10px;
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate-soft);
+  }
+
+  /* monthly-returns mini table */
+  .sp-table { width: 100%; border-collapse: collapse; }
+  .sp-table th, .sp-table td {
+    text-align: left; padding: 11px 14px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .sp-table thead th {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .sp-table tbody tr:last-child td { border-bottom: 0; }
+  .sp-table tbody tr:hover { background: color-mix(in oklab, var(--signal) 5%, transparent); }
+  .sp-table .num { text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: -0.01em; }
+  .sp-table .num.pos { color: var(--positive); }
+  .sp-table .num.neg { color: var(--negative); }
+  .sp-table .mono { font-family: var(--font-mono); font-feature-settings: "tnum" 1; font-size: 0.86rem; color: var(--ink-soft); }
+
+  /* leg side pill */
+  .sp-leg {
+    display: inline-flex; align-items: center; height: 20px; padding: 0 9px;
+    border-radius: var(--radius-sm); font-family: var(--font-mono);
+    font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .sp-leg--sell { color: var(--negative); border: 1px solid color-mix(in oklab, var(--negative) 45%, transparent); background: var(--negative-soft); }
+  .sp-leg--buy  { color: var(--positive); border: 1px solid color-mix(in oklab, var(--positive) 45%, transparent); background: var(--positive-soft); }
+
+  /* ---- about block ---- */
+  .sp-about p { color: var(--ink-soft); margin: 0 0 12px; line-height: 1.6; }
+  .sp-about p:last-child { margin-bottom: 0; }
+  .sp-about__note {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 14px; padding-top: 12px;
+    border-top: var(--hairline);
+  }
+
+  /* ---- ratings summary ---- */
+  .sp-ratings__summary {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 16px 18px; border-bottom: var(--hairline);
+  }
+  .sp-ratings__score {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 2rem; line-height: 1; color: var(--ink);
+  }
+  .sp-stars { color: var(--signal); font-size: 1rem; letter-spacing: 0.08em; }
+  .sp-stars .dim { color: var(--rule-strong); }
+  .sp-ratings__count { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+
+  .sp-reviews { display: flex; flex-direction: column; }
+  .sp-review { padding: 16px 18px; border-bottom: var(--hairline); display: flex; flex-direction: column; gap: 8px; }
+  .sp-review:last-child { border-bottom: 0; }
+  .sp-review__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .sp-review__avatar {
+    width: 28px; height: 28px; border-radius: 2px; background: var(--ink);
+    color: var(--paper); display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.8rem;
+  }
+  .sp-review__who { font-family: var(--font-display); font-weight: 500; font-size: 0.92rem; }
+  .sp-review__date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--slate); margin-left: auto; letter-spacing: var(--tracking-mono); }
+  .sp-review__stars { font-family: var(--font-mono); font-size: 0.8rem; color: var(--signal); }
+  .sp-review__body { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; margin: 0; }
+
+  /* ---- side: subscribe card ---- */
+  .sp-buycard__price {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; color: var(--ink); line-height: 1;
+  }
+  .sp-buycard__price small { color: var(--slate); font-size: 0.8rem; }
+  .sp-buylist { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 8px; }
+  .sp-buylist li {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: var(--tracking-mono);
+    color: var(--slate);
+  }
+  .sp-buylist li b { color: var(--ink-soft); font-weight: 500; }
+
+  /* ---- sticky bottom CTA bar ---- */
+  .sp-stickybar {
+    position: sticky; bottom: 0; z-index: 20;
+    background: color-mix(in oklab, var(--surface) 92%, transparent);
+    backdrop-filter: saturate(160%) blur(10px);
+    border-top: var(--hairline);
+    margin-top: 28px;
+  }
+  .sp-stickybar__inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; padding-block: 14px;
+  }
+  .sp-stickybar__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .sp-stickybar__name { font-family: var(--font-display); font-weight: 500; font-size: 1rem; letter-spacing: -0.015em; }
+  .sp-stickybar__fee { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .sp-stickybar__fee b { color: var(--ink-soft); font-weight: 500; }
+  .sp-stickybar__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  @media (max-width: 1080px) {
+    .sp-stats { grid-template-columns: repeat(3, 1fr); }
+    .sp-stat:nth-child(3) { border-right: 0; }
+    .sp-stat:nth-child(-n+3) { border-bottom: var(--hairline); }
+    .sp-shell { grid-template-columns: 1fr; }
+    .sp-side { position: static; }
+  }
+  @media (max-width: 720px) {
+    .sp-header__main { grid-template-columns: 1fr; }
+    .sp-cta { min-width: 0; }
+    .sp-stats { grid-template-columns: repeat(2, 1fr); }
+    .sp-stat:nth-child(2) { border-right: 0; }
+    .sp-stat:nth-child(odd) { border-right: var(--hairline); }
+    .sp-stat:nth-child(even) { border-right: 0; }
+    .sp-stat:nth-child(-n+4) { border-bottom: var(--hairline); }
+  }
+</style>
+</head>
+<body data-screen-label="Strategy">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container sp-wrap">
+
+  <!-- BREADCRUMB -->
+  <nav class="sp-crumb" aria-label="Breadcrumb">
+    <a href="marketplace.html">Marketplace</a>
+    <span class="sep">/</span>
+    <a href="marketplace.html">NonDirectional</a>
+    <span class="sep">/</span>
+    <span class="here">Nifty Iron Condor Weekly</span>
+  </nav>
+
+  <!-- HEADER -->
+  <section class="sp-header" aria-label="Strategy header">
+    <div class="sp-header__main">
+      <div>
+        <span class="h-eyebrow ink" style="font-size:0.7rem">— Public listing · live in author's account</span>
+        <h1 class="sp-header__title">Nifty Iron Condor Weekly</h1>
+        <span class="sp-header__by">by <a href="profile.html">Algolive</a></span>
+        <div class="sp-tags">
+          <span class="sp-tag">NonDirectional</span>
+          <span class="sp-tag">Volatility</span>
+          <span class="sp-tag">Option Selling</span>
+          <span class="sp-tag sp-tag--ex">NFO</span>
+          <span class="sp-tag">Weekly</span>
+        </div>
+      </div>
+      <div class="sp-cta">
+        <a href="#subscribe" class="h-btn h-btn--primary">Subscribe</a>
+        <div class="sp-fee">
+          Free <span style="color:var(--signal)">+ 5.00%</span>
+          <small>variable profit-share · per month</small>
+        </div>
+        <div class="sp-cta__links">
+          <a href="backtest.html">Backtest →</a>
+          <a href="#methodology">Read methodology →</a>
+        </div>
+      </div>
+    </div>
+    <div class="sp-header__meta">
+      <span><b>20</b> subscribers</span>
+      <span>created <b>1 month ago</b></span>
+      <span><b class="live">3</b> live deployments</span>
+      <span>exchange <b>NFO</b> · NIFTY weekly options</span>
+    </div>
+  </section>
+
+  <!-- KEY STATS STRIP -->
+  <div class="sp-stats" aria-label="Key stats">
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Subscribers</span>
+      <span class="sp-stat__val">20</span>
+    </div>
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Min Capital</span>
+      <span class="sp-stat__val">₹ 76,000</span>
+    </div>
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Monthly Fee</span>
+      <span class="sp-stat__val sp-stat__val--sig">Free + 5%</span>
+      <span class="sp-stat__sub">variable</span>
+    </div>
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Max Drawdown</span>
+      <span class="sp-stat__val sp-stat__val--neg">₹ 2.3 K</span>
+      <span class="sp-stat__sub">3%</span>
+    </div>
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Live Deployments</span>
+      <span class="sp-stat__val">3</span>
+    </div>
+    <div class="sp-stat">
+      <span class="sp-stat__lbl">Exchange</span>
+      <span class="sp-stat__val">NFO</span>
+    </div>
+  </div>
+
+  <!-- BODY SHELL -->
+  <div class="sp-shell">
+    <div class="sp-main">
+
+      <!-- PERFORMANCE -->
+      <section class="sp-panel" aria-label="Performance">
+        <div class="sp-panel__head">
+          <span><span class="sp-panel__title">Performance</span><span class="sp-panel__sub">equity & monthly returns</span></span>
+          <span class="sp-sample">Illustrative</span>
+        </div>
+        <div class="sp-panel__body">
+          <!-- equity curve placeholder -->
+          <figure class="sp-chart" role="img" aria-label="Equity curve placeholder — illustrative, no live data wired">
+            <span class="sp-chart__corner">Sample · not live data</span>
+            <figcaption class="sp-chart__label">
+              Equity curve · last 6 months<br />
+              <span style="color:var(--slate-soft); font-size:0.7rem">Chart placeholder — illustrative only, no track record wired</span>
+            </figcaption>
+          </figure>
+
+          <!-- monthly returns mini table -->
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:18px 0 10px">
+            <span class="h-tag" style="letter-spacing:0.12em">Monthly returns</span>
+            <span class="sp-sample">Illustrative / sample values</span>
+          </div>
+          <table class="sp-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="num">Return %</th>
+                <th class="num">P&amp;L (sample)</th>
+                <th class="num">Max DD %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">Dec 2025</td>
+                <td class="num pos">+2.1%</td>
+                <td class="num pos">▲ ₹ 1,596</td>
+                <td class="num neg">1.4%</td>
+              </tr>
+              <tr>
+                <td class="mono">Jan 2026</td>
+                <td class="num neg">−0.8%</td>
+                <td class="num neg">▼ ₹ 608</td>
+                <td class="num neg">2.6%</td>
+              </tr>
+              <tr>
+                <td class="mono">Feb 2026</td>
+                <td class="num pos">+3.0%</td>
+                <td class="num pos">▲ ₹ 2,280</td>
+                <td class="num neg">0.9%</td>
+              </tr>
+              <tr>
+                <td class="mono">Mar 2026</td>
+                <td class="num pos">+1.5%</td>
+                <td class="num pos">▲ ₹ 1,140</td>
+                <td class="num neg">1.8%</td>
+              </tr>
+              <tr>
+                <td class="mono">Apr 2026</td>
+                <td class="num pos">+2.4%</td>
+                <td class="num pos">▲ ₹ 1,824</td>
+                <td class="num neg">1.1%</td>
+              </tr>
+              <tr>
+                <td class="mono">May 2026</td>
+                <td class="num pos">+0.9%</td>
+                <td class="num pos">▲ ₹ 684</td>
+                <td class="num neg">3.0%</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="h-micro" style="margin-top:12px">All figures above are illustrative placeholders. They are NOT a live track record and must not be read as realised returns.</p>
+        </div>
+      </section>
+
+      <!-- COMPOSITION -->
+      <section class="sp-panel" aria-label="Composition">
+        <div class="sp-panel__head">
+          <span><span class="sp-panel__title">Composition</span><span class="sp-panel__sub">4 legs · iron condor</span></span>
+          <span class="h-chip h-chip--paper">Defined risk</span>
+        </div>
+        <div class="d-tablewrap" style="overflow-x:auto">
+          <table class="sp-table" style="min-width:520px">
+            <thead>
+              <tr>
+                <th>Side</th>
+                <th>Instrument</th>
+                <th>Type</th>
+                <th>Strike</th>
+                <th class="num">Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="sp-leg sp-leg--sell">Sell</span></td>
+                <td class="mono">NIFTY</td>
+                <td class="mono">PE</td>
+                <td class="mono">ATM − 300</td>
+                <td class="num">1 lot</td>
+              </tr>
+              <tr>
+                <td><span class="sp-leg sp-leg--buy">Buy</span></td>
+                <td class="mono">NIFTY</td>
+                <td class="mono">PE</td>
+                <td class="mono">ATM − 500</td>
+                <td class="num">1 lot</td>
+              </tr>
+              <tr>
+                <td><span class="sp-leg sp-leg--sell">Sell</span></td>
+                <td class="mono">NIFTY</td>
+                <td class="mono">CE</td>
+                <td class="mono">ATM + 300</td>
+                <td class="num">1 lot</td>
+              </tr>
+              <tr>
+                <td><span class="sp-leg sp-leg--buy">Buy</span></td>
+                <td class="mono">NIFTY</td>
+                <td class="mono">CE</td>
+                <td class="mono">ATM + 500</td>
+                <td class="num">1 lot</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sp-panel__body" style="border-top:var(--hairline)">
+          <p class="h-micro" style="margin:0">Short strangle (±300) financed by protective wings (±500). Risk is capped at the wing width minus net credit; the position is market-neutral and exits intraday.</p>
+        </div>
+      </section>
+
+      <!-- ABOUT / METHODOLOGY -->
+      <section class="sp-panel sp-about" id="methodology" aria-label="About">
+        <div class="sp-panel__head">
+          <span class="sp-panel__title">About this strategy</span>
+        </div>
+        <div class="sp-panel__body">
+          <p>A defined-risk weekly iron condor on NIFTY — sells an OTM call+put spread to harvest theta, with protective wings. Market-neutral, exits intraday.</p>
+          <p>The strategy profits when NIFTY stays inside the short strikes through the weekly expiry, collecting time decay on the sold options. The bought wings cap the maximum loss on either side, so capital at risk is known up front and does not run away on a gap move. Positions are squared off the same session — no overnight exposure.</p>
+          <p class="sp-about__note">Methodology summary is provided by the author. Tradetron does not endorse any strategy; review the composition and your own risk limits before subscribing.</p>
+        </div>
+      </section>
+
+      <!-- REVIEWS / RATINGS -->
+      <section class="sp-panel" aria-label="Reviews and ratings">
+        <div class="sp-panel__head">
+          <span><span class="sp-panel__title">Ratings &amp; reviews</span><span class="sp-panel__sub">subscriber feedback</span></span>
+          <span class="sp-sample">Illustrative</span>
+        </div>
+        <div class="sp-ratings__summary">
+          <span class="sp-ratings__score">4.5</span>
+          <span>
+            <span class="sp-stars">★★★★<span class="dim">★</span></span><br />
+            <span class="sp-ratings__count">based on sample reviews · illustrative</span>
+          </span>
+        </div>
+        <div class="sp-reviews">
+          <article class="sp-review">
+            <div class="sp-review__head">
+              <span class="sp-review__avatar">R</span>
+              <span class="sp-review__who">Rahul M.</span>
+              <span class="sp-review__stars">★★★★★</span>
+              <span class="sp-review__date">sample · 2 weeks ago</span>
+            </div>
+            <p class="sp-review__body">Clean defined-risk setup, capital requirement is reasonable for a weekly condor and the intraday exit keeps me out of overnight gaps. <em>(Illustrative review — placeholder content.)</em></p>
+          </article>
+          <article class="sp-review">
+            <div class="sp-review__head">
+              <span class="sp-review__avatar">P</span>
+              <span class="sp-review__who">Priya S.</span>
+              <span class="sp-review__stars">★★★★<span style="color:var(--rule-strong)">★</span></span>
+              <span class="sp-review__date">sample · 1 month ago</span>
+            </div>
+            <p class="sp-review__body">Does what it says — neutral and disciplined. Wider weeks eat into the credit, but the wings did their job. <em>(Illustrative review — placeholder content.)</em></p>
+          </article>
+        </div>
+        <div class="sp-panel__body" style="border-top:var(--hairline)">
+          <p class="h-micro" style="margin:0">Ratings and reviews shown here are sample placeholders for layout only. No real subscriber feedback is wired to this prototype.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- SIDE RAIL -->
+    <aside class="sp-side" aria-label="Subscribe">
+      <div class="sp-panel" id="subscribe">
+        <div class="sp-panel__body">
+          <div class="sp-buycard__price">Free <small>+ 5.00% variable</small></div>
+          <ul class="sp-buylist">
+            <li><span>Min capital</span><b>₹ 76,000</b></li>
+            <li><span>Monthly fee</span><b>Free</b></li>
+            <li><span>Profit share</span><b>5.00%</b></li>
+            <li><span>Max drawdown</span><b>₹ 2.3 K · 3%</b></li>
+            <li><span>Exchange</span><b>NFO</b></li>
+            <li><span>Live deployments</span><b class="h-mono" style="color:var(--signal)">3</b></li>
+          </ul>
+          <a href="#" class="h-btn h-btn--primary" style="width:100%; justify-content:center; margin-top:16px">Subscribe</a>
+          <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm" style="width:100%; justify-content:center; margin-top:8px">Run backtest</a>
+          <p class="h-micro" style="margin-top:12px; text-align:center">Runs live in the author's account · you mirror trades in your own broker.</p>
+        </div>
+      </div>
+
+      <div class="sp-panel">
+        <div class="sp-panel__head">
+          <span class="sp-panel__title" style="font-size:0.98rem">Creator</span>
+        </div>
+        <div class="sp-panel__body" style="display:flex; align-items:center; gap:12px">
+          <span class="sp-review__avatar" style="width:40px; height:40px; font-size:1.05rem">A</span>
+          <div>
+            <a href="profile.html" style="font-family:var(--font-display); font-weight:500; color:var(--ink)">Algolive</a>
+            <div class="h-micro">View profile · other strategies</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+<!-- STICKY BOTTOM SUBSCRIBE BAR -->
+<div class="sp-stickybar">
+  <div class="h-container sp-stickybar__inner">
+    <div class="sp-stickybar__info">
+      <span class="sp-stickybar__name">Nifty Iron Condor Weekly · <span style="color:var(--slate); font-weight:400">by Algolive</span></span>
+      <span class="sp-stickybar__fee">Min capital <b>₹ 76,000</b> · <b>Free + 5.00%</b> variable · <b>NFO</b></span>
+    </div>
+    <div class="sp-stickybar__actions">
+      <a href="backtest.html" class="h-btn h-btn--ghost h-btn--sm">Backtest</a>
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Subscribe</a>
+    </div>
+  </div>
+</div>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

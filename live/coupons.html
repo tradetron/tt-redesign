@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coupons · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area shell (built only from tokens) ---- */
+  .a-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  .a-shell {
+    display: grid; grid-template-columns: 248px 1fr; gap: 28px;
+    align-items: start;
+  }
+
+  /* ---- left account sidebar (clean vertical nav) ---- */
+  .a-side {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 92px;
+  }
+  .a-side__head {
+    padding: 16px 18px; border-bottom: var(--hairline);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .a-side__avatar {
+    width: 34px; height: 34px; border-radius: 2px; flex-shrink: 0;
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.92rem;
+  }
+  .a-side__id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .a-side__id strong {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.95rem;
+    letter-spacing: -0.01em;
+  }
+  .a-side__id span {
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .a-side__cap {
+    padding: 14px 18px 8px;
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--slate-soft);
+  }
+  .a-side__nav { display: flex; flex-direction: column; padding-bottom: 8px; }
+  .a-side__link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 18px;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); color: var(--ink-soft);
+    border-left: 2px solid transparent;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .a-side__link:hover { background: var(--paper-2); color: var(--ink); }
+  .a-side__link.is-active {
+    color: var(--signal); background: var(--signal-tint);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .a-side__link .a-side__caret { color: var(--slate-soft); }
+  .a-side__link.is-active .a-side__caret { color: var(--signal); }
+
+  /* ---- content panel ---- */
+  .a-content { min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .a-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap;
+  }
+  .a-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .a-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .a-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- panel (titled block) ---- */
+  .a-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+  }
+  .a-panel__head {
+    padding: 16px 20px; border-bottom: var(--hairline);
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap;
+  }
+  .a-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem;
+    letter-spacing: -0.015em; margin: 0;
+  }
+  .a-panel__note {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .a-panel__body { padding: 20px; }
+
+  /* ---- create-coupon form (inline grid) ---- */
+  .a-cform {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) auto;
+    gap: 14px; align-items: end;
+  }
+  .a-cform .h-field { gap: 6px; }
+  .a-cform__discount { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .a-cform__discount .h-select { width: auto; min-width: 132px; }
+  .a-cform__add { height: 44px; }
+
+  /* ---- account data table ---- */
+  .a-tbl-wrap { overflow-x: auto; }
+  .a-tbl { width: 100%; border-collapse: collapse; }
+  .a-tbl th, .a-tbl td {
+    padding: 13px 18px; text-align: left;
+    border-bottom: var(--hairline); vertical-align: middle;
+    white-space: nowrap;
+  }
+  .a-tbl thead th {
+    background: var(--paper-2);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate);
+    font-weight: 500;
+  }
+  .a-tbl tbody td {
+    font-family: var(--font-body); font-size: 0.92rem; color: var(--ink-soft);
+  }
+  .a-tbl tbody tr:last-child td { border-bottom: 0; }
+  .a-tbl tbody tr:hover td { background: var(--paper-2); }
+  .a-tbl .num {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    letter-spacing: var(--tracking-mono); text-align: right;
+    color: var(--ink); white-space: nowrap;
+  }
+  .a-tbl th.num { text-align: right; }
+  .a-tbl .strong { color: var(--ink); font-weight: 500; }
+  .a-tbl .muted { color: var(--slate); }
+
+  /* ---- empty state row ---- */
+  .a-empty td {
+    text-align: center; padding: 34px 18px;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  .a-empty td .a-empty__mark {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .a-empty td .a-empty__mark::before {
+    content: ""; width: 6px; height: 6px; background: var(--rule-strong);
+  }
+
+  @media (max-width: 1100px) {
+    .a-cform { grid-template-columns: 1fr 1fr; }
+    .a-cform__add { grid-column: 1 / -1; justify-self: start; }
+  }
+  @media (max-width: 1024px) {
+    .a-shell { grid-template-columns: 1fr; }
+    .a-side { position: static; }
+    .a-side__nav { flex-direction: row; flex-wrap: wrap; padding: 8px; gap: 4px; }
+    .a-side__cap { display: none; }
+    .a-side__link { border-left: 0; border-radius: var(--radius-sm); }
+    .a-side__link.is-active { border-left: 0; }
+    .a-side__link .a-side__caret { display: none; }
+  }
+  @media (max-width: 600px) {
+    .a-cform { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Coupons">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container a-wrap">
+  <div class="a-shell">
+
+    <!-- LEFT ACCOUNT SIDEBAR -->
+    <aside class="a-side" aria-label="Account menu">
+      <div class="a-side__head">
+        <span class="a-side__avatar">A</span>
+        <span class="a-side__id">
+          <strong>Algolive</strong>
+          <span>Account</span>
+        </span>
+      </div>
+      <div class="a-side__cap">Account</div>
+      <nav class="a-side__nav">
+        <a href="profile.html" class="a-side__link">Profile <span class="a-side__caret">›</span></a>
+        <a href="subscriptions.html" class="a-side__link">Subscriptions <span class="a-side__caret">›</span></a>
+        <a href="brokers.html" class="a-side__link">Broker &amp; Exchanges <span class="a-side__caret">›</span></a>
+        <a href="coupons.html" class="a-side__link is-active" aria-current="page">Coupons <span class="a-side__caret">›</span></a>
+        <a href="notifications.html" class="a-side__link">Notifications <span class="a-side__caret">›</span></a>
+        <a href="telegram.html" class="a-side__link">Telegram <span class="a-side__caret">›</span></a>
+        <a href="broadcasts.html" class="a-side__link">Broadcast Messages <span class="a-side__caret">›</span></a>
+        <a href="manage-access.html" class="a-side__link">Manage Shared Codes <span class="a-side__caret">›</span></a>
+        <a href="invoices.html" class="a-side__link">Invoices <span class="a-side__caret">›</span></a>
+        <a href="invoice-template.html" class="a-side__link">Invoice Template <span class="a-side__caret">›</span></a>
+        <a href="change-password.html" class="a-side__link">Change Password <span class="a-side__caret">›</span></a>
+        <a href="recent-activities.html" class="a-side__link">Recent Activities <span class="a-side__caret">›</span></a>
+        <a href="region-settings.html" class="a-side__link">Region Settings <span class="a-side__caret">›</span></a>
+        <a href="ledger.html" class="a-side__link">Wallet <span class="a-side__caret">›</span></a>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section class="a-content">
+
+      <div class="a-head">
+        <div>
+          <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · Coupons</span>
+          <h1 class="a-head__title">Coupons</h1>
+          <span class="a-head__sub">Reward your subscribers with discount codes and win more deployments</span>
+        </div>
+      </div>
+
+      <!-- CREATE COUPONS -->
+      <div class="a-panel">
+        <div class="a-panel__head">
+          <h2 class="a-panel__title">Create Coupons</h2>
+          <span class="a-panel__note">give to your subscribers for discounted pricing</span>
+        </div>
+        <div class="a-panel__body">
+          <form class="a-cform" onsubmit="return false">
+            <div class="h-field">
+              <label class="h-label" for="c-name">Coupon name</label>
+              <input class="h-input" id="c-name" type="text" placeholder="SUMMER25" />
+            </div>
+            <div class="h-field">
+              <label class="h-label" for="c-amount">Coupon Amount</label>
+              <input class="h-input" id="c-amount" type="text" inputmode="numeric" placeholder="0" />
+            </div>
+            <div class="h-field">
+              <label class="h-label" for="c-discount">Discount</label>
+              <div class="a-cform__discount">
+                <input class="h-input" id="c-discount" type="text" inputmode="numeric" placeholder="0" />
+                <select class="h-select" aria-label="Discount unit">
+                  <option value="percent">In Percentage %</option>
+                  <option value="amount">In Amount</option>
+                </select>
+              </div>
+            </div>
+            <div class="h-field">
+              <label class="h-label" for="c-validity">Validity</label>
+              <input class="h-input" id="c-validity" type="date" />
+            </div>
+            <div class="h-field">
+              <label class="h-label" for="c-total">Total number of coupons</label>
+              <input class="h-input" id="c-total" type="text" inputmode="numeric" placeholder="0" />
+            </div>
+            <button class="h-btn h-btn--primary a-cform__add" type="submit">Add</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- COUPONS LIST -->
+      <div class="a-panel">
+        <div class="a-panel__head">
+          <h2 class="a-panel__title">Coupons List</h2>
+        </div>
+        <div class="a-tbl-wrap">
+          <table class="a-tbl">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th class="num">Discount Amt</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th class="num">Total No</th>
+                <th class="num">Used</th>
+                <th>Disabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="a-empty">
+                <td colspan="7"><span class="a-empty__mark">No coupons yet — create one above to start rewarding subscribers</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USAGE DETAILS -->
+      <div class="a-panel">
+        <div class="a-panel__head">
+          <h2 class="a-panel__title">Usage Details</h2>
+        </div>
+        <div class="a-tbl-wrap">
+          <table class="a-tbl">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Coupon Number</th>
+                <th>Name</th>
+                <th class="num">Amount</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="a-empty">
+                <td colspan="5"><span class="a-empty__mark">No redemptions yet — usage shows up here once subscribers apply a coupon</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reports · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- reports-local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, green/oxblood. No external app.css. Mirrors
+     the .d-*/.s-* pattern in dashboard.html / my-strategies.html. */
+
+  .r-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row (mirrors dashboard .d-head) */
+  .r-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .r-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .r-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+    max-width: 62ch; line-height: 1.5;
+  }
+  .r-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- filter bar (mirrors my-strategies .s-filters) ---- */
+  .r-filterbar {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .r-filters {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;
+    padding: 16px 18px;
+  }
+  .r-field { display: flex; flex-direction: column; gap: 6px; }
+  .r-field__lbl {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .r-select {
+    height: 32px; padding: 0 30px 0 12px;
+    background:
+      var(--field)
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%235A6478'/></svg>")
+      no-repeat right 11px center;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); -webkit-appearance: none; appearance: none;
+    cursor: pointer; transition: border-color 160ms; min-width: 168px;
+  }
+  .r-select:focus { outline: 0; border-color: var(--signal); }
+  .r-filters__spacer { margin-left: auto; }
+
+  /* ---- panel (matches dashboard .d-panel chrome) ---- */
+  .r-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+  .r-panel__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline);
+  }
+  .r-panel__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+  .r-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+
+  /* ---- table (mirrors dashboard .d-table) ---- */
+  .r-tablewrap { overflow-x: auto; }
+  .r-table { width: 100%; border-collapse: collapse; }
+  .r-table th, .r-table td {
+    text-align: left; padding: 14px 18px; border-bottom: var(--hairline);
+    vertical-align: middle;
+  }
+  .r-table thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--slate); font-weight: 500;
+    background: var(--paper-2);
+  }
+  .r-table tbody tr:hover { background: color-mix(in oklab, var(--signal) 5%, transparent); }
+  .r-table .strat {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.98rem;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  .r-table .num {
+    text-align: right; font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 0.95rem; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .r-table .num.pos { color: var(--positive); }
+  .r-table .num.neg { color: var(--negative); }
+  .r-table .det { text-align: right; }
+  .r-table .det a {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--signal);
+    letter-spacing: var(--tracking-mono); text-decoration: none;
+  }
+  .r-table .det a:hover { text-decoration: underline; }
+
+  /* total row — heavier rule above, bold */
+  .r-table tbody tr.is-total td {
+    border-top: var(--hairline-strong); border-bottom: 0;
+    background: var(--paper-2);
+  }
+  .r-table tbody tr.is-total .strat { font-weight: 600; }
+  .r-table tbody tr.is-total .num {
+    font-size: 1.05rem; font-weight: 600;
+  }
+  .r-table tbody tr.is-total:hover { background: var(--paper-2); }
+
+  @media (max-width: 720px) {
+    .r-select { min-width: 0; flex: 1; }
+    .r-field { flex: 1 1 140px; }
+  }
+</style>
+</head>
+<body data-screen-label="Reports">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container r-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="r-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Reports · logged in as Algolive</span>
+      <h1 class="r-head__title">Reports</h1>
+      <span class="r-head__sub">Your full P&amp;L, broken down the way you trade (figures through yesterday).</span>
+    </div>
+    <div class="r-head__actions">
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Export Report</a>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <section class="r-filterbar">
+    <div class="r-filters">
+      <div class="r-field">
+        <span class="r-field__lbl">Group By</span>
+        <select class="r-select" aria-label="Group by">
+          <option selected>Strategy</option>
+          <option>Broker</option>
+          <option>Deployment Type</option>
+          <option>Creator</option>
+        </select>
+      </div>
+      <div class="r-field">
+        <span class="r-field__lbl">Date Range</span>
+        <select class="r-select" aria-label="Date range">
+          <option selected>This Month</option>
+          <option>Last Month</option>
+          <option>This Year</option>
+          <option>All Time</option>
+          <option>Custom</option>
+        </select>
+      </div>
+      <span class="r-filters__spacer"></span>
+      <a href="#" class="h-btn h-btn--ghost h-btn--sm">Filter</a>
+    </div>
+  </section>
+
+  <!-- STRATEGY P&L TABLE -->
+  <section class="r-panel">
+    <div class="r-panel__head">
+      <span><span class="r-panel__title">Strategy P&amp;L</span><span class="r-panel__sub">grouped by strategy · this month</span></span>
+    </div>
+    <div class="r-tablewrap">
+      <table class="r-table">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th class="num">PnL</th>
+            <th class="det">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="strat">Blackswan protection</td>
+            <td class="num neg">₹ −43,017.02</td>
+            <td class="det"><a href="#">Details</a></td>
+          </tr>
+          <tr>
+            <td class="strat">Bluechip Premium Harvester</td>
+            <td class="num pos">₹ 1,35,788.74</td>
+            <td class="det"><a href="#">Details</a></td>
+          </tr>
+          <tr class="is-total">
+            <td class="strat">Total</td>
+            <td class="num pos">₹ 92,771.72</td>
+            <td class="det">&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

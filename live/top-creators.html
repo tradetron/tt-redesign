@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Top creators — Verified Live Performance Marketplace · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Creator card — scoped to this page */
+  .h-creator { display: flex; flex-direction: column; gap: 14px; }
+  .h-creator__head { display: flex; align-items: center; gap: 14px; }
+  .h-creator__av {
+    width: 48px; height: 48px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 2px;
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+  }
+  .h-creator__handle { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.015em; color: var(--ink); }
+  .h-creator__sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); }
+  .h-creator__bio { font-size: 0.88rem; line-height: 1.55; color: var(--ink-soft); }
+  .h-creator__verified {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    background: var(--signal-tint);
+    border: 1px solid var(--signal);
+    border-radius: var(--radius-pill);
+    font: 500 0.66rem/1 var(--font-mono);
+    color: var(--signal);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    width: max-content;
+  }
+  .h-creator__stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6px 18px;
+    padding-top: 12px;
+    border-top: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+  }
+  .h-creator__stat { display: flex; justify-content: space-between; }
+  .h-creator__stat span:last-child { color: var(--ink); }
+</style>
+</head>
+<body data-screen-label="Top creators — Verified Live Performance Marketplace">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Marketplace · Top creators</div>
+    <h1>The traders running real money <span class="sig">in their own accounts.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Every creator on this page earns from strategies that run live in <em>subscribers'</em> own broker accounts — Zerodha, Dhan, Upstox, Fyers, Angel One, Interactive Brokers and 90+ more. The number you see next to each name is broker-confirmed: months of forward live performance in the creator's own account, not a backtest screenshot. Verified Live Performance is how this marketplace works.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="top-strategies.html" class="h-btn h-btn--ghost">By strategy</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>Funds never leave your broker</span><span>Broker-confirmed PnL</span><span>Verified Live badge</span><span>Cancel any time</span>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px">
+    <div>
+      <span class="h-eyebrow">Verified Live Performance</span>
+      <h2 class="h-h2" style="margin-top: 14px">Your money. Your broker. <span class="sig">Their strategy.</span></h2>
+    </div>
+    <p class="h-body" style="max-width: 38ch">Subscribe, and the creator's strategy runs in your own broker account. The creator earns a share of the subscription; you keep every rupee of the PnL. Tradetron never custodies a paisa.</p>
+  </div>
+
+  <div class="h-features cols-3">
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">M</div>
+        <div>
+          <div class="h-creator__handle">@maya.r</div>
+          <div class="h-creator__sub">Mumbai · since 2014</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 14 months live</span>
+      <p class="h-creator__bio">Iron-condor and short-strangle author on weekly NIFTY expiries. Conservative sizing, hedge-first.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>7 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>4,012</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Options</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Mar 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">K</div>
+        <div>
+          <div class="h-creator__handle">@kapil.m</div>
+          <div class="h-creator__sub">Mumbai · since 2014</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 22 months live</span>
+      <p class="h-creator__bio">Directional NIFTY/BANKNIFTY option seller with mechanical re-entries. No discretionary overrides.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>4 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>2,341</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Directional</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Jul 2024</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">Z</div>
+        <div>
+          <div class="h-creator__handle">@zerodte</div>
+          <div class="h-creator__sub">Delhi · since 2019</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 9 months live</span>
+      <p class="h-creator__bio">Zero-days-to-expiry NIFTY scalper. High-frequency entries, strict daily kill-switch on MTM.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>3 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>1,840</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · 0DTE</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Aug 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">S</div>
+        <div>
+          <div class="h-creator__handle">@steadyiv</div>
+          <div class="h-creator__sub">San Francisco · since 2021</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 11 months live</span>
+      <p class="h-creator__bio">US equity volatility-targeted basket. Rebalances weekly, runs against Interactive Brokers.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>2 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>1,205</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>US · Equity</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Jun 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">S</div>
+        <div>
+          <div class="h-creator__handle">@sam.k</div>
+          <div class="h-creator__sub">Bengaluru · since 2020</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 7 months live</span>
+      <p class="h-creator__bio">Multi-exchange crypto momentum. Spot only, no perp leverage, hard daily drawdown stop.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>5 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>891</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>Crypto · spot</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Oct 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">T</div>
+        <div>
+          <div class="h-creator__handle">@traderx</div>
+          <div class="h-creator__sub">Pune · since 2017</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 18 months live</span>
+      <p class="h-creator__bio">NIFTY butterfly + calendar combinations. Adjusts strikes intra-week based on IV regime.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>6 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>830</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Options</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Nov 2024</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">Q</div>
+        <div>
+          <div class="h-creator__handle">@quietquant</div>
+          <div class="h-creator__sub">Singapore · since 2018</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 16 months live</span>
+      <p class="h-creator__bio">Crypto pair-trading across Binance, Bybit and Delta. Mean-reversion on cointegrated pairs.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>4 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>612</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>Crypto · pairs</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Jan 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">A</div>
+        <div>
+          <div class="h-creator__handle">@ankur.b</div>
+          <div class="h-creator__sub">Hyderabad · since 2016</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 13 months live</span>
+      <p class="h-creator__bio">Equity-basket swing trader. F&O hedges around a Nifty100 momentum core, monthly rebalance.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>3 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>612</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NSE · Equity</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Apr 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">C</div>
+        <div>
+          <div class="h-creator__handle">@calspreader</div>
+          <div class="h-creator__sub">NYC · since 2022</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 8 months live</span>
+      <p class="h-creator__bio">SPX and QQQ calendar spreads. Theta-positive, vega-neutral, exits on IV crush.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>2 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>410</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>US · Options</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Sep 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">P</div>
+        <div>
+          <div class="h-creator__handle">@patni.cap</div>
+          <div class="h-creator__sub">Mumbai · since 2018</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 28 months live</span>
+      <p class="h-creator__bio">Directional NIFTY option-selling with structural hedges. The marketplace's most-deployed author.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>9 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>5,840</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Directional</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Jan 2024</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">N</div>
+        <div>
+          <div class="h-creator__handle">@neha.algo</div>
+          <div class="h-creator__sub">Ahmedabad · since 2019</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 10 months live</span>
+      <p class="h-creator__bio">BANKNIFTY intraday breakout with ORB-based entries and trailing SL on the 5-min candle low.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>2 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>389</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Intraday</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>Jul 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+    <div class="h-feature h-creator">
+      <div class="h-creator__head">
+        <div class="h-creator__av">D</div>
+        <div>
+          <div class="h-creator__handle">@deltaneutral</div>
+          <div class="h-creator__sub">Chennai · since 2020</div>
+        </div>
+      </div>
+      <span class="h-creator__verified">★ Verified · 12 months live</span>
+      <p class="h-creator__bio">Delta-neutral premium-capture on weekly NIFTY/BANKNIFTY. Adjustments hard-coded, no manual touch.</p>
+      <div class="h-creator__stats">
+        <div class="h-creator__stat"><span>STRATEGIES</span><span>5 listed</span></div>
+        <div class="h-creator__stat"><span>SUBSCRIBERS</span><span>328</span></div>
+        <div class="h-creator__stat"><span>FOCUS</span><span>NFO · Non-directional</span></div>
+        <div class="h-creator__stat"><span>LIVE SINCE</span><span>May 2025</span></div>
+      </div>
+      <a href="#" class="h-btn h-btn--text" style="margin-top: auto">View profile →</a>
+    </div>
+
+  </div>
+  <p class="h-micro" style="text-align: center; margin-top: 28px">Sample · pending review. Names, handles and counts above are illustrative — based on platform statistics. Live verification rules: 3+ months in author's account, 25+ executed trades, broker-confirmed PnL, re-checked monthly.</p>
+</section>
+
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 24px">
+      <div>
+        <span class="h-eyebrow">List your own</span>
+        <h2 class="h-h2" style="margin-top: 14px">Want to be on this page?</h2>
+      </div>
+      <p class="h-body" style="max-width: 38ch">Build a strategy. Run it in your own broker for three months. Earn the Verified Live badge. Publish it to 405k+ traders and earn from every subscriber.</p>
+    </div>
+    <div class="h-pagehero__cta">
+      <a href="create-strategy.html" class="h-btn h-btn--primary">List your strategy →</a>
+      <a href="pricing.html" class="h-btn h-btn--ghost">See the Creator plan</a>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 24ch">Publish a strategy.<br />Earn from <span class="sig">every</span> subscriber.</h2>
+  <p class="h-cta__sub">Build with no code, paper-trade Free for Life, then publish to 405k+ traders. Every trade runs in each subscriber's own broker account — your money, your broker, your control.</p>
+  <div class="h-hero__cta" style="margin-top: 8px">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="#" class="h-btn h-btn--ghost">Book a demo</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

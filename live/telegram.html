@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Telegram · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Built only from system.css/tokens.css primitives. The .acct-*
+     sidebar is shared verbatim with profile.html / notifications.html.
+     Settings pages add a small token-built form kit (.f-*). */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* ---- two-column account shell ---- */
+  .acct { display: grid; grid-template-columns: 248px 1fr; gap: 26px; align-items: start; }
+
+  /* ---- account vertical nav ---- */
+  .acct-nav {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); overflow: hidden;
+    position: sticky; top: 86px;
+  }
+  .acct-nav__head {
+    padding: 14px 16px; border-bottom: var(--hairline);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate);
+  }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 11px; border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft);
+    text-decoration: none; transition: background 140ms, color 140ms;
+    border-left: 2px solid transparent;
+  }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active {
+    background: var(--signal-tint); color: var(--signal);
+    border-left-color: var(--signal); font-weight: 500;
+  }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+
+  /* ---- page header row ---- */
+  .d-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+  .d-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; margin: 8px 0 0;
+  }
+  .d-head__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); margin-top: 4px; display: block; }
+
+  /* ---- generic panel ---- */
+  .d-panel { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden; }
+  .d-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline); }
+  .d-panel__title { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+  .d-panel__body { padding: 20px; }
+  .d-panel__foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-top: var(--hairline); background: var(--paper-2); }
+
+  /* ---- token-built form kit (shared across settings pages) ---- */
+  .f-grid { display: flex; flex-direction: column; gap: 18px; max-width: 560px; }
+  .f-field { display: flex; flex-direction: column; gap: 7px; }
+  .f-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); }
+  .f-input, .f-select {
+    width: 100%; height: 42px; padding: 0 13px;
+    background: var(--field); color: var(--ink);
+    border: 1px solid var(--rule-strong); border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 0.92rem;
+    transition: border-color 140ms, box-shadow 140ms;
+  }
+  .f-input:focus, .f-select:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-tint); }
+  .f-input::placeholder { color: var(--slate-soft); }
+  .f-hint { font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .f-mono { font-family: var(--font-mono); }
+  .f-inline { display: flex; gap: 8px; align-items: stretch; }
+  .f-inline .f-input { font-family: var(--font-mono); font-size: 0.86rem; letter-spacing: 0.02em; }
+  .f-inline .h-btn { flex: none; height: 42px; }
+
+  /* ---- status row ---- */
+  .tg-status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border: var(--hairline); border-radius: var(--radius-sm); background: var(--paper-2); margin-bottom: 4px; }
+  .tg-status__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+  .tg-status__txt { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); letter-spacing: var(--tracking-mono); }
+  .tg-status__txt b { color: var(--ink); font-weight: 500; }
+
+  /* ---- "how it works" steps ---- */
+  .tg-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .tg-steps li {
+    display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: baseline;
+    padding: 14px 0; border-top: var(--hairline); color: var(--ink-soft); font-size: 0.92rem; line-height: 1.5;
+  }
+  .tg-steps li:first-child { border-top: 0; padding-top: 0; }
+  .tg-steps__n { font-family: var(--font-mono); font-size: 0.78rem; color: var(--signal); }
+  .tg-steps code { font-family: var(--font-mono); font-size: 0.86rem; background: var(--paper-2); padding: 1px 6px; border-radius: var(--radius-sm); border: var(--hairline); color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+  @media (max-width: 560px) { .f-inline { flex-direction: column; } }
+</style>
+</head>
+<body data-screen-label="Telegram">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Telegram Notifications</h1>
+      <span class="d-head__sub">Get deployment events and alerts pushed straight to your phone</span>
+    </div>
+  </div>
+
+  <!-- ACCOUNT SHELL: sidebar + content -->
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item is-active" href="telegram.html" aria-current="page"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+
+      <!-- CONNECTION STATE + TOKEN -->
+      <div class="d-panel">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Connection</span><span class="d-panel__sub">Telegram bot link</span></span>
+          <span class="h-chip h-chip--dot">Not connected</span>
+        </div>
+        <div class="d-panel__body">
+
+          <div class="tg-status">
+            <span class="tg-status__dot" aria-hidden="true"></span>
+            <span class="tg-status__txt">Status: <b>Not connected</b> — no Telegram account is linked yet.</span>
+          </div>
+
+          <div class="f-grid" style="margin-top:18px">
+            <div class="f-field">
+              <label class="f-label" for="tg-token">Your Telegram token</label>
+              <div class="f-inline">
+                <input class="f-input" id="tg-token" type="text" value="TT-9F4C-2A7E-LINK" readonly aria-readonly="true" />
+                <button type="button" class="h-btn h-btn--ghost" data-copy="tg-token">Copy</button>
+              </div>
+              <span class="f-hint">Send this token to the bot to bind it to your account.</span>
+            </div>
+            <div>
+              <a href="#" class="h-btn h-btn--primary">Connect Telegram</a>
+              <a href="#" class="h-btn h-btn--text" style="margin-left:14px">Regenerate token</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="d-panel">
+        <div class="d-panel__head">
+          <span class="d-panel__title">How linking works</span>
+        </div>
+        <div class="d-panel__body">
+          <ol class="tg-steps">
+            <li><span class="tg-steps__n">01</span><span>Open Telegram and start a chat with <code>@TradetronAssistantBot</code>.</span></li>
+            <li><span class="tg-steps__n">02</span><span>Send the command <code>/link</code> followed by your token above.</span></li>
+            <li><span class="tg-steps__n">03</span><span>The bot confirms — this page then shows <b>Connected</b> and alerts route to your chat.</span></li>
+          </ol>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script>
+  // Inert prototype copy-to-clipboard for the token field.
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var src = document.getElementById(btn.getAttribute('data-copy'));
+      if (!src) return;
+      var done = function () {
+        var prev = btn.textContent; btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = prev; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(src.value).then(done, done);
+      } else { src.select(); try { document.execCommand('copy'); } catch (e) {} done(); }
+    });
+  });
+</script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

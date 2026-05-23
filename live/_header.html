@@ -1,0 +1,539 @@
+<style>
+  /* ---- _header.html include — page-shared 4-row nav ----
+     Row 1 (public): brand + Features/Marketplace/Pricing/Contact +
+                     IN/US · theme · Sign in · Book a demo · Start free
+     Row 2 (logged-in app): Dashboard · Create▾ · My Strategies · Backtest · Reports
+                            + Algolive▾ (profile menu)
+     Row 3 (plan strip): PLAN · EXPIRES · STRATEGIES quota · AI TOKENS quota · Buy more / Manage plan
+     Row 4 (ticker strip): LIVE pill + 5 instrument tickers + profile chip
+     Dropdowns open on hover (mouse) and on focus-within (touch/keyboard). */
+
+  .h-nav--2row { display: flex; flex-direction: column; }
+  .h-nav--2row .h-nav__inner { padding-bottom: 12px; }
+
+  /* Row 2 — app nav */
+  .h-appnav {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0 14px;
+    border-top: var(--hairline);
+    border-bottom: var(--hairline);
+  }
+  .h-appnav__links {
+    display: flex; align-items: center; gap: 4px;
+    flex-wrap: wrap;
+  }
+  .h-appnav__links > a,
+  .h-appnav__trigger {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 0.88rem; letter-spacing: -0.005em;
+    color: var(--ink-soft); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color .15s, background .15s;
+  }
+  .h-appnav__links > a:hover,
+  .h-appnav__trigger:hover { color: var(--ink); background: var(--paper-2); }
+  .h-appnav__links > a.is-active,
+  .h-appnav__trigger.is-active { color: var(--signal); }
+
+  .h-appnav__caret {
+    font-size: 0.66rem; color: var(--slate);
+    transition: transform .15s;
+  }
+  .h-appnav__group { position: relative; }
+  .h-appnav__group:hover .h-appnav__caret,
+  .h-appnav__group:focus-within .h-appnav__caret { transform: translateY(1px); }
+
+  .h-appnav__menu {
+    display: none; position: absolute; top: 100%; left: 0;
+    min-width: 220px;
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-pop, 0 10px 28px -8px color-mix(in oklab, var(--ink) 18%, transparent));
+    /* No margin-top — gap is implied by padding-top INSIDE the menu, so the
+       hit area touches the trigger and there's no dead zone in between.
+       Belt-and-braces: a 12px ::before bridge above the menu in case any
+       browser shrinks the box during transition. */
+    padding: 12px 8px 8px;
+    z-index: 50;
+  }
+  .h-appnav__menu::before {
+    content: ""; position: absolute;
+    top: -8px; left: 0; right: 0; height: 8px;
+    background: transparent;
+  }
+  /* Final piece: once the menu is rendered, hovering the menu itself keeps
+     it open even when the cursor has left the trigger. */
+  .h-appnav__group:hover .h-appnav__menu,
+  .h-appnav__group:focus-within .h-appnav__menu,
+  .h-appnav__group.is-open .h-appnav__menu,
+  .h-appnav__menu:hover { display: block; }
+  .h-appnav__group.is-open .h-appnav__caret { transform: translateY(1px) rotate(180deg); }
+  .h-appnav__menu a {
+    display: block; padding: 9px 14px; border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+    transition: background .12s, color .12s;
+  }
+  .h-appnav__menu a:hover { background: var(--paper-2); color: var(--signal); }
+
+  .h-appnav__right {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  /* right-aligned dropdown variant — for the profile menu on the right side */
+  .h-appnav__menu--right { left: auto; right: 0; }
+  .h-appnav__menu--profile {
+    min-width: 240px;
+    max-height: 70vh; overflow-y: auto;
+  }
+  .h-appnav__menu--profile a[data-danger] { color: var(--negative); }
+  .h-appnav__menu--profile a[data-danger]:hover {
+    background: color-mix(in oklab, var(--negative) 8%, transparent);
+    color: var(--negative);
+  }
+  .h-appnav__divider {
+    margin: 6px 4px; border: 0; border-top: var(--hairline);
+  }
+
+  /* ---- Row 3 — plan / quota strip (compact, single line, no wrap) ---- */
+  .h-planstrip {
+    display: flex; align-items: center; gap: 0;
+    padding: 7px 0; flex-wrap: nowrap;
+    border-bottom: var(--hairline);
+    font-family: var(--font-mono);
+    font-size: 0.72rem; letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    overflow: hidden;
+  }
+  .h-planstrip__seg {
+    display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+    padding: 0 16px; border-right: var(--hairline);
+  }
+  .h-planstrip__seg:first-child { padding-left: 0; }
+  .h-planstrip__lbl {
+    text-transform: uppercase; color: var(--slate);
+    font-size: 0.60rem; letter-spacing: 0.14em;
+  }
+  .h-planstrip__chip {
+    display: inline-flex; align-items: center;
+    padding: 1px 7px; border: 1px solid var(--signal);
+    border-radius: var(--radius-sm);
+    color: var(--signal); font-weight: 600;
+    font-size: 0.62rem; letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-left: 2px;
+  }
+  .h-planstrip__val {
+    color: var(--ink); font-weight: 500;
+    font-feature-settings: "tnum" 1;
+  }
+  .h-planstrip__muted {
+    color: var(--slate); margin-left: 1px;
+    font-size: 0.66rem;
+  }
+  .h-planstrip__bar {
+    position: relative; width: 56px; height: 2px;
+    background: var(--paper-2); border-radius: 2px;
+    overflow: hidden; margin-left: 6px;
+  }
+  .h-planstrip__bar > i {
+    position: absolute; inset: 0 auto 0 0;
+    background: var(--signal);
+  }
+  .h-planstrip__spacer { flex: 1; border-right: 0; padding: 0; }
+  .h-planstrip__actions {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 0 0 0 16px; white-space: nowrap;
+    border-right: 0;
+  }
+  .h-planstrip__actions a {
+    color: var(--ink-soft); text-decoration: none;
+    font-size: 0.70rem; letter-spacing: 0.02em;
+    transition: color .15s;
+  }
+  .h-planstrip__actions a:hover { color: var(--signal); }
+
+  /* ---- Row 4 — live market ticker (streaming marquee + watchlist picker) ---- */
+  .h-ticker {
+    display: flex; align-items: center; gap: 0;
+    padding: 6px 0; flex-wrap: nowrap;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.02em; color: var(--ink-soft);
+    border-bottom: var(--hairline);
+    overflow: hidden;
+  }
+
+  /* LIVE pill */
+  .h-ticker__pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border: 1px solid var(--negative);
+    border-radius: var(--radius-sm);
+    color: var(--negative); font-size: 0.60rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    flex-shrink: 0; font-weight: 600;
+  }
+  .h-ticker__pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 999px;
+    background: var(--negative);
+    animation: hTickerPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes hTickerPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  /* Watchlist picker dropdown — sits between LIVE and the rail */
+  .h-ticker__wl {
+    position: relative; flex-shrink: 0;
+    margin: 0 14px;
+  }
+  .h-ticker__wl-btn {
+    appearance: none; background: transparent; border: var(--hairline);
+    border-radius: var(--radius-sm); cursor: pointer;
+    padding: 3px 9px 3px 7px;
+    color: var(--ink-soft); font: 500 0.66rem/1 var(--font-mono);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  .h-ticker__wl-btn:hover {
+    color: var(--ink); border-color: var(--rule-strong, var(--ink-soft));
+    background: var(--paper-2);
+  }
+  .h-ticker__wl-icn {
+    display: inline-block; width: 12px;
+    border-top: 1.5px solid currentColor;
+    position: relative;
+  }
+  .h-ticker__wl-icn::before, .h-ticker__wl-icn::after {
+    content: ""; position: absolute; left: 0; right: 0;
+    border-top: 1.5px solid currentColor;
+  }
+  .h-ticker__wl-icn::before { top: 3px; }
+  .h-ticker__wl-icn::after  { top: 6px; }
+  .h-ticker__wl-caret { font-size: 0.55rem; color: var(--slate); }
+
+  .h-ticker__wl-menu {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0;
+    min-width: 200px;
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-pop, 0 10px 28px -8px color-mix(in oklab, var(--ink) 18%, transparent));
+    padding: 6px; z-index: 60;
+  }
+  .h-ticker__wl:hover .h-ticker__wl-menu,
+  .h-ticker__wl:focus-within .h-ticker__wl-menu,
+  .h-ticker__wl.is-open .h-ticker__wl-menu { display: block; }
+  .h-ticker__wl-menu a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 11px; border-radius: var(--radius-sm);
+    color: var(--ink); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.70rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: background .12s, color .12s;
+  }
+  .h-ticker__wl-menu a:hover { background: var(--paper-2); color: var(--signal); }
+  .h-ticker__wl-menu a.is-active { color: var(--signal); }
+  .h-ticker__wl-menu a .h-ticker__wl-count {
+    font-size: 0.60rem; color: var(--slate);
+    font-feature-settings: "tnum" 1;
+  }
+  .h-ticker__wl-menu hr {
+    margin: 5px 4px; border: 0; border-top: var(--hairline);
+  }
+
+  /* Marquee rail — actually streams */
+  .h-ticker__viewport {
+    flex: 1; min-width: 0; overflow: hidden;
+    position: relative;
+    /* Soft fade on both ends so items appear/disappear instead of clipping. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+  .h-ticker__rail {
+    display: inline-flex; align-items: center; gap: 0;
+    white-space: nowrap;
+    animation: hTickerScroll 60s linear infinite;
+    will-change: transform;
+  }
+  .h-ticker__viewport:hover .h-ticker__rail { animation-play-state: paused; }
+  @keyframes hTickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .h-ticker__rail { animation: none; }
+  }
+  .h-ticker__item {
+    display: inline-flex; align-items: baseline; gap: 7px;
+    padding: 0 16px; white-space: nowrap;
+    border-right: var(--hairline);
+  }
+  .h-ticker__sym {
+    color: var(--ink); font-weight: 600;
+    font-family: var(--font-display);
+    font-size: 0.74rem; letter-spacing: 0.02em;
+  }
+  .h-ticker__px {
+    color: var(--ink); font-feature-settings: "tnum" 1;
+  }
+  .h-ticker__chg {
+    font-feature-settings: "tnum" 1; font-size: 0.68rem;
+  }
+  .h-ticker__chg--up   { color: var(--positive); }
+  .h-ticker__chg--down { color: var(--negative); }
+
+  /* profile chip on the far right */
+  .h-ticker__profile {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 3px 10px 3px 8px;
+    border: var(--hairline); border-radius: var(--radius-sm);
+    color: var(--ink); font-size: 0.70rem;
+    text-transform: lowercase; letter-spacing: 0;
+    background: transparent; cursor: pointer;
+    flex-shrink: 0; margin-left: 14px;
+  }
+  .h-ticker__profile:hover { background: var(--paper-2); }
+  .h-ticker__profile .h-appnav__caret { font-size: 0.55rem; }
+
+  /* shrink for smaller viewports */
+  @media (max-width: 960px) {
+    .h-appnav { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .h-appnav__menu { position: static; box-shadow: none; border: 0; padding: 4px 0 4px 12px; }
+    .h-planstrip { gap: 8px; flex-wrap: wrap; }
+    .h-planstrip__seg { border-right: 0; padding: 0 10px 0 0; }
+    .h-ticker__wl { margin: 0 10px; }
+  }
+</style>
+
+<header class="h-nav h-nav--2row">
+  <!-- Row 1 — public / marketing -->
+  <div class="h-container h-nav__inner">
+    <a href="index.html" class="h-brand">
+      <img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron">
+      <img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron">
+    </a>
+    <nav class="h-nav__links" aria-label="Public navigation">
+      <a href="features.html">Features</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="h-nav__right">
+      <div class="h-region" role="group" aria-label="Region">
+        <a href="index.html" class="h-region__opt is-active">IN</a>
+        <a href="us.html" class="h-region__opt">US</a>
+      </div>
+      <button class="h-toggle" data-theme-toggle aria-label="Toggle theme">
+        <span class="h-toggle__dot"></span>
+        <span data-theme-label>Night</span>
+      </button>
+      <a href="login.html" class="h-micro" style="color:var(--ink-soft); margin-right:4px">Sign in</a>
+      <a href="contact.html" class="h-btn h-btn--ghost h-btn--sm">Book a demo</a>
+      <a href="register.html" class="h-btn h-btn--primary h-btn--sm">Start free</a>
+    </div>
+  </div>
+
+  <!-- Row 2 — logged-in app nav -->
+  <div class="h-container h-appnav">
+    <nav class="h-appnav__links" aria-label="App navigation">
+      <a href="dashboard.html">Dashboard</a>
+
+      <div class="h-appnav__group">
+        <button class="h-appnav__trigger" type="button" aria-haspopup="true">
+          Create <span class="h-appnav__caret">▾</span>
+        </button>
+        <div class="h-appnav__menu" role="menu">
+          <a href="create-with-claude.html" role="menuitem">Build with Claude AI</a>
+          <a href="create-strategy.html" role="menuitem">Advanced Builder</a>
+          <a href="option-wizard.html" role="menuitem">Option Wizard</a>
+          <a href="stockbag.html" role="menuitem">StockBag</a>
+        </div>
+      </div>
+
+      <a href="my-strategies.html">My Strategies</a>
+      <a href="deployed-strategies.html">All Deployed</a>
+      <a href="backtest.html">Backtest</a>
+      <a href="reports.html">Reports</a>
+    </nav>
+    <div class="h-appnav__right">
+
+      <div class="h-appnav__group">
+        <button class="h-appnav__trigger" type="button" aria-haspopup="true">
+          Algolive <span class="h-appnav__caret">▾</span>
+        </button>
+        <div class="h-appnav__menu h-appnav__menu--right h-appnav__menu--profile" role="menu">
+          <a href="profile.html" role="menuitem">Settings</a>
+          <hr class="h-appnav__divider" />
+          <a href="login.html" role="menuitem" data-danger>Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3 — plan / quota strip (compact, single line) -->
+  <div class="h-container h-planstrip" role="region" aria-label="Plan and usage">
+    <div class="h-planstrip__seg">
+      <span class="h-planstrip__lbl">Plan</span>
+      <span class="h-planstrip__chip">Creator+</span>
+    </div>
+    <div class="h-planstrip__seg">
+      <span class="h-planstrip__lbl">Expires</span>
+      <span class="h-planstrip__val">14 Jun 2026</span>
+      <span class="h-planstrip__muted">· 22 days</span>
+    </div>
+    <div class="h-planstrip__seg">
+      <span class="h-planstrip__lbl">Strategies</span>
+      <span class="h-planstrip__val">12 / 15</span>
+      <span class="h-planstrip__muted">deployed</span>
+      <span class="h-planstrip__bar" aria-hidden="true"><i style="width:80%"></i></span>
+    </div>
+    <div class="h-planstrip__seg">
+      <span class="h-planstrip__lbl">AI tokens</span>
+      <span class="h-planstrip__val">380K / 1M</span>
+      <span class="h-planstrip__muted">· 38% used</span>
+      <span class="h-planstrip__bar" aria-hidden="true"><i style="width:38%"></i></span>
+    </div>
+    <div class="h-planstrip__spacer"></div>
+    <div class="h-planstrip__actions">
+      <a href="pricing.html">Buy more →</a>
+      <a href="subscriptions.html">Manage plan →</a>
+    </div>
+  </div>
+
+  <!-- Row 4 — live market ticker (streaming marquee + watchlist picker) -->
+  <div class="h-container h-ticker" role="region" aria-label="Live market ticker">
+    <span class="h-ticker__pill"><span>Live</span></span>
+
+    <!-- Watchlist picker -->
+    <div class="h-ticker__wl" data-active-watchlist="nifty50">
+      <button class="h-ticker__wl-btn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="h-ticker__wl-icn" aria-hidden="true"></span>
+        <span class="h-ticker__wl-name">NIFTY 50</span>
+        <span class="h-ticker__wl-caret">▾</span>
+      </button>
+      <div class="h-ticker__wl-menu" role="menu" aria-label="Choose watchlist">
+        <a href="#" role="menuitem" class="is-active" data-wl="nifty50">NIFTY 50 <span class="h-ticker__wl-count">50</span></a>
+        <a href="#" role="menuitem" data-wl="banknifty">Bank Nifty <span class="h-ticker__wl-count">12</span></a>
+        <a href="#" role="menuitem" data-wl="finnifty">Fin Nifty <span class="h-ticker__wl-count">20</span></a>
+        <a href="#" role="menuitem" data-wl="sensex">Sensex 30 <span class="h-ticker__wl-count">30</span></a>
+        <a href="#" role="menuitem" data-wl="midcap">Nifty Midcap 100 <span class="h-ticker__wl-count">100</span></a>
+        <hr />
+        <a href="#" role="menuitem" data-wl="my1">My Watchlist 1 <span class="h-ticker__wl-count">8</span></a>
+        <a href="#" role="menuitem" data-wl="my2">My Watchlist 2 <span class="h-ticker__wl-count">14</span></a>
+        <a href="#" role="menuitem" data-wl="my-deployed">Deployed Tickers <span class="h-ticker__wl-count">11</span></a>
+        <hr />
+        <a href="#" role="menuitem" data-wl="gainers">Top Gainers</a>
+        <a href="#" role="menuitem" data-wl="losers">Top Losers</a>
+        <a href="#" role="menuitem" data-wl="active">Most Active</a>
+        <hr />
+        <a href="watchlist-new.html" role="menuitem">+ New watchlist</a>
+      </div>
+    </div>
+
+    <!-- Streaming rail. Content is duplicated for seamless loop. -->
+    <div class="h-ticker__viewport">
+      <div class="h-ticker__rail" aria-live="off">
+        <!-- pass 1 -->
+        <span class="h-ticker__item"><span class="h-ticker__sym">HDFCBANK</span><span class="h-ticker__px">1619.02</span><span class="h-ticker__chg h-ticker__chg--down">−1.43 (−0.09%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">INFY</span><span class="h-ticker__px">1551.93</span><span class="h-ticker__chg h-ticker__chg--down">−2.27 (−0.15%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">ICICIBANK</span><span class="h-ticker__px">1200.05</span><span class="h-ticker__chg h-ticker__chg--up">+3.25 (+0.27%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">SBIN</span><span class="h-ticker__px">830.30</span><span class="h-ticker__chg h-ticker__chg--up">+1.40 (+0.17%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">NIFTY</span><span class="h-ticker__px">21,548.25</span><span class="h-ticker__chg h-ticker__chg--up">+82.40 (+0.38%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">BANKNIFTY</span><span class="h-ticker__px">46,212.10</span><span class="h-ticker__chg h-ticker__chg--up">+127.55 (+0.28%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">RELIANCE</span><span class="h-ticker__px">2,948.70</span><span class="h-ticker__chg h-ticker__chg--down">−18.20 (−0.61%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">TCS</span><span class="h-ticker__px">3,872.50</span><span class="h-ticker__chg h-ticker__chg--up">+11.05 (+0.29%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">LT</span><span class="h-ticker__px">3,512.80</span><span class="h-ticker__chg h-ticker__chg--up">+22.40 (+0.64%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">AXISBANK</span><span class="h-ticker__px">1,118.95</span><span class="h-ticker__chg h-ticker__chg--down">−4.30 (−0.38%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">KOTAKBANK</span><span class="h-ticker__px">1,742.05</span><span class="h-ticker__chg h-ticker__chg--up">+6.10 (+0.35%)</span></span>
+        <span class="h-ticker__item"><span class="h-ticker__sym">ITC</span><span class="h-ticker__px">462.85</span><span class="h-ticker__chg h-ticker__chg--down">−0.90 (−0.19%)</span></span>
+        <!-- pass 2 (duplicate of pass 1 for seamless wrap) -->
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">HDFCBANK</span><span class="h-ticker__px">1619.02</span><span class="h-ticker__chg h-ticker__chg--down">−1.43 (−0.09%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">INFY</span><span class="h-ticker__px">1551.93</span><span class="h-ticker__chg h-ticker__chg--down">−2.27 (−0.15%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">ICICIBANK</span><span class="h-ticker__px">1200.05</span><span class="h-ticker__chg h-ticker__chg--up">+3.25 (+0.27%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">SBIN</span><span class="h-ticker__px">830.30</span><span class="h-ticker__chg h-ticker__chg--up">+1.40 (+0.17%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">NIFTY</span><span class="h-ticker__px">21,548.25</span><span class="h-ticker__chg h-ticker__chg--up">+82.40 (+0.38%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">BANKNIFTY</span><span class="h-ticker__px">46,212.10</span><span class="h-ticker__chg h-ticker__chg--up">+127.55 (+0.28%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">RELIANCE</span><span class="h-ticker__px">2,948.70</span><span class="h-ticker__chg h-ticker__chg--down">−18.20 (−0.61%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">TCS</span><span class="h-ticker__px">3,872.50</span><span class="h-ticker__chg h-ticker__chg--up">+11.05 (+0.29%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">LT</span><span class="h-ticker__px">3,512.80</span><span class="h-ticker__chg h-ticker__chg--up">+22.40 (+0.64%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">AXISBANK</span><span class="h-ticker__px">1,118.95</span><span class="h-ticker__chg h-ticker__chg--down">−4.30 (−0.38%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">KOTAKBANK</span><span class="h-ticker__px">1,742.05</span><span class="h-ticker__chg h-ticker__chg--up">+6.10 (+0.35%)</span></span>
+        <span class="h-ticker__item" aria-hidden="true"><span class="h-ticker__sym">ITC</span><span class="h-ticker__px">462.85</span><span class="h-ticker__chg h-ticker__chg--down">−0.90 (−0.19%)</span></span>
+      </div>
+    </div>
+
+    <button class="h-ticker__profile" type="button" aria-haspopup="true" aria-label="Profile menu">
+      <span>umesh</span>
+      <span class="h-appnav__caret">▾</span>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Watchlist picker — swap the active label and mark menu item active.
+  // Also drives a tiny price drift so the ticker feels alive without a real feed.
+  (function(){
+    var wl = document.querySelector('.h-ticker__wl');
+    if (wl) {
+      var nameEl = wl.querySelector('.h-ticker__wl-name');
+      wl.querySelectorAll('.h-ticker__wl-menu a[data-wl]').forEach(function(a){
+        a.addEventListener('click', function(e){
+          e.preventDefault();
+          wl.querySelectorAll('.h-ticker__wl-menu a').forEach(function(x){ x.classList.remove('is-active'); });
+          a.classList.add('is-active');
+          if (nameEl) nameEl.textContent = a.firstChild.textContent.trim();
+          wl.setAttribute('data-active-watchlist', a.getAttribute('data-wl'));
+          // For the prototype we don't actually swap the rail content — keeps the marquee continuous.
+          // Real wiring: refetch instruments for the picked list and rerender .h-ticker__rail.
+        });
+      });
+    }
+
+    // Subtle live drift: every ~1.8s, nudge one price by ±0.01–0.05% and recolor its delta.
+    // Keeps both passes in sync since we update by symbol.
+    var prices = {};
+    document.querySelectorAll('.h-ticker__rail > .h-ticker__item').forEach(function(item){
+      var sym = item.querySelector('.h-ticker__sym');
+      var pxEl = item.querySelector('.h-ticker__px');
+      if (!sym || !pxEl) return;
+      var sname = sym.textContent.trim();
+      if (!prices[sname]) prices[sname] = { base: parsePx(pxEl.textContent), items: [] };
+      prices[sname].items.push(item);
+    });
+    function parsePx(s){ return parseFloat(String(s).replace(/,/g, '')) || 0; }
+    function fmtPx(n){
+      if (n >= 1000) return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return n.toFixed(2);
+    }
+    var symbols = Object.keys(prices);
+    if (symbols.length) {
+      setInterval(function(){
+        var sname = symbols[Math.floor(Math.random() * symbols.length)];
+        var bucket = prices[sname];
+        var pct = (Math.random() - 0.5) * 0.001;  // ±0.05% per tick
+        var newPx = Math.max(0.01, bucket.base * (1 + pct));
+        bucket.base = newPx;
+        var change = newPx - parsePx(bucket.items[0].querySelector('.h-ticker__px').textContent);
+        bucket.items.forEach(function(item){
+          var pxEl = item.querySelector('.h-ticker__px');
+          var chgEl = item.querySelector('.h-ticker__chg');
+          if (pxEl) pxEl.textContent = fmtPx(newPx);
+          // Briefly flash by setting a temp color
+          if (pxEl) {
+            pxEl.style.transition = 'color 0s';
+            pxEl.style.color = pct >= 0 ? 'var(--positive)' : 'var(--negative)';
+            setTimeout(function(){
+              pxEl.style.transition = 'color 1.2s';
+              pxEl.style.color = '';
+            }, 60);
+          }
+        });
+      }, 1800);
+    }
+  })();
+</script>

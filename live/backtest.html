@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BackTest · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- backtest-local layout (functional density) ----
+     Built only from system.css/pages.css tokens — hairlines,
+     mono numerics, amber signal. No external app.css. Mirrors
+     the .d-*/.s-* pattern in dashboard.html / my-strategies.html. */
+
+  .b-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row (mirrors dashboard .d-head) */
+  .b-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .b-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .b-head__sub {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin-top: 4px; display: block;
+  }
+  .b-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---- sub-tab row (same as my-strategies .s-subtabs) ---- */
+  .b-subtabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; margin-bottom: 22px;
+  }
+  .b-subtab {
+    text-decoration: none; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    padding: 14px 16px;
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .b-subtab:hover { color: var(--ink); }
+  .b-subtab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- pricing note callout ---- */
+  .b-note {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--signal-tint); border: var(--hairline);
+    border-left: 2px solid var(--signal); border-radius: var(--radius-sm);
+    padding: 12px 16px; margin-bottom: 22px;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft);
+    letter-spacing: var(--tracking-mono); line-height: 1.5;
+  }
+  .b-note__mark { color: var(--signal); flex: none; }
+  .b-note .sig { color: var(--signal); font-weight: 500; }
+
+  /* ---- KPI bar (mirrors dashboard .d-kpis, 4-up) ---- */
+  .b-kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border: var(--hairline); border-radius: var(--radius-md);
+    background: var(--surface); overflow: hidden; margin-bottom: 14px;
+  }
+  .b-kpi { padding: 18px 20px; border-right: var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+  .b-kpi:last-child { border-right: 0; }
+  .b-kpi__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+  .b-kpi__val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.5rem; letter-spacing: -0.01em; line-height: 1; color: var(--ink);
+  }
+  .b-kpi__val--sig { color: var(--signal); }
+  .b-kpi__delta {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono);
+  }
+  /* credit-bar action cell sits inside the kpi grid as a flush right rail */
+  .b-kpi--action { justify-content: center; align-items: flex-start; }
+
+  /* retention note — quieter than the pricing callout */
+  .b-retention {
+    font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .b-retention::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--slate-soft); flex: none;
+  }
+
+  /* ---- panel (matches dashboard .d-panel chrome) ---- */
+  .b-panel {
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden;
+  }
+
+  /* ---- status tabs (visual, mirrors dashboard .d-tabs) ---- */
+  .b-tabs {
+    display: flex; gap: 0; border-bottom: var(--hairline);
+    overflow-x: auto; padding: 0 8px;
+  }
+  .b-tab {
+    appearance: none; background: transparent; border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 14px 14px; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--slate); transition: color 160ms, border-color 160ms;
+  }
+  .b-tab:hover { color: var(--ink); }
+  .b-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+
+  /* ---- empty state ---- */
+  .b-empty {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 10px; padding: 56px 24px;
+  }
+  .b-empty__mark {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: var(--hairline-strong); display: grid; place-items: center;
+    color: var(--slate); font-family: var(--font-mono); font-size: 1rem;
+  }
+  .b-empty__title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.04rem;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  .b-empty__sub {
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--slate);
+    letter-spacing: var(--tracking-mono); max-width: 46ch; line-height: 1.55;
+  }
+  .b-empty__sub a { color: var(--signal); text-decoration: none; }
+  .b-empty__sub a:hover { text-decoration: underline; }
+
+  @media (max-width: 980px) {
+    .b-kpis { grid-template-columns: repeat(2, 1fr); }
+    .b-kpi:nth-child(2) { border-right: 0; }
+    .b-kpi:nth-child(1), .b-kpi:nth-child(2) { border-bottom: var(--hairline); }
+  }
+  @media (max-width: 560px) {
+    .b-kpis { grid-template-columns: 1fr; }
+    .b-kpi { border-right: 0; border-bottom: var(--hairline); }
+    .b-kpi:last-child { border-bottom: 0; }
+  }
+</style>
+</head>
+<body data-screen-label="BackTest">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container b-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="b-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— BackTest · logged in as Algolive</span>
+      <h1 class="b-head__title">Back<span class="sig">test</span>.</h1>
+      <span class="b-head__sub">Tick-level replay · walk-forward &amp; Monte-Carlo · credit-metered</span>
+    </div>
+    <div class="b-head__actions">
+      <a href="my-strategies.html" class="h-btn h-btn--ghost h-btn--sm">My Strategies</a>
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">Buy BT</a>
+    </div>
+  </div>
+
+  <!-- SUB-TABS -->
+  <nav class="b-subtabs" role="tablist" aria-label="Strategy views">
+    <a class="b-subtab" href="deployed-strategies.html">Deployed</a>
+    <a class="b-subtab" href="my-strategies.html">My Strategies</a>
+    <a class="b-subtab" href="marketplace.html">Marketplace</a>
+    <a class="b-subtab is-active" href="backtest.html" aria-current="page">BackTest</a>
+  </nav>
+
+  <!-- PRICING NOTE -->
+  <div class="b-note">
+    <span class="b-note__mark">●</span>
+    <span>Purchase <span class="sig">@ ₹20 per credit</span> · 1 credit = 6 months backtest for 1 underlying.</span>
+  </div>
+
+  <!-- KPI / CREDIT BAR -->
+  <div class="b-kpis">
+    <div class="b-kpi">
+      <span class="b-kpi__lbl">Used</span>
+      <span class="b-kpi__val">0</span>
+      <span class="b-kpi__delta">Credits consumed</span>
+    </div>
+    <div class="b-kpi">
+      <span class="b-kpi__lbl">Refunds</span>
+      <span class="b-kpi__val">NA</span>
+      <span class="b-kpi__delta">Failed-run credits</span>
+    </div>
+    <div class="b-kpi">
+      <span class="b-kpi__lbl">Available Credits</span>
+      <span class="b-kpi__val b-kpi__val--sig">407</span>
+      <span class="b-kpi__delta">Ready to spend</span>
+    </div>
+    <div class="b-kpi">
+      <span class="b-kpi__lbl">Wallet Balance</span>
+      <span class="b-kpi__val">₹ 8,151</span>
+      <span class="b-kpi__delta">Spendable on credits</span>
+    </div>
+  </div>
+
+  <!-- RETENTION NOTE -->
+  <p class="b-retention">Detailed backtest reports are available for 3 days, then archived.</p>
+
+  <!-- STATUS PANEL -->
+  <section class="b-panel">
+    <div class="b-tabs" role="tablist" aria-label="Backtest status">
+      <button class="b-tab is-active" role="tab" aria-selected="true">In Progress</button>
+      <button class="b-tab" role="tab" aria-selected="false">Completed</button>
+      <button class="b-tab" role="tab" aria-selected="false">Archived</button>
+    </div>
+
+    <!-- EMPTY STATE under In Progress -->
+    <div class="b-empty" role="tabpanel" aria-label="In Progress backtests">
+      <span class="b-empty__mark">∅</span>
+      <span class="b-empty__title">Nothing running</span>
+      <span class="b-empty__sub">No backtests in progress. Pick a strategy from <a href="my-strategies.html">My Strategies</a> and put it to the test.</span>
+    </div>
+  </section>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wall of Love — built by traders, trusted by traders · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* testimonial grid + cards — same h-quote pattern as index.html line ~44-52 */
+  .h-quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .h-quote{display:flex;flex-direction:column;gap:18px;background:var(--surface);border:var(--hairline);border-radius:var(--radius-md);padding:24px}
+  .h-quote p{margin:0;font-size:1rem;line-height:1.5;color:var(--ink)}
+  .h-quote__who{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .h-quote__av{width:38px;height:38px;border-radius:3px;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-family:var(--font-display);font-weight:600;font-size:.9rem}
+  .h-quote__name{font-family:var(--font-display);font-weight:500;font-size:.92rem}
+  .h-quote__role{font-family:var(--font-mono);font-size:.72rem;color:var(--slate)}
+  .h-quote__stars{font-family:var(--font-mono);color:var(--signal);font-size:.82rem;letter-spacing:.18em}
+  .h-quote__tag{font-family:var(--font-mono);font-size:.62rem;color:var(--slate-soft);letter-spacing:.08em;text-transform:uppercase;margin-top:-6px}
+
+  .h-wol__grouphead{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+  .h-wol__grouphead h3{font:600 1.35rem/1.25 var(--font-display);color:var(--ink);letter-spacing:-0.01em;margin:0}
+  .h-wol__grouphead .h-micro{max-width:30ch;text-align:right}
+
+  @media(max-width:960px){
+    .h-quotes{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-screen-label="Wall of Love — built by traders, trusted by traders">
+
+<div data-include="_header.html"></div>
+
+
+<!-- HERO -->
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Community · Wall of Love</div>
+    <h1>Built by traders.<br /><span class="sig">Trusted by traders.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">The traders below run their own money on Tradetron — at their desks, on the marketplace, between meetings. Every quote here is labelled sample · pending content review while we collect consented testimonials. The sentiment, the routines, and the broker names are what we hear every day.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="contact.html" class="h-btn h-btn--ghost">Share your story →</a>
+    </div>
+    <div class="h-truststrip" style="margin-top:18px">
+      <span>405k+ traders</span><span>Funds never leave your broker</span><span>No paid reviews</span><span>Consented quotes only</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- GROUP 01 · DAY-JOB TRADERS -->
+<section class="h-container h-section">
+  <div class="h-wol__grouphead">
+    <div>
+      <span class="h-eyebrow">[ 01 ] Day-job traders</span>
+      <h3 style="margin-top:10px">One to three strategies, running while you're at work.</h3>
+    </div>
+    <span class="h-micro">all quotes · sample · pending content review</span>
+  </div>
+  <div class="h-quotes">
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I run a 9-to-6 job. Tradetron trades my plan while I'm in meetings — no more sneaking glances at the chart. First time my strategy and my discipline actually match."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">RK</span><span><span class="h-quote__name">Rohit K.</span><br><span class="h-quote__role">Pune · options seller · Zerodha</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Trust Score is green by 9:20, I check my phone, I get on with my day. A WhatsApp ping is the only thing that pulls me back — and only when something I asked to be woken up for actually happens."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">AT</span><span><span class="h-quote__name">Arvind T.</span><br><span class="h-quote__role">Bengaluru · IT consultant · Upstox</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I used to set alarms for entry and exit, and I'd still miss them on busy days. Three months in, my two strategies have fired every single time I'd have fired them by hand. Without me being there."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">SD</span><span><span class="h-quote__name">Suresh D.</span><br><span class="h-quote__role">Hyderabad · product manager · Angel One</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I trade on the side. I needed something that wouldn't blow up if I forgot about it for a week. The one-tap exit and the broker-link kill switch are why I sleep at night."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">NJ</span><span><span class="h-quote__name">Neha J.</span><br><span class="h-quote__role">Mumbai · finance analyst · Fyers</span></span></figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- GROUP 02 · STRATEGY BUILDERS -->
+<section class="h-container h-section" style="padding-top:0">
+  <div class="h-wol__grouphead">
+    <div>
+      <span class="h-eyebrow">[ 02 ] Strategy builders</span>
+      <h3 style="margin-top:10px">Self-taught — building with the AI, the Wizard, or the canvas.</h3>
+    </div>
+    <span class="h-micro">all quotes · sample · pending content review</span>
+  </div>
+  <div class="h-quotes">
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I can't code. I built and backtested three strategies in a weekend. The fact that money stays in my own Zerodha account is what made me trust it."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">AS</span><span><span class="h-quote__name">Anjali S.</span><br><span class="h-quote__role">Bengaluru · swing trader · Zerodha</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Described my first strategy to Claude in plain English. The AI Strategy Audit caught a missing SL on the short leg before Go-Live unlocked. I fixed it in two clicks. Saved me from a real-money mistake on day one."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">RB</span><span><span class="h-quote__name">Rahul B.</span><br><span class="h-quote__role">Indore · self-taught builder · Dhan</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Options Wizard composed my iron condor in 30 seconds. Strikes, expiries, hedges, the whole order book — I'd have spent an evening wiring that on any other platform."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">SP</span><span><span class="h-quote__name">Sneha P.</span><br><span class="h-quote__role">Pune · multi-leg options · Angel One</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I drop a Python block in for the 1% the wizard can't express. Everything else is drag-and-drop. That ratio is exactly right — the builder gets out of the way until I need it."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">VK</span><span><span class="h-quote__name">Vishal K.</span><br><span class="h-quote__role">Bengaluru · ex-quant · Fyers</span></span></figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- GROUP 03 · MARKETPLACE SUBSCRIBERS -->
+<section class="h-container h-section" style="padding-top:0">
+  <div class="h-wol__grouphead">
+    <div>
+      <span class="h-eyebrow">[ 03 ] Marketplace subscribers</span>
+      <h3 style="margin-top:10px">They don't build. They subscribe to algos that already run.</h3>
+    </div>
+    <span class="h-micro">all quotes · sample · pending content review</span>
+  </div>
+  <div class="h-quotes">
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Won't subscribe to anything that doesn't carry the Verified Live badge. Three months of forward performance in the author's own account means I'm seeing what the strategy actually did — not what the author wanted me to believe."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">KM</span><span><span class="h-quote__name">Karthik M.</span><br><span class="h-quote__role">Dubai (NRI) · subscriber · ICICI Direct</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Same algo the author trades runs in my Zerodha. The author earns a share, I keep the rest. After getting burned by a backtest-only marketplace last year, this is the only model I trust now."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">DK</span><span><span class="h-quote__name">Deepak K.</span><br><span class="h-quote__role">Chennai · subscriber · Zerodha</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"I read the live deploy count, the verified period, and the author's own PnL — then decide. No more PDF hockey-sticks. The marketplace card tells me what I need in 10 seconds."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">PG</span><span><span class="h-quote__name">Pranav G.</span><br><span class="h-quote__role">Gurugram · subscriber · Upstox</span></span></figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- GROUP 04 · MARKETPLACE CREATORS -->
+<section class="h-container h-section" style="padding-top:0">
+  <div class="h-wol__grouphead">
+    <div>
+      <span class="h-eyebrow">[ 04 ] Marketplace creators</span>
+      <h3 style="margin-top:10px">Their edge runs in their own account. Subscribers' accounts pay them monthly.</h3>
+    </div>
+    <span class="h-micro">all quotes · sample · pending content review</span>
+  </div>
+  <div class="h-quotes">
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Listed two algos on the marketplace. They run in subscribers' own accounts and I earn a share every month. It turned my edge into income — without me running a Telegram group."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">MV</span><span><span class="h-quote__name">Mahesh V.</span><br><span class="h-quote__role">Surat · strategy author · Zerodha</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Nine years of trading directional setups, three algos that actually work. The marketplace lets me keep the edge to myself and still get paid for the logic. Recurring revenue, no signal calls, no DMs."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">SR</span><span><span class="h-quote__name">Siddharth R.</span><br><span class="h-quote__role">Mumbai · creator · 1,200+ subs</span></span></figcaption>
+    </figure>
+    <figure class="h-quote">
+      <span class="h-quote__stars">★★★★★</span>
+      <span class="h-quote__tag">sample · pending content review</span>
+      <p>"Three months on the marketplace and the subscriptions cover my own trading costs twice over. It pays me to be transparent about what my algos actually do."</p>
+      <figcaption class="h-quote__who"><span class="h-quote__av">PT</span><span><span class="h-quote__name">Prakash T.</span><br><span class="h-quote__role">Ahmedabad · creator · Fyers</span></span></figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- CLOSING CTA -->
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size:clamp(2.4rem,4.5vw,4rem);text-align:center;max-width:24ch">Your first algorithm,<br />live by <span class="sig">this evening.</span></h2>
+  <p class="h-cta__sub">Free paper trading to get going. A subscription only when you take a strategy live in your own broker. Already trading on Tradetron? Send a consented quote — you might land on this wall.</p>
+  <div class="h-hero__cta" style="margin-top:8px;justify-content:center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="contact.html" class="h-btn h-btn--ghost">Share your story →</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

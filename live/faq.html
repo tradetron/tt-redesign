@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FAQ · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  .h-faqcat { margin-bottom: 36px; }
+  .h-faqcat__lbl {
+    font: 500 0.68rem/1 var(--font-mono);
+    color: var(--slate);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+  .h-faqcat__lbl.is-new::after {
+    content: "NEW";
+    margin-left: 8px;
+    padding: 2px 6px;
+    background: var(--signal-tint);
+    color: var(--signal);
+    border-radius: var(--radius-sm);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body data-screen-label="FAQ">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Help · Frequently asked</div>
+    <h1>Most-asked questions. <span class="sig">Honest answers.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">No funds held by us, free paper trading to start, real broker accounts on day one. If your question isn't here, the manual will have it — or talk to a human on the contact page. We read every note.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <a href="contact.html" class="h-btn h-btn--ghost">Still stuck? Talk to a human →</a>
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-section--md">
+  <div class="h-twocol">
+    <nav class="sticky" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.92rem">
+      <span class="h-eyebrow" style="margin-bottom: 8px">Categories</span>
+      <a href="#getting-started" style="color: var(--ink-soft); padding: 4px 0">Getting started</a>
+      <a href="#paper" style="color: var(--ink-soft); padding: 4px 0">Paper trading</a>
+      <a href="#live" style="color: var(--ink-soft); padding: 4px 0">Going live</a>
+      <a href="#brokers" style="color: var(--ink-soft); padding: 4px 0">Brokers &amp; exchanges</a>
+      <a href="#audit" style="color: var(--ink-soft); padding: 4px 0">AI Strategy Audit</a>
+      <a href="#trust" style="color: var(--ink-soft); padding: 4px 0">Trust Score</a>
+      <a href="#whatsapp" style="color: var(--ink-soft); padding: 4px 0">WhatsApp alerts</a>
+      <a href="#truenet" style="color: var(--ink-soft); padding: 4px 0">True-Net PnL</a>
+      <a href="#verified" style="color: var(--ink-soft); padding: 4px 0">Verified Live</a>
+      <a href="#pricing" style="color: var(--ink-soft); padding: 4px 0">Pricing</a>
+      <a href="#safety" style="color: var(--ink-soft); padding: 4px 0">Trust &amp; safety</a>
+    </nav>
+    <div>
+
+      <div class="h-faqcat" id="getting-started">
+        <span class="h-faqcat__lbl">01 · Getting started</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Getting started</h3>
+        <div class="h-acc">
+          <details open><summary>How does Tradetron work?</summary><div class="h-acc__body">You build a strategy in a drag-and-drop wizard (or pick one from the marketplace), backtest it on historical data, paper-trade it on live markets, and when you're ready, deploy it to your own broker account. Orders execute through your broker; we never custody funds. <a href="features.html">See how it works →</a></div></details>
+          <details><summary>Do I need to know coding?</summary><div class="h-acc__body">No. The builder is no-code by design — 100+ ready-made keywords for price, time, technicals and events. If you do write Python, there's an advanced slot to plug your own code in. But you'll never need code to build a real strategy.</div></details>
+          <details><summary>How long does it take to deploy my first strategy?</summary><div class="h-acc__body">An evening, typically. Sign up, pick a template or build one in the wizard, backtest, paper-trade overnight, and deploy live the next morning. The longest step is usually connecting your broker — and that's a 5-minute OAuth flow.</div></details>
+          <details><summary>What's the free plan?</summary><div class="h-acc__body">Free paper trading, for life. Unlimited paper deployments, full builder access, the marketplace to browse. You only pay a subscription when you take a strategy live in your own broker. <a href="pricing.html">See pricing →</a></div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="paper">
+        <span class="h-faqcat__lbl">02 · Paper trading</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Paper trading</h3>
+        <div class="h-acc">
+          <details><summary>How does free paper trading work?</summary><div class="h-acc__body">Paper trading runs any strategy with simulated money — no real funds, zero risk. It's free to start, and you get a free paper deployment for life, so you can test and refine before going live. When you're ready, deploy the same strategy to your real broker in one click.</div></details>
+          <details><summary>Can I paper-trade unlimited strategies?</summary><div class="h-acc__body">Yes. There's no cap on the number of strategies you can run in paper mode. Run a dozen variants in parallel for a week and pick the one with the cleanest live behaviour.</div></details>
+          <details><summary>Do paper trades show on my dashboard?</summary><div class="h-acc__body">Yes — paper and live strategies sit on the same dashboard, with a clear "Paper" badge so you don't confuse the two. PnL, trade log and the Trust Score all work the same way.</div></details>
+          <details><summary>Can I go from paper to live in one click?</summary><div class="h-acc__body">Yes. The same strategy you've been paper-trading can be redeployed to your broker account without rebuilding. The AI Strategy Audit runs once more before the Go-Live button activates, so what deploys is what you actually meant.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="live">
+        <span class="h-faqcat__lbl">03 · Going live</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Going live</h3>
+        <div class="h-acc">
+          <details><summary>How do I deploy a strategy to my real broker?</summary><div class="h-acc__body">Connect your broker once (OAuth, 5 minutes), pick the strategy, set your multiplier (lots / quantity), and hit deploy. The engine starts checking your conditions on the next tick. You can pause, exit or change the multiplier any time from the dashboard.</div></details>
+          <details><summary>Does Tradetron hold my money?</summary><div class="h-acc__body">No. Funds never leave your broker. They stay in your own brokerage account, in your own name, with your own broker. Your money. Your broker. Your control. Tradetron only holds the strategy.</div></details>
+          <details><summary>Can I pause or exit anytime?</summary><div class="h-acc__body">Yes. Pause stops new entries but keeps open positions running. Exit closes the open positions at market and stops the strategy. Both take effect on the next tick.</div></details>
+          <details><summary>What happens if my broker disconnects?</summary><div class="h-acc__body">You get a WhatsApp / Telegram alert within seconds, the Trust Score for that strategy turns amber, and the engine pauses entries until the connection is re-established. Open positions stay open in your broker — we just stop sending new orders until you're back online.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="brokers">
+        <span class="h-faqcat__lbl">04 · Brokers &amp; exchanges</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Brokers &amp; exchanges</h3>
+        <div class="h-acc">
+          <details><summary>Which brokers do you support?</summary><div class="h-acc__body">100+ broker APIs. India: Zerodha, Upstox, Angel One, Fyers, Dhan, Alice Blue, ICICI Direct, Kotak and more. US: Alpaca, TradeStation, TradeZero, Tradier, Webull, Tastytrade. Crypto: Delta Exchange, CoinDCX, CoinSwitch. <a href="integrations.html">Full broker list →</a></div></details>
+          <details><summary>Can I trade Indian + US accounts?</summary><div class="h-acc__body">Yes — connect multiple brokers across geographies on the same Tradetron account. A strategy can be deployed to one broker; different strategies can run in different brokers in parallel.</div></details>
+          <details><summary>Crypto exchanges?</summary><div class="h-acc__body">Delta Exchange, CoinDCX, CoinSwitch are connected today; more are being added. Same model as equities — orders execute in your own exchange account, we never touch the funds.</div></details>
+          <details><summary>Will my brokerage rates change?</summary><div class="h-acc__body">No. Tradetron is a layer on top of your broker — brokerage, government charges, margin and risk management all stay exactly as your broker sets them. The broker bills the trades; we bill only the Tradetron subscription.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="audit">
+        <span class="h-faqcat__lbl is-new">05 · AI Strategy Audit</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">AI Strategy Audit</h3>
+        <div class="h-acc">
+          <details><summary>What's the AI Strategy Audit?</summary><div class="h-acc__body">A pre-deploy check that compares the strategy you built against what you originally described in plain English. Before the Go-Live button activates, it shows a field-by-field "you said X, the strategy does Y" — so silent drops (missing SL, missing ORB, wrong leg) are caught before real money is on the line.</div></details>
+          <details><summary>What does it catch?</summary><div class="h-acc__body">Missing or wrong stop-losses, missing legs, instrument mismatches, exit conditions that were described but never wired, parameter values that drifted from your intent. The audit reads your wizard output (or Claude-generated strategy) and reconciles it against your prose description.</div></details>
+          <details><summary>Is it available on all plans?</summary><div class="h-acc__body">Yes — the audit runs for every strategy on every plan, free or paid, paper or live. It's not a premium add-on; it's a backstop we believe every strategy should have. <a href="features.html#backtest">More on the audit →</a></div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="trust">
+        <span class="h-faqcat__lbl is-new">06 · Trust Score</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Trust Score</h3>
+        <div class="h-acc">
+          <details><summary>What's the Trust Score?</summary><div class="h-acc__body">A one-glance health indicator for every live strategy. Green / amber / red, with a plain-English line beneath: "Today: 2 strategies fired 4 trades, no issues, broker reconciled at 15:30." If something's off, you see it in a second instead of scrolling through logs.</div></details>
+          <details><summary>Why is mine amber today?</summary><div class="h-acc__body">Amber means something's worth a glance but isn't broken — a broker disconnect that auto-recovered, a partial fill, slippage above your threshold, a reconcile mismatch under the alert level. Click the Trust Score to see the exact reason and the events that triggered it.</div></details>
+          <details><summary>Can I customise the thresholds?</summary><div class="h-acc__body">Yes — slippage tolerance, drawdown alert level, reconciliation grace window are all configurable per strategy. Defaults are conservative; tighten them for live capital you care about, loosen them for noisy experiments.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="whatsapp">
+        <span class="h-faqcat__lbl is-new">07 · WhatsApp risk alerts</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">WhatsApp risk alerts</h3>
+        <div class="h-acc">
+          <details><summary>How do I set up WhatsApp alerts?</summary><div class="h-acc__body">Add your number under Profile → Notifications, send the WhatsApp opt-in message we reply with, and alerts arrive on your phone. Telegram works the same way via @TradetronAssistantBot. Both are included on every paid plan.</div></details>
+          <details><summary>What events trigger an alert?</summary><div class="h-acc__body">By default: drawdown breach, broker disconnect, order rejection, large slippage, anomaly in fill price vs market. Daily summary at market close. You can add custom triggers — "alert me if any strategy fires more than 10 trades in an hour" — from the alerts page.</div></details>
+          <details><summary>Can I opt out of specific alert types?</summary><div class="h-acc__body">Yes — every alert type has an independent toggle. Default-on for the things that hurt (disconnects, rejections, drawdown); opt-in for the rest. You're never spammed.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="truenet">
+        <span class="h-faqcat__lbl is-new">08 · True-Net PnL</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">True-Net PnL</h3>
+        <div class="h-acc">
+          <details><summary>What goes into True-Net PnL?</summary><div class="h-acc__body">Gross PnL minus brokerage, STT, exchange charges, slippage, and the Tradetron subscription fee allocated to that strategy. A monthly cost-burn chart shows exactly what the strategy netted you after every cut was taken. We show you what your broker won't.</div></details>
+          <details><summary>Does it include taxes?</summary><div class="h-acc__body">It includes STT, exchange transaction charges and GST on brokerage — the costs you incur as part of the trade. Income tax on your trading PnL is on you and your CA; we don't compute that. Capital gains reports are exportable for handoff.</div></details>
+          <details><summary>Where do I see it?</summary><div class="h-acc__body">On every strategy detail page, and on the dashboard summary. The default view is True-Net; gross is one click away if you want it. <a href="features.html#operate">More on True-Net →</a></div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="verified">
+        <span class="h-faqcat__lbl is-new">09 · Verified Live Marketplace</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Verified Live Marketplace</h3>
+        <div class="h-acc">
+          <details><summary>What does the Verified Live badge mean?</summary><div class="h-acc__body">Backtest screenshots are easy to fake. The Verified Live badge confirms the strategy has been running in the author's own broker account for at least 3 months with 25+ live trades, and the PnL you see is broker-confirmed — not backtested, not paper. <a href="features.html">How verification works →</a></div></details>
+          <details><summary>Can creators game it?</summary><div class="h-acc__body">Hard to. The badge requires real broker fills (not paper), a minimum live period, a minimum trade count, and is re-checked monthly. A creator can't backfill history or curate winning periods. If live performance degrades, the badge can be lost.</div></details>
+          <details><summary>How long does verification take?</summary><div class="h-acc__body">3 months minimum live in the author's account, with 25+ executed trades. After that, the badge applies automatically on the next monthly review. No application form; the engine watches the live data.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="pricing">
+        <span class="h-faqcat__lbl">10 · Pricing</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Pricing</h3>
+        <div class="h-acc">
+          <details><summary>What does each plan include?</summary><div class="h-acc__body">Free: unlimited paper trading, full builder, marketplace browsing. Paid plans add live deployments, more concurrent strategies, deeper backtest history and premium broker integrations. Full grid on the <a href="pricing.html">pricing page</a>.</div></details>
+          <details><summary>Can I switch plans?</summary><div class="h-acc__body">Yes — upgrade or downgrade anytime. Upgrades take effect immediately and are prorated. Downgrades take effect at the next billing cycle so you don't lose what you've already paid for.</div></details>
+          <details><summary>Refund policy?</summary><div class="h-acc__body">Pro-rata refund within 7 days of a new subscription if you haven't taken a live trade. After that, you can downgrade or cancel at any time and you won't be billed again. We don't refund part-used months on long-running accounts.</div></details>
+        </div>
+      </div>
+
+      <div class="h-faqcat" id="safety">
+        <span class="h-faqcat__lbl">11 · Trust &amp; safety</span>
+        <h3 class="h-h3" style="margin: 6px 0 14px">Trust &amp; safety</h3>
+        <div class="h-acc">
+          <details><summary>Is Tradetron SEBI registered?</summary><div class="h-acc__body">Tradetron is a technology platform — a builder and execution layer, not an investment adviser or broker. SEBI regulation applies to the broker that holds your funds and executes your trades. We don't give investment advice; we run the strategies you build.</div></details>
+          <details><summary>Where is my money?</summary><div class="h-acc__body">In your own brokerage account, with your own broker, in your own name. Funds never leave your broker. Your money. Your broker. Your control. Tradetron only holds the strategy.</div></details>
+          <details><summary>Can I see Tradetron's audit log?</summary><div class="h-acc__body">Every trade fired by a strategy is logged with timestamp, condition that triggered it, prices observed and broker response. Click any trade for a plain-English replay. Daily reconciliation against your broker statement is automatic on paid plans.</div></details>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 24ch">Questions answered.<br />Time to <span class="sig">deploy.</span></h2>
+  <p class="h-cta__sub">Free paper trading for life. A small subscription only when you go live. Funds never leave your broker.</p>
+  <div class="h-hero__cta" style="margin-top: 8px; justify-content: center">
+    <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+    <a href="contact.html" class="h-btn h-btn--ghost">Still stuck? Talk to a human →</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

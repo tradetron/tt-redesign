@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pricing · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- pricing-local layout ----
+     Built only from tokens.css / system.css / pages.css primitives —
+     hairlines, mono numerics, amber signal. Reuses the dashboard's
+     d-* panel/head/select chrome so the logged-in shell stays consistent.
+     The plan matrix is purpose-built (6 columns is wider than h-pricing
+     was meant for) but borrows h-compare's cell language. */
+
+  .p-wrap { padding-block: clamp(28px, 4vw, 44px); }
+
+  /* page header row (mirrors dashboard d-head) */
+  .p-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .p-head__title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em;
+    margin: 8px 0 0;
+  }
+  .p-head__sub {
+    font-size: 0.96rem; color: var(--ink-soft);
+    max-width: 64ch; margin-top: 8px; line-height: 1.55;
+  }
+
+  /* ---- controls strip: billing cycle + exchange set ---- */
+  .p-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 26px; align-items: flex-start;
+    padding: 16px 20px; margin-bottom: 22px;
+    background: var(--surface); border: var(--hairline);
+    border-radius: var(--radius-md);
+  }
+  .p-control { display: flex; flex-direction: column; gap: 8px; }
+  .p-control__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+
+  /* segmented control — billing cycle */
+  .p-seg {
+    display: inline-flex; border: var(--hairline);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .p-seg__btn {
+    appearance: none; background: transparent; border: 0;
+    border-right: var(--hairline); cursor: pointer;
+    padding: 8px 14px; font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: var(--tracking-mono); color: var(--ink-soft);
+    display: inline-flex; align-items: baseline; gap: 7px;
+    transition: background 140ms, color 140ms;
+  }
+  .p-seg__btn:last-child { border-right: 0; }
+  .p-seg__btn:hover { color: var(--ink); background: var(--paper-2); }
+  .p-seg__btn.is-active { background: var(--ink); color: var(--paper); }
+  .p-seg__btn.is-active:hover { background: var(--ink); }
+  .p-seg__save {
+    font-size: 0.66rem; letter-spacing: 0.06em; color: var(--signal);
+  }
+  .p-seg__btn.is-active .p-seg__save { color: var(--signal-soft); }
+
+  /* chip selector — exchange sets */
+  .p-chips { display: flex; flex-wrap: wrap; gap: 6px; max-width: 760px; }
+  .p-chip {
+    appearance: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: var(--tracking-mono);
+    padding: 6px 11px; border: var(--hairline);
+    border-radius: var(--radius-sm); background: var(--surface);
+    color: var(--ink-soft); transition: border-color 140ms, color 140ms, background 140ms;
+  }
+  .p-chip:hover { border-color: var(--rule-strong); color: var(--ink); }
+  .p-chip.is-active {
+    border-color: var(--signal); background: var(--signal-tint); color: var(--signal);
+  }
+  .p-chip__region {
+    color: var(--slate); margin-left: 8px;
+    font-size: 0.62rem; letter-spacing: 0.08em;
+  }
+  .p-chip.is-active .p-chip__region { color: var(--signal-soft); }
+
+  /* ---- the plan matrix ---- */
+  .p-matrixwrap { overflow-x: auto; border: var(--hairline); border-radius: var(--radius-md); }
+  .p-matrix {
+    width: 100%; min-width: 980px; border-collapse: collapse;
+    background: var(--surface);
+  }
+  .p-matrix th, .p-matrix td {
+    padding: 12px 16px; border-bottom: var(--hairline);
+    border-right: var(--hairline); text-align: center; vertical-align: middle;
+  }
+  .p-matrix th:last-child, .p-matrix td:last-child { border-right: 0; }
+  .p-matrix tbody tr:last-child td { border-bottom: 0; }
+
+  /* feature label column (sticky-left, left-aligned) */
+  .p-matrix th.p-feat, .p-matrix td.p-feat {
+    text-align: left; width: 240px; min-width: 220px;
+    position: sticky; left: 0; z-index: 2;
+    background: var(--paper-2);
+  }
+  .p-matrix td.p-feat {
+    color: var(--ink); background: var(--surface);
+    line-height: 1.35; padding-top: 14px; padding-bottom: 14px;
+  }
+  .p-feat__main {
+    display: block;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 0.92rem; letter-spacing: -0.005em; color: var(--ink);
+  }
+  .p-feat__sub {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.06em; color: var(--slate);
+    margin-top: 3px;
+  }
+
+  /* group header row — full-width, mono caps, tinted */
+  .p-group-row td {
+    background: var(--paper-2);
+    padding: 14px 16px;
+    border-right: 0;
+  }
+  .p-group-row td.p-feat { background: var(--paper-2); }
+  .p-group {
+    display: flex; align-items: baseline; gap: 12px;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .p-group__num { color: var(--slate-soft); }
+  .p-group__sub {
+    font-family: var(--font-body); font-size: 0.78rem;
+    letter-spacing: 0; text-transform: none;
+    color: var(--slate); font-weight: 400;
+  }
+
+  /* plan header cells */
+  .p-matrix thead th { background: var(--paper-2); }
+  .p-plan { position: relative; }
+  .p-plan__name {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.02rem;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
+  .p-plan__price {
+    display: block; margin-top: 4px;
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 1.32rem; letter-spacing: -0.01em; color: var(--ink); line-height: 1.1;
+  }
+  .p-plan__price small {
+    font-size: 0.66rem; letter-spacing: 0.04em; color: var(--slate);
+    font-feature-settings: normal;
+  }
+  .p-plan__cycnote {
+    display: block; margin-top: 3px;
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.06em;
+    color: var(--slate);
+  }
+  .p-plan__cta { margin-top: 12px; }
+  .p-plan__cta .h-btn { width: 100%; justify-content: center; }
+
+  /* a column ribbon — Best value / Current plan */
+  .p-plan__ribbon {
+    display: inline-block; margin-bottom: 8px;
+    font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 500;
+    padding: 3px 8px; border-radius: 2px;
+  }
+  .p-plan__ribbon--best { background: var(--signal); color: #fff; }
+  .p-plan__ribbon--current {
+    background: transparent; color: var(--signal);
+    border: 1px solid color-mix(in oklab, var(--signal) 55%, transparent);
+  }
+
+  /* featured + current column tinting (header + body) */
+  .p-col-best   { box-shadow: inset 0 3px 0 0 var(--signal); }
+  thead th.p-col-best { background: color-mix(in oklab, var(--signal) 9%, var(--paper-2)); }
+  tbody td.p-col-best { background: color-mix(in oklab, var(--signal) 4%, transparent); }
+
+  thead th.p-col-current { background: var(--signal-tint); }
+  tbody td.p-col-current { background: color-mix(in oklab, var(--signal) 6%, transparent); }
+
+  /* body cell value styling */
+  .p-val {
+    font-family: var(--font-mono); font-feature-settings: "tnum" 1;
+    font-size: 0.84rem; letter-spacing: var(--tracking-mono); color: var(--ink);
+  }
+  .p-val--unl { color: var(--signal); }            /* Unlimited */
+  .p-val--yes { color: var(--positive); }           /* ✓ */
+  .p-val--no  { color: var(--slate-soft); }         /* — */
+  .p-val__note { display: block; font-size: 0.66rem; color: var(--slate); margin-top: 2px; }
+  .p-price-row td { background: var(--paper-2); }
+  .p-price-row td.p-col-best    { background: color-mix(in oklab, var(--signal) 12%, var(--paper-2)); }
+  .p-price-row td.p-col-current { background: color-mix(in oklab, var(--signal) 12%, var(--signal-tint)); }
+  .p-price-row .p-feat {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--slate);
+  }
+
+  /* foot note line under matrix */
+  .p-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-top: 14px;
+  }
+
+  /* "Included in all plans" panel — sits above the matrix */
+  .p-included {
+    display: grid;
+    grid-template-columns: minmax(170px, auto) 1fr;
+    gap: 18px 28px; align-items: center;
+    padding: 16px 22px; margin-bottom: 16px;
+    background: color-mix(in oklab, var(--signal) 6%, var(--surface));
+    border: var(--hairline);
+    border-left: 3px solid var(--signal);
+    border-radius: var(--radius-md);
+  }
+  .p-included__lbl {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--signal); line-height: 1.4;
+  }
+  .p-included__lbl small {
+    display: block; margin-top: 4px;
+    color: var(--ink-soft); font-size: 0.72rem;
+    letter-spacing: 0; text-transform: none;
+  }
+  .p-included__items {
+    display: flex; flex-wrap: wrap; gap: 10px 26px;
+    font-size: 0.92rem; color: var(--ink);
+  }
+  .p-included__item {
+    display: inline-flex; align-items: baseline; gap: 8px;
+  }
+  .p-included__item::before {
+    content: "✓"; color: var(--positive); font-weight: 700;
+    font-size: 0.86rem;
+  }
+  .p-included__item small {
+    color: var(--slate); font-size: 0.74rem; margin-left: 2px;
+  }
+  @media (max-width: 720px) {
+    .p-controls { flex-direction: column; gap: 16px; }
+    .p-included { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-screen-label="Pricing">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container p-wrap">
+
+  <!-- PAGE HEAD -->
+  <div class="p-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Pricing</span>
+      <h1 class="p-head__title">Start free. <span class="sig">Pay only when you go live.</span></h1>
+      <p class="p-head__sub">Build and paper-trade for ₹0 — Free for Life. Pick a plan only when you're ready to deploy real capital, in your own broker account. Every plan ships with unlimited strategies and paper trading — what changes between plans is how many <em>live trading bots</em> you can run, whether you can list on the marketplace, and your Claude AI quota.</p>
+    </div>
+    <div class="d-head__actions" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <a href="register.html" class="h-btn h-btn--primary">Start free →</a>
+      <span class="h-chip h-chip--live h-chip--dot">Current · Creator+</span>
+    </div>
+  </div>
+
+  <!-- CONTROLS: billing cycle + exchange set -->
+  <div class="p-controls">
+    <div class="p-control">
+      <span class="p-control__lbl">Billing cycle</span>
+      <div class="p-seg" id="billing-seg" role="tablist" aria-label="Billing cycle">
+        <button class="p-seg__btn is-active" role="tab" aria-selected="true" data-cycle="monthly" data-factor="1" data-suffix="/mo">Monthly</button>
+        <button class="p-seg__btn" role="tab" aria-selected="false" data-cycle="quarterly" data-factor="2.79" data-suffix="/qtr">Quarterly <span class="p-seg__save">Save 7%</span></button>
+        <button class="p-seg__btn" role="tab" aria-selected="false" data-cycle="yearly" data-factor="9.96" data-suffix="/yr">Yearly <span class="p-seg__save">Save 17%</span></button>
+      </div>
+    </div>
+
+    <div class="p-control">
+      <span class="p-control__lbl">What you'll trade</span>
+      <div class="p-chips" role="group" aria-label="Exchange set">
+        <button class="p-chip is-active">NSE + BSE <span class="p-chip__region">equity &amp; F&amp;O</span></button>
+        <button class="p-chip">MCX <span class="p-chip__region">commodities</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCLUDED IN ALL PLANS -->
+  <div class="p-included">
+    <div class="p-included__lbl">
+      Included in every plan
+      <small>Your money. Your broker. Your control.</small>
+    </div>
+    <div class="p-included__items">
+      <span class="p-included__item">Creating 500 strategy templates <small>(private + public · share with friends)</small></span>
+      <span class="p-included__item">Paper trading</span>
+      <span class="p-included__item">Trust Score dashboard <small>green / amber / red, at a glance</small></span>
+      <span class="p-included__item">True-Net PnL <small>after brokerage, STT, slippage</small></span>
+      <span class="p-included__item">Browse the Verified Live marketplace</span>
+      <span class="p-included__item">Error alerts <small>WhatsApp · SMS · phone call</small></span>
+    </div>
+  </div>
+
+  <!-- PLAN MATRIX -->
+  <div class="p-matrixwrap">
+    <table class="p-matrix">
+      <thead>
+        <tr>
+          <th class="p-feat" scope="col"><span class="h-tag">Compare plans</span></th>
+
+          <th scope="col">
+            <div class="p-plan">
+              <span class="p-plan__name">Free</span>
+              <span class="p-plan__price" data-base="0">₹0</span>
+              <span class="p-plan__cycnote">&nbsp;</span>
+            </div>
+          </th>
+
+          <th scope="col">
+            <div class="p-plan">
+              <span class="p-plan__name">Starter</span>
+              <span class="p-plan__price" data-base="300">₹300 <small>/mo</small></span>
+              <span class="p-plan__cycnote" data-cycnote>billed monthly</span>
+              <div class="p-plan__cta"><a href="#" class="h-btn h-btn--ghost h-btn--sm">Choose Plan</a></div>
+            </div>
+          </th>
+
+          <th scope="col">
+            <div class="p-plan">
+              <span class="p-plan__name">Retail</span>
+              <span class="p-plan__price" data-base="1200">₹1,200 <small>/mo</small></span>
+              <span class="p-plan__cycnote" data-cycnote>billed monthly</span>
+              <div class="p-plan__cta"><a href="#" class="h-btn h-btn--ghost h-btn--sm">Choose Plan</a></div>
+            </div>
+          </th>
+
+          <th scope="col" class="p-col-best">
+            <div class="p-plan">
+              <span class="p-plan__ribbon p-plan__ribbon--best">Best value</span>
+              <span class="p-plan__name">Retail+</span>
+              <span class="p-plan__price" data-base="2500">₹2,500 <small>/mo</small></span>
+              <span class="p-plan__cycnote" data-cycnote>billed monthly</span>
+              <div class="p-plan__cta"><a href="#" class="h-btn h-btn--primary h-btn--sm">Choose Plan</a></div>
+            </div>
+          </th>
+
+          <th scope="col">
+            <div class="p-plan">
+              <span class="p-plan__name">Creator</span>
+              <span class="p-plan__price" data-base="5000">₹5,000 <small>/mo</small></span>
+              <span class="p-plan__cycnote" data-cycnote>billed monthly</span>
+              <div class="p-plan__cta"><a href="#" class="h-btn h-btn--ghost h-btn--sm">Choose Plan</a></div>
+            </div>
+          </th>
+
+          <th scope="col" class="p-col-current">
+            <div class="p-plan">
+              <span class="p-plan__ribbon p-plan__ribbon--current">Current plan</span>
+              <span class="p-plan__name">Creator+</span>
+              <span class="p-plan__price" data-base="9000">₹9,000 <small>/mo</small></span>
+              <span class="p-plan__cycnote" data-cycnote>billed monthly</span>
+              <div class="p-plan__cta">
+                <span class="h-chip h-chip--live h-chip--dot" style="width:100%; justify-content:center; height:32px;">Current Plan</span>
+              </div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Live Trading Bots -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Live Trading Bots</span>
+            <span class="p-feat__sub">strategies running live in your broker at once</span>
+          </td>
+          <td><span class="p-val">1<span class="p-val__note">paper only</span></span></td>
+          <td><span class="p-val">1</span></td>
+          <td><span class="p-val">5</span></td>
+          <td class="p-col-best"><span class="p-val">12</span></td>
+          <td><span class="p-val">25</span></td>
+          <td class="p-col-current"><span class="p-val">50</span></td>
+        </tr>
+
+        <!-- List on Marketplace (NEW) -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">List strategies on Marketplace</span>
+            <span class="p-feat__sub">earn from subscribers running your strategy</span>
+          </td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td class="p-col-best"><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val">5</span></td>
+          <td class="p-col-current"><span class="p-val">10</span></td>
+        </tr>
+
+        <!-- Trust & Transparency group header -->
+        <tr class="p-group-row">
+          <td class="p-feat" colspan="7">
+            <span class="p-group">
+              <span class="p-group__num">04</span>
+              Trust &amp; transparency
+              <span class="p-group__sub">your money, your broker, your control</span>
+            </span>
+          </td>
+        </tr>
+
+        <!-- Trust Score dashboard — all plans -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Trust Score dashboard</span>
+            <span class="p-feat__sub">one-glance green / amber / red across every live strategy</span>
+          </td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-best"><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- True-Net PnL transparency — all plans -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">True-Net PnL</span>
+            <span class="p-feat__sub">gross minus brokerage, STT, slippage, platform fees</span>
+          </td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-best"><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- Risk alerts WhatsApp/Telegram — paid only -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Risk alerts on WhatsApp &amp; Telegram</span>
+            <span class="p-feat__sub">drawdown breach, broker disconnect, anomaly — straight to your phone</span>
+          </td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-best"><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- AI Strategy Audit — paid only -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">AI Strategy Audit <span style="display:inline-block;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;color:var(--slate);background:var(--paper-2);border:var(--hairline);border-radius:2px;padding:2px 6px;margin-left:6px;vertical-align:middle;text-transform:uppercase;">Coming Soon</span></span>
+            <span class="p-feat__sub">pre-deploy: "you said X, the strategy does Y, here's the diff"</span>
+          </td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-best"><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- Verified Live Marketplace — browse, all plans -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Verified Live Marketplace — browse</span>
+            <span class="p-feat__sub">only strategies with 3+ months in the author's own broker</span>
+          </td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-best"><span class="p-val p-val--yes">✓</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- Verified Live Marketplace — list, Creator+ only -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Verified Live Marketplace — list your strategy</span>
+            <span class="p-feat__sub">earn a Verified Live badge after 3 months &amp; 25+ live trades</span>
+          </td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--no">—</span></td>
+          <td class="p-col-best"><span class="p-val p-val--no">—</span></td>
+          <td><span class="p-val p-val--yes">✓</span></td>
+          <td class="p-col-current"><span class="p-val p-val--yes">✓</span></td>
+        </tr>
+
+        <!-- Claude Tokens -->
+        <tr>
+          <td class="p-feat">
+            <span class="p-feat__main">Claude Tokens</span>
+            <span class="p-feat__sub">monthly AI quota — Claude, ChatGPT, WhatsApp, Telegram, Slack</span>
+          </td>
+          <td><span class="p-val">56K<span class="p-val__note">/ month</span></span></td>
+          <td><span class="p-val">112K<span class="p-val__note">/ month</span></span></td>
+          <td><span class="p-val">336K<span class="p-val__note">/ month</span></span></td>
+          <td class="p-col-best"><span class="p-val">560K<span class="p-val__note">/ month</span></span></td>
+          <td><span class="p-val">1.12M<span class="p-val__note">/ month</span></span></td>
+          <td class="p-col-current"><span class="p-val">3.36M<span class="p-val__note">/ month</span></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</main>
+
+
+<footer class="h-footer">
+  <div class="h-container">
+    <div class="h-footer__grid">
+      <div class="h-footer__brand">
+        <span class="h-brand"><img class="tt-logo tt-logo--dark" src="assets/img-logotype-dark.png" alt="Tradetron"><img class="tt-logo tt-logo--light" src="assets/img-logotype-light.png" alt="Tradetron"></span>
+        <p class="h-body" style="max-width: 30ch; font-size: 0.92rem">A marketplace of trading algorithms, run live in their authors' accounts.</p>
+        <p class="h-micro" style="margin-top: 4px">Funds held by you, in your own brokerage. Tradetron never custodies money.</p>
+      </div>
+      <div class="h-footer__col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="features.html">Build</a></li>
+          <li><a href="backtest.html">Backtest</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="integrations.html">Integrations</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Learn</h5>
+        <ul>
+          <li><a href="faq.html">Manual &amp; FAQ</a></li>
+          <li><a href="tt-uni.html">TT Uni</a></li>
+          <li><a href="qna-forum.html">Q&amp;A Forum</a></li>
+          <li><a href="webinar.html">Webinars</a></li>
+          <li><a href="wall-of-love.html">Wall of Love</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="affiliates.html">Affiliates</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Markets</h5>
+        <ul>
+          <li><a href="us.html">United States</a></li>
+          <li><a href="nri-algo-trading.html">NRI trading</a></li>
+          <li><a href="crypto-trading.html">Crypto</a></li>
+          <li><a href="free-trading-app.html">Free app</a></li>
+        </ul>
+      </div>
+      <div class="h-footer__col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="trademark.html">Trademark</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="h-footer__legal">
+      <span>© 2018–2026 Tradetron Tech Pvt. Ltd.</span>
+      <span>Investments carry risk. Past performance is not indicative of future results.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/theme.js"></script>
+<script>
+  /* ---- billing-cycle recompute (presentational) ----
+     Monthly prices come from the data spec; Quarterly/Yearly are
+     derived from the named savings (7% / 17%) off the equivalent
+     multi-month total. Free (base 0) stays ₹0. Exchange-set chips
+     are selectable but don't repriced — single price book in spec. */
+  (function () {
+    var seg = document.getElementById("billing-seg");
+    if (!seg) return;
+
+    var INR = function (n) { return "₹" + Math.round(n).toLocaleString("en-IN"); };
+
+    function repriceTo(factor, suffix, cycnote) {
+      // header prices
+      document.querySelectorAll(".p-plan__price[data-base]").forEach(function (el) {
+        var base = parseFloat(el.getAttribute("data-base"));
+        if (base === 0) { el.textContent = "₹0"; return; }
+        el.innerHTML = INR(base * factor) + ' <small>' + suffix + '</small>';
+      });
+      // matrix price-row cells
+      document.querySelectorAll(".p-price-row .p-val[data-base]").forEach(function (el) {
+        var base = parseFloat(el.getAttribute("data-base"));
+        if (base === 0) { el.textContent = "₹0"; return; }
+        el.innerHTML = INR(base * factor) + '<span class="p-val__note">' + suffix + '</span>';
+      });
+      // cycle note under each plan name
+      document.querySelectorAll("[data-cycnote]").forEach(function (el) {
+        el.textContent = cycnote;
+      });
+    }
+
+    seg.addEventListener("click", function (e) {
+      var btn = e.target.closest(".p-seg__btn");
+      if (!btn) return;
+      seg.querySelectorAll(".p-seg__btn").forEach(function (b) {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-selected", "false");
+      });
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-selected", "true");
+
+      var factor = parseFloat(btn.getAttribute("data-factor"));
+      var suffix = btn.getAttribute("data-suffix");
+      var cycle = btn.getAttribute("data-cycle");
+      var cycnote =
+        cycle === "quarterly" ? "billed quarterly · save 7%" :
+        cycle === "yearly"    ? "billed yearly · save 17%" :
+                                "billed monthly";
+      repriceTo(factor, suffix, cycnote);
+    });
+
+    /* exchange-set chips: single-select, visual only */
+    document.querySelectorAll(".p-chips .p-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        document.querySelectorAll(".p-chips .p-chip").forEach(function (c) {
+          c.classList.remove("is-active");
+        });
+        chip.classList.add("is-active");
+      });
+    });
+  })();
+</script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

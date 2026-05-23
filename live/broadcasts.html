@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Broadcast Messages · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Shared .acct-* sidebar + .d-empty empty-state + a small
+     token-built tab strip (.tabs-*). Tabs toggled via :target-free
+     inert JS at the bottom (prototype only). */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+  .acct { display: grid; grid-template-columns: 248px 1fr; gap: 26px; align-items: start; }
+
+  .acct-nav { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 86px; }
+  .acct-nav__head { padding: 14px 16px; border-bottom: var(--hairline); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft); text-decoration: none; transition: background 140ms, color 140ms; border-left: 2px solid transparent; }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active { background: var(--signal-tint); color: var(--signal); border-left-color: var(--signal); font-weight: 500; }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+
+  .d-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+  .d-head__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; margin: 8px 0 0; }
+  .d-head__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); margin-top: 4px; display: block; }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .d-panel { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden; }
+
+  /* tab strip */
+  .tabs-bar { display: flex; gap: 2px; padding: 8px 12px 0; border-bottom: var(--hairline); }
+  .tabs-tab {
+    appearance: none; background: transparent; border: 0; cursor: pointer;
+    padding: 10px 16px; margin-bottom: -1px;
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: var(--tracking-mono);
+    color: var(--slate); border-bottom: 2px solid transparent;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tabs-tab:hover { color: var(--ink); }
+  .tabs-tab.is-active { color: var(--signal); border-bottom-color: var(--signal); }
+  .tabs-tab .tabs-count {
+    font-size: 0.66rem; min-width: 18px; height: 18px; padding: 0 5px;
+    display: inline-grid; place-items: center; border-radius: var(--radius-pill);
+    background: var(--paper-2); color: var(--slate);
+  }
+  .tabs-tab.is-active .tabs-count { background: var(--signal-tint); color: var(--signal); }
+  .tabs-panel { display: none; }
+  .tabs-panel.is-active { display: block; }
+
+  /* empty state */
+  .d-empty__inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 64px 20px; }
+  .d-empty__mark { width: 38px; height: 38px; border: var(--hairline); border-radius: 50%; display: grid; place-items: center; color: var(--slate-soft); font-family: var(--font-mono); font-size: 1rem; }
+  .d-empty__title { font-family: var(--font-display); font-weight: 500; font-size: 1rem; letter-spacing: -0.015em; color: var(--ink); }
+  .d-empty__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); max-width: 46ch; }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+</style>
+</head>
+<body data-screen-label="Broadcast Messages">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Broadcast Messages</h1>
+      <span class="d-head__sub">Stay in the loop — updates from creators you follow, and messages out to your own subscribers</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">+ New broadcast</a>
+    </div>
+  </div>
+
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item is-active" href="broadcasts.html" aria-current="page"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+      <div class="d-panel">
+        <div class="tabs-bar" role="tablist" aria-label="Broadcast direction">
+          <button class="tabs-tab is-active" role="tab" aria-selected="true" data-tab="received">Received <span class="tabs-count">0</span></button>
+          <button class="tabs-tab" role="tab" aria-selected="false" data-tab="sent">Sent <span class="tabs-count">0</span></button>
+        </div>
+
+        <div class="tabs-panel is-active" role="tabpanel" data-panel="received">
+          <div class="d-empty__inner">
+            <span class="d-empty__mark" aria-hidden="true">⌁</span>
+            <span class="d-empty__title">Nothing received yet</span>
+            <span class="d-empty__sub">Announcements from creators you subscribe to will land here.</span>
+          </div>
+        </div>
+
+        <div class="tabs-panel" role="tabpanel" data-panel="sent">
+          <div class="d-empty__inner">
+            <span class="d-empty__mark" aria-hidden="true">⌁</span>
+            <span class="d-empty__title">Nothing sent yet</span>
+            <span class="d-empty__sub">Broadcasts you send to your subscribers will appear here.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+<script>
+  // Inert prototype tab switching.
+  (function () {
+    var tabs = document.querySelectorAll('.tabs-tab');
+    var panels = document.querySelectorAll('.tabs-panel');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
+        panels.forEach(function (p) { p.classList.remove('is-active'); });
+        tab.classList.add('is-active'); tab.setAttribute('aria-selected', 'true');
+        var target = tab.getAttribute('data-tab');
+        var panel = document.querySelector('.tabs-panel[data-panel="' + target + '"]');
+        if (panel) panel.classList.add('is-active');
+      });
+    });
+  })();
+</script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

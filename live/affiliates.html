@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Affiliates · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* Honest-disclosure callout */
+  .h-disclosure {
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    padding: clamp(22px, 3vw, 32px);
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+  .h-disclosure__icon {
+    width: 44px; height: 44px;
+    border-radius: var(--radius-pill);
+    background: var(--signal-tint);
+    color: var(--signal);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .h-disclosure__title {
+    font: 600 1.08rem/1.3 var(--font-display);
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .h-disclosure__body {
+    font: 400 0.94rem/1.55 var(--font-body);
+    color: var(--ink-soft);
+    max-width: 56ch;
+  }
+  @media (max-width: 600px) {
+    .h-disclosure { grid-template-columns: 1fr; }
+  }
+
+  /* Dashboard preview */
+  .h-dashprev {
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    background: var(--paper-2);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .h-dashprev__stat { display: flex; flex-direction: column; gap: 4px; }
+  .h-dashprev__lbl {
+    font: 500 0.66rem/1 var(--font-mono);
+    color: var(--slate);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .h-dashprev__val {
+    font: 600 1.4rem/1 var(--font-display);
+    color: var(--ink);
+    font-feature-settings: "tnum" 1;
+  }
+  .h-dashprev__sub {
+    font: 400 0.78rem/1.4 var(--font-body);
+    color: var(--slate);
+  }
+  @media (max-width: 760px) {
+    .h-dashprev { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body data-screen-label="Affiliates">
+
+<div data-include="_header.html"></div>
+
+
+<section class="h-container h-pagehero">
+  <div>
+    <div class="h-pagehero__crumb">Company · Affiliate program</div>
+    <h1>Refer Tradetron. <span class="sig">Earn a share, every month they stay.</span></h1>
+  </div>
+  <div>
+    <p class="h-pagehero__lede">Teach trading, write about it, run a YouTube channel, or just know traders who'd build on Tradetron — share a link, earn a recurring share of every subscription you bring in. Free to join, paid monthly, recurring as long as your referral stays.</p>
+    <div class="h-pagehero__cta">
+      <a href="register.html" class="h-btn h-btn--primary">Apply to be an affiliate →</a>
+      <a href="#how" class="h-btn h-btn--ghost">See how it works</a>
+    </div>
+    <div class="h-truststrip" style="margin-top: 18px">
+      <span>Free to join</span><span>Recurring monthly</span><span>No minimum threshold</span><span>Paid every month</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="h-container h-section--lg" id="how">
+  <div style="margin-bottom: 18px"><span class="h-eyebrow">How it works</span></div>
+  <h2 class="h-h2" style="margin-bottom: 36px; max-width: 22ch">Four steps from <span class="sig">sign-up</span> to payout.</h2>
+  <div class="h-features cols-4">
+    <div class="h-feature">
+      <span class="h-feature__num">[ 01 ]</span>
+      <div class="h-feature__title">Sign up</div>
+      <div class="h-feature__body">Apply from your Tradetron account. Most approvals are instant; we review edge cases (large channels, course teachers, broker partners) within a day.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 02 ]</span>
+      <div class="h-feature__title">Get your link</div>
+      <div class="h-feature__body">A unique referral URL plus a custom code if you want a vanity slug. Banners, copy snippets and product screenshots ready to drop into a blog post, video description or course.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 03 ]</span>
+      <div class="h-feature__title">Share</div>
+      <div class="h-feature__body">Post in a blog, YouTube description, tweet, course outline or newsletter. Anyone who signs up through your link inside the attribution window is tagged to you.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ 04 ]</span>
+      <div class="h-feature__title">Earn</div>
+      <div class="h-feature__body">Recurring share of every Tradetron subscription your referrals pay, every month they stay. Payouts settle monthly to your nominated account.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMISSION STRUCTURE -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 8px">
+      <div>
+        <span class="h-eyebrow">Commission structure</span>
+        <h2 class="h-h2" style="margin-top: 14px">Simple, recurring, <span class="sig">no quotas to unlock.</span></h2>
+      </div>
+      <span class="h-micro placeholder">representative figures · final rates set at program launch</span>
+    </div>
+    <p class="h-body" style="max-width: 52ch; margin: 12px 0 32px">Volume bumps your share automatically — no negotiation, no "talk to sales", no minimum to start earning. If three people subscribe through your link this month, you get paid for three. If three hundred do, you get paid for three hundred at a higher rate.</p>
+    <div class="h-features cols-4">
+      <div class="h-feature">
+        <span class="h-feature__num">[ 01 ]</span>
+        <div class="h-feature__title">Share of first 6 months</div>
+        <div class="h-feature__body">A recurring percentage of every paid subscription your referral runs for their first six months on the platform. Higher tiers extend the window.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 02 ]</span>
+        <div class="h-feature__title">Tier bumps for volume</div>
+        <div class="h-feature__body">Starter (1–10 active referrals) → Partner (11–50) → Ambassador (50+). Move up automatically based on trailing 90-day active referrals.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 03 ]</span>
+        <div class="h-feature__title">Transparent payout dates</div>
+        <div class="h-feature__body">Commissions accrue daily and settle on the 7th of every month. You see exactly which referrals were billed, when, and what you earned on each.</div>
+      </div>
+      <div class="h-feature">
+        <span class="h-feature__num">[ 04 ]</span>
+        <div class="h-feature__title">No minimum threshold</div>
+        <div class="h-feature__body">Earned ₹500 this month? It pays out. We don't gate payouts behind a "minimum balance" to hold onto your money. Bank transfer fees on us.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="h-container h-section--md">
+  <div style="margin-bottom: 28px">
+    <span class="h-eyebrow">Who it's for</span>
+    <h2 class="h-h2" style="margin-top: 14px">Built for people who <span class="sig">already talk to traders.</span></h2>
+  </div>
+  <div class="h-features cols-4">
+    <div class="h-feature">
+      <span class="h-feature__num">[ A ]</span>
+      <div class="h-feature__title">Content creators</div>
+      <div class="h-feature__body">YouTubers, Substack writers, podcast hosts covering algo trading, options, F&amp;O strategies. Tradetron is what most of your audience already needs.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ B ]</span>
+      <div class="h-feature__title">Finfluencers</div>
+      <div class="h-feature__body">Twitter / Instagram / Telegram channels with a trading audience. Honest content marketing welcome — no signal-selling, no pumping.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ C ]</span>
+      <div class="h-feature__title">Broker partners</div>
+      <div class="h-feature__body">Sub-brokers, RAs, dealers whose clients ask for algo execution. Refer them to Tradetron and keep earning while they trade in their own broker account.</div>
+    </div>
+    <div class="h-feature">
+      <span class="h-feature__num">[ D ]</span>
+      <div class="h-feature__title">Course teachers</div>
+      <div class="h-feature__body">Running an algo or options trading course? Your students need somewhere to actually deploy the strategies they learn. Bundle the Tradetron link.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HONEST DISCLOSURE -->
+<section class="h-container h-section--md">
+  <div class="h-disclosure">
+    <div class="h-disclosure__icon">!</div>
+    <div>
+      <div class="h-disclosure__title">Where the commission comes from</div>
+      <p class="h-disclosure__body">We pay affiliates from the Tradetron subscription fee — <strong>never from a user's trading capital.</strong> Your referral pays Tradetron the same price you would; we share a slice of that with you. Funds never leave the user's broker. Your money. Your broker. Your control — for the referral, and for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section class="h-band">
+  <div class="h-container h-section--md">
+    <div style="margin-bottom: 28px">
+      <span class="h-eyebrow">Live tracking</span>
+      <h2 class="h-h2" style="margin-top: 14px">Every click, every signup, <span class="sig">every rupee earned.</span></h2>
+      <p class="h-body" style="margin-top: 14px; max-width: 50ch">A real-time dashboard shows clicks on your link, signups, conversions to paid, and monthly commission earned. No "we'll send a CSV at month-end" — you see the data the moment it happens.</p>
+    </div>
+    <div class="h-dashprev">
+      <div class="h-dashprev__stat">
+        <span class="h-dashprev__lbl">Clicks (30d)</span>
+        <span class="h-dashprev__val">1,284</span>
+        <span class="h-dashprev__sub">sample affiliate</span>
+      </div>
+      <div class="h-dashprev__stat">
+        <span class="h-dashprev__lbl">Sign-ups</span>
+        <span class="h-dashprev__val">94</span>
+        <span class="h-dashprev__sub">conversion 7.3%</span>
+      </div>
+      <div class="h-dashprev__stat">
+        <span class="h-dashprev__lbl">Paid subs</span>
+        <span class="h-dashprev__val">38</span>
+        <span class="h-dashprev__sub">28 active this month</span>
+      </div>
+      <div class="h-dashprev__stat">
+        <span class="h-dashprev__lbl">Earned (Apr)</span>
+        <span class="h-dashprev__val">₹42,150</span>
+        <span class="h-dashprev__sub">Paid 7 May</span>
+      </div>
+    </div>
+    <p class="h-micro placeholder" style="margin-top: 14px">Sample numbers — not your dashboard, not anyone's. Just the shape of what you'll see.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="h-container h-section--md">
+  <div style="margin-bottom: 28px"><span class="h-eyebrow">Common questions</span></div>
+  <div class="h-acc">
+    <details>
+      <summary>Who can become an affiliate?</summary>
+      <div class="h-acc__body">Anyone with a Tradetron account. You don't have to be a paying subscriber yourself, though most of our best affiliates trade on the platform too — it shows in the content they make.</div>
+    </details>
+    <details>
+      <summary>What counts as a referral?</summary>
+      <div class="h-acc__body">A new user who signs up through your link within the attribution window and goes on to pay for a subscription. Paper-trading-only users don't generate commission, since they don't pay us either.</div>
+    </details>
+    <details>
+      <summary>How and when do I get paid?</summary>
+      <div class="h-acc__body">Commissions accrue daily and settle on the 7th of each month, to your nominated bank account or PayPal. No minimum threshold — if you earned ₹500, it pays out. We cover bank transfer fees.</div>
+    </details>
+    <details>
+      <summary>Is the commission really recurring?</summary>
+      <div class="h-acc__body">Yes — you earn your tier's percentage every month a referred user keeps paying, for their first six months (longer at Partner and Ambassador tiers). If they upgrade plans, your share scales with them.</div>
+    </details>
+    <details>
+      <summary>Can I run paid ads on the Tradetron brand?</summary>
+      <div class="h-acc__body">No bidding on Tradetron brand keywords, and no using the marks in a way that implies you are Tradetron. See the <a href="trademark.html">Trademark page</a> for specifics. Honest content marketing — reviews, tutorials, comparisons — is encouraged.</div>
+    </details>
+    <details>
+      <summary>What if my referral cancels?</summary>
+      <div class="h-acc__body">Your commission for that month stays paid; future months stop. We don't claw back past payouts. If they re-subscribe within 90 days, they're re-attributed to you automatically.</div>
+    </details>
+  </div>
+</section>
+
+<section class="h-container h-cta">
+  <span class="h-eyebrow">Begin</span>
+  <h2 class="h-display" style="font-size: clamp(2.4rem, 4.5vw, 4rem); text-align: center; max-width: 22ch">Turn your audience into <span class="sig">recurring income.</span></h2>
+  <p class="h-cta__sub">Free to join. Recurring share, paid every month a referral stays. Funds never leave their broker — or yours.</p>
+  <div class="h-hero__cta" style="margin-top: 8px; justify-content: center">
+    <a href="register.html" class="h-btn h-btn--primary">Apply to be an affiliate →</a>
+    <a href="contact.html" class="h-btn h-btn--ghost">Talk to us first</a>
+  </div>
+</section>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>

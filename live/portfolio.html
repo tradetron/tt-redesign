@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portfolio · Tradetron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/system.css?v=5" />
+<link rel="stylesheet" href="assets/pages.css" />
+<style>
+  /* ---- account-area layout (functional density) ----
+     Shared .acct-* sidebar + .d-empty empty-state. Portfolio is a
+     sibling account page; it isn't one of the 14 fixed sidebar rows,
+     so no sidebar item carries .is-active here. */
+
+  .d-wrap { padding-block: clamp(28px, 4vw, 44px); }
+  .acct { display: grid; grid-template-columns: 248px 1fr; gap: 26px; align-items: start; }
+
+  .acct-nav { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 86px; }
+  .acct-nav__head { padding: 14px 16px; border-bottom: var(--hairline); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .acct-nav__list { display: flex; flex-direction: column; padding: 6px; }
+  .acct-nav__item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink-soft); text-decoration: none; transition: background 140ms, color 140ms; border-left: 2px solid transparent; }
+  .acct-nav__item:hover { background: var(--paper-2); color: var(--ink); }
+  .acct-nav__item.is-active { background: var(--signal-tint); color: var(--signal); border-left-color: var(--signal); font-weight: 500; }
+  .acct-nav__item.is-active .acct-nav__dot { background: var(--signal); }
+  .acct-nav__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--slate-soft); flex: none; }
+
+  .d-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+  .d-head__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; margin: 8px 0 0; }
+  .d-head__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); margin-top: 4px; display: block; }
+  .d-head__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .d-panel { background: var(--surface); border: var(--hairline); border-radius: var(--radius-md); margin-bottom: 26px; overflow: hidden; }
+  .d-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 16px 20px; border-bottom: var(--hairline); }
+  .d-panel__title { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .d-panel__sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); margin-left: 8px; }
+
+  /* usage meter — "x of 15 used" */
+  .pf-meter { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-bottom: var(--hairline); flex-wrap: wrap; }
+  .pf-meter__track { flex: 1; min-width: 180px; height: 6px; border-radius: var(--radius-pill); background: var(--paper-2); overflow: hidden; }
+  .pf-meter__fill { height: 100%; width: 0%; background: var(--signal); }
+  .pf-meter__txt { font-family: var(--font-mono); font-size: 0.74rem; color: var(--slate); letter-spacing: var(--tracking-mono); }
+  .pf-meter__txt b { color: var(--ink); font-weight: 500; }
+
+  /* empty state */
+  .d-empty__inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 64px 20px; }
+  .d-empty__mark { width: 40px; height: 40px; border: var(--hairline); border-radius: var(--radius-sm); display: grid; place-items: center; color: var(--slate-soft); font-family: var(--font-mono); font-size: 1.1rem; }
+  .d-empty__title { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.015em; color: var(--ink); }
+  .d-empty__sub { font-family: var(--font-mono); font-size: 0.76rem; color: var(--slate); letter-spacing: var(--tracking-mono); max-width: 48ch; }
+  .d-empty__cta { margin-top: 6px; }
+
+  @media (max-width: 900px) {
+    .acct { grid-template-columns: 1fr; }
+    .acct-nav { position: static; }
+    .acct-nav__list { flex-direction: row; flex-wrap: wrap; }
+    .acct-nav__item { border-left: 0; border-bottom: 2px solid transparent; }
+    .acct-nav__item.is-active { border-left: 0; border-bottom-color: var(--signal); }
+  }
+</style>
+</head>
+<body data-screen-label="Portfolio">
+
+<div data-include="_header.html"></div>
+
+
+<main class="h-container d-wrap">
+
+  <div class="d-head">
+    <div>
+      <span class="h-eyebrow ink" style="font-size:0.7rem">— Account · logged in as Algolive</span>
+      <h1 class="d-head__title">Portfolio</h1>
+      <span class="d-head__sub">Bundle deployed strategies and watch their combined P&amp;L in one view (up to 15)</span>
+    </div>
+    <div class="d-head__actions">
+      <a href="#" class="h-btn h-btn--primary h-btn--sm">+ Create portfolio</a>
+    </div>
+  </div>
+
+  <div class="acct">
+
+    <!-- SHARED ACCOUNT SIDEBAR -->
+    <aside>
+      <nav class="acct-nav" aria-label="Account">
+        <div class="acct-nav__head">My Account</div>
+        <div class="acct-nav__list">
+          <a class="acct-nav__item" href="profile.html"><span class="acct-nav__dot"></span>Profile</a>
+          <a class="acct-nav__item" href="subscriptions.html"><span class="acct-nav__dot"></span>Subscriptions</a>
+          <a class="acct-nav__item" href="brokers.html"><span class="acct-nav__dot"></span>Broker &amp; Exchanges</a>
+          <a class="acct-nav__item" href="coupons.html"><span class="acct-nav__dot"></span>Coupons</a>
+          <a class="acct-nav__item" href="notifications.html"><span class="acct-nav__dot"></span>Notifications</a>
+          <a class="acct-nav__item" href="telegram.html"><span class="acct-nav__dot"></span>Telegram</a>
+          <a class="acct-nav__item" href="broadcasts.html"><span class="acct-nav__dot"></span>Broadcast Messages</a>
+          <a class="acct-nav__item" href="manage-access.html"><span class="acct-nav__dot"></span>Manage Shared Codes</a>
+          <a class="acct-nav__item" href="invoices.html"><span class="acct-nav__dot"></span>Invoices</a>
+          <a class="acct-nav__item" href="invoice-template.html"><span class="acct-nav__dot"></span>Invoice Template</a>
+          <a class="acct-nav__item" href="change-password.html"><span class="acct-nav__dot"></span>Change Password</a>
+          <a class="acct-nav__item" href="recent-activities.html"><span class="acct-nav__dot"></span>Recent Activities</a>
+          <a class="acct-nav__item" href="region-settings.html"><span class="acct-nav__dot"></span>Region Settings</a>
+          <a class="acct-nav__item" href="ledger.html"><span class="acct-nav__dot"></span>Wallet</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANEL -->
+    <section>
+      <div class="d-panel">
+        <div class="d-panel__head">
+          <span><span class="d-panel__title">Your portfolios</span><span class="d-panel__sub">0 of 15</span></span>
+          <a href="#" class="h-btn h-btn--ghost h-btn--sm">+ Create portfolio</a>
+        </div>
+        <div class="pf-meter">
+          <span class="pf-meter__txt"><b>0</b> / 15 used</span>
+          <span class="pf-meter__track" aria-hidden="true"><span class="pf-meter__fill"></span></span>
+        </div>
+        <div class="d-empty__inner">
+          <span class="d-empty__mark" aria-hidden="true">▣</span>
+          <span class="d-empty__title">No portfolios yet</span>
+          <span class="d-empty__sub">Create a portfolio to group deployed strategies and track their combined P&amp;L in one view.</span>
+          <a href="#" class="h-btn h-btn--primary h-btn--sm d-empty__cta">+ Create portfolio</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+
+<div data-include="_footer.html"></div>
+
+<script src="assets/theme.js"></script>
+  <script src="assets/include.js?v=2" defer></script>
+</body>
+</html>
